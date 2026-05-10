@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tankly — Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #050d1a;
+    --deep: #080f1f;
+    --card: rgba(10,22,44,0.72);
+    --border: rgba(0,230,255,0.10);
+    --cyan: #00e5ff;
+    --purple: #a855f7;
+    --teal: #06b6d4;
+    --text: #c8dff0;
+    --muted: #5f7f9a;
+    --white: #eef6ff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── SHIMMER BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 20%, rgba(0,229,255,0.055) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 85% 70%, rgba(168,85,247,0.055) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 100%, rgba(6,182,212,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Animated bubble particles */
+  .bubbles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .bubble {
+    position: absolute;
+    bottom: -40px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(0,229,255,0.35), rgba(0,229,255,0.04));
+    border: 1px solid rgba(0,229,255,0.18);
+    animation: rise linear infinite;
+  }
+  .bubble:nth-child(1)  { width:8px; height:8px;  left:8%;   animation-duration:14s; animation-delay:0s; }
+  .bubble:nth-child(2)  { width:5px; height:5px;  left:20%;  animation-duration:20s; animation-delay:3s; }
+  .bubble:nth-child(3)  { width:12px;height:12px; left:33%;  animation-duration:17s; animation-delay:1s; }
+  .bubble:nth-child(4)  { width:4px; height:4px;  left:47%;  animation-duration:22s; animation-delay:6s; }
+  .bubble:nth-child(5)  { width:9px; height:9px;  left:62%;  animation-duration:15s; animation-delay:2s; }
+  .bubble:nth-child(6)  { width:6px; height:6px;  left:75%;  animation-duration:19s; animation-delay:9s; }
+  .bubble:nth-child(7)  { width:14px;height:14px; left:88%;  animation-duration:25s; animation-delay:4s; }
+  .bubble:nth-child(8)  { width:5px; height:5px;  left:55%;  animation-duration:18s; animation-delay:11s; }
+  .bubble:nth-child(9)  { width:7px; height:7px;  left:5%;   animation-duration:23s; animation-delay:7s; }
+  .bubble:nth-child(10) { width:10px;height:10px; left:92%;  animation-duration:16s; animation-delay:13s; }
+
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0);   opacity:0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.6; }
+    100% { transform: translateY(-110vh) translateX(30px); opacity:0; }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(1rem, 5vw, 3rem);
+    height: 60px;
+    background: rgba(5,13,26,0.82);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+  .nav-tab {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .nav-tab:hover, .nav-tab.active {
+    color: var(--cyan);
+    background: rgba(0,229,255,0.07);
+    border-color: rgba(0,229,255,0.2);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: clamp(4rem, 10vw, 7rem) clamp(1rem, 5vw, 3rem) 4rem;
+  }
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-pill span { width:6px; height:6px; background:var(--cyan); border-radius:50%; animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    color: var(--white);
+    line-height: 1.1;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 span {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 520px;
+    margin-inline: auto;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-meta {
+    margin-top: 1.8rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .hero-meta span { display:flex; align-items:center; gap:5px; }
+  .hero-meta svg { width:13px; height:13px; opacity:0.6; }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── SHIMMER DIVIDER ── */
+  .shimmer-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+    margin: 0 clamp(1rem, 5vw, 4rem);
+    opacity: 0.5;
+  }
+  @keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
+
+  /* ── MAIN LAYOUT ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3.5rem clamp(1rem, 5vw, 2.5rem) 5rem;
+  }
+
+  /* Tab content */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.4s ease both; }
+
+  /* ── SECTION CARD ── */
+  .section {
+    margin-bottom: 2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .section:hover { border-color: rgba(0,229,255,0.2); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1.2rem 1.6rem;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.25s;
+  }
+  .section-header:hover { background: rgba(0,229,255,0.03); }
+  .section.open .section-header { border-bottom-color: var(--border); }
+
+  .section-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    flex: 1;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--white);
+  }
+  .section-num {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .chevron {
+    width: 18px; height: 18px;
+    color: var(--muted);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .section.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .section.open .section-body { max-height: 2000px; }
+  .section-inner {
+    padding: 1.4rem 1.6rem 1.6rem;
+  }
+
+  /* ── CONTENT STYLES ── */
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 1.4rem 0 0.6rem;
+  }
+  h3:first-child { margin-top: 0; }
+
+  p { color: var(--text); margin-bottom: 0.8rem; font-size: 14px; }
+  p:last-child { margin-bottom: 0; }
+
+  ul, ol {
+    padding-left: 1.3rem;
+    margin-bottom: 0.8rem;
+    font-size: 14px;
+    color: var(--text);
+  }
+  li { margin-bottom: 0.3rem; }
+  li::marker { color: var(--cyan); }
+
+  .highlight-box {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin: 1rem 0;
+    font-size: 13.5px;
+  }
+  .highlight-box strong { color: var(--cyan); }
+
+  .warn-box {
+    background: rgba(168,85,247,0.06);
+    border: 1px solid rgba(168,85,247,0.18);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin: 1rem 0;
+    font-size: 13.5px;
+  }
+
+  strong { color: var(--white); font-weight: 600; }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── DATA TABLE (for Supabase schema reference) ── */
+  .db-table {
+    background: rgba(5,13,26,0.6);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1rem 0;
+    font-size: 12.5px;
+  }
+  .db-table-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(0,229,255,0.05);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .db-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 0;
+    padding: 7px 12px;
+    border-bottom: 1px solid rgba(0,229,255,0.05);
+    align-items: center;
+  }
+  .db-row:last-child { border-bottom: none; }
+  .db-row:hover { background: rgba(0,229,255,0.03); }
+  .db-col { padding-right: 8px; }
+  .db-field { color: var(--white); font-weight: 500; font-family: monospace; font-size: 12px; }
+  .db-type  { color: var(--purple); font-family: monospace; font-size: 11px; }
+  .db-note  { color: var(--muted); font-size: 11px; }
+
+  /* ── CONTACT CARD ── */
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    margin-top: 1rem;
+  }
+  .contact-card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .contact-card-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .contact-card-value { font-size: 14px; color: var(--cyan); font-weight: 500; }
+
+  /* ── LAST UPDATED BADGE ── */
+  .updated-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 2rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--cyan); }
+
+  /* Glow accent on icon backgrounds */
+  .icon-cyan  { background: rgba(0,229,255,0.12); }
+  .icon-purple{ background: rgba(168,85,247,0.12); }
+  .icon-teal  { background: rgba(6,182,212,0.12); }
+  .icon-indigo{ background: rgba(99,102,241,0.12); }
+
+  @media (max-width: 600px) {
+    .nav-tabs { gap: 2px; }
+    .nav-tab { padding: 5px 10px; font-size: 12px; }
+    .db-row { grid-template-columns: 1fr 1fr; }
+    .db-note { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Animated bubbles -->
+<div class="bubbles">
+  <div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-icon">🐠</div>
+    <span class="logo-text">Tankly</span>
+  </a>
+  <div class="nav-tabs">
+    <a class="nav-tab active" href="#" onclick="switchTab('privacy', this); return false;">Privacy Policy</a>
+    <a class="nav-tab" href="#" onclick="switchTab('tos', this); return false;">Terms of Service</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-pill"><span></span>Legal Documents</div>
+  <h1>Tankly <span>Legal Center</span></h1>
+  <p class="hero-sub">Transparent policies for the aquarium tracker you can trust. No hidden fees, no shady data practices.</p>
+  <div class="hero-meta">
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Effective: May 10, 2026
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      GDPR Aligned
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      Play Store Ready
+    </span>
+  </div>
+</div>
+
+<div class="shimmer-line"></div>
+
+<!-- Main content -->
+<main class="page">
+
+  <!-- ─────────── PRIVACY POLICY ─────────── -->
+  <div id="tab-privacy" class="tab-content active">
+
+    <div class="updated-badge">
+      🗓 Last updated: May 10, 2026 &nbsp;·&nbsp; Version 1.0
+    </div>
+
+    <!-- 1. Overview -->
+    <div class="section open" id="s1">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-cyan">🔒</div>
+        <span class="section-title">1. Overview & Who We Are</span>
+        <span class="section-num">§1</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>This Privacy Policy applies to <strong>Tankly</strong>, an aquarium management mobile application ("App") developed by <strong>Piyush Golan</strong> ("we", "us", "our"). By downloading or using Tankly, you agree to the practices described here.</p>
+          <div class="highlight-box">
+            <strong>Plain English:</strong> We collect only what we absolutely need to run the app. We don't sell your data. Ever.
+          </div>
+          <h3>Contact</h3>
+          <div class="contact-card">
+            <div class="contact-card-icon">📧</div>
+            <div>
+              <div class="contact-card-label">Developer Email</div>
+              <div class="contact-card-value">golanpiyush@gmail.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Data We Collect -->
+    <div class="section" id="s2">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-purple">📦</div>
+        <span class="section-title">2. Data We Collect</span>
+        <span class="section-num">§2</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <h3>Account Data (Optional — Cloud Sync Only)</h3>
+          <p>If you enable cloud backup, we collect:</p>
+          <ul>
+            <li>Email address (for authentication via Supabase Auth)</li>
+            <li>Encrypted password hash (we never see your plaintext password)</li>
+            <li>User UUID assigned at signup</li>
+          </ul>
+
+          <h3>App Content (Your Tank Data)</h3>
+          <p>Data you actively create inside the app, stored in our Supabase database:</p>
+          <ul>
+            <li>Tank names, volumes, types, setup dates</li>
+            <li>Water parameter readings (pH, ammonia, nitrate, temperature, etc.)</li>
+            <li>Livestock entries and maintenance logs</li>
+            <li>Photos you optionally add to tanks</li>
+            <li>Expense records and equipment logs (Pro)</li>
+          </ul>
+
+          <div class="db-table">
+            <div class="db-table-header">🗄 Supabase Schema — Key Tables</div>
+            <div class="db-row">
+              <div class="db-col db-field">user_legal_acceptance</div>
+              <div class="db-col db-type">uuid · bool · text</div>
+              <div class="db-col db-note">Records when user accepted ToS/PP version</div>
+            </div>
+            <div class="db-row">
+              <div class="db-col db-field">legal_documents</div>
+              <div class="db-col db-type">uuid · text · version</div>
+              <div class="db-col db-note">Stores published ToS & Privacy Policy versions</div>
+            </div>
+            <div class="db-row">
+              <div class="db-col db-field">auth.users</div>
+              <div class="db-col db-type">uuid · email</div>
+              <div class="db-col db-note">Managed by Supabase Auth — RLS enabled</div>
+            </div>
+          </div>
+
+          <h3>Technical / Diagnostics</h3>
+          <ul>
+            <li>Crash reports (anonymous, via Flutter crash reporting)</li>
+            <li>App version, OS version, device model</li>
+            <li>General usage events (e.g., "parameter logged") — no personal identifiers</li>
+          </ul>
+
+          <h3>What We Do NOT Collect</h3>
+          <ul>
+            <li>Precise or background location</li>
+            <li>Contacts or call logs</li>
+            <li>Microphone or camera without your direct action</li>
+            <li>Financial data or payment details (handled entirely by Google Play)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. How We Use Data -->
+    <div class="section" id="s3">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-teal">⚙️</div>
+        <span class="section-title">3. How We Use Your Data</span>
+        <span class="section-num">§3</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>We use the data we collect exclusively to:</p>
+          <ul>
+            <li><strong>Provide the App:</strong> Sync your tank data across devices, send maintenance reminders</li>
+            <li><strong>Authenticate you:</strong> Verify login, manage Pro subscription status</li>
+            <li><strong>Improve the App:</strong> Analyse anonymous crash/usage patterns to fix bugs</li>
+            <li><strong>Legal compliance:</strong> Record your acceptance of Terms and Privacy Policy (stored in <code>user_legal_acceptance</code> table with RLS — only you can read your own row)</li>
+          </ul>
+          <div class="highlight-box">
+            <strong>We do not:</strong> sell your data, use it for advertising, share it with third-party marketers, or run profiling algorithms on your aquarium habits.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Data Storage & Security -->
+    <div class="section" id="s4">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-indigo">🛡️</div>
+        <span class="section-title">4. Data Storage & Security</span>
+        <span class="section-num">§4</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <h3>Infrastructure</h3>
+          <p>User data is stored on <strong>Supabase</strong> (PostgreSQL on AWS infrastructure) with the following protections:</p>
+          <ul>
+            <li>Row-Level Security (RLS) — every table has policies so users can only access their own rows</li>
+            <li>HTTPS / TLS for all data in transit</li>
+            <li>AES-256 encryption at rest</li>
+            <li>Supabase Auth handles password hashing (bcrypt)</li>
+          </ul>
+          <h3>Free Tier — Local Only</h3>
+          <p>If you use Tankly without creating an account, <strong>all data stays on your device only</strong>. Nothing is transmitted to our servers.</p>
+          <h3>Data Retention</h3>
+          <ul>
+            <li>Your tank data: retained as long as your account is active</li>
+            <li>Crash logs: anonymised, deleted after 90 days</li>
+            <li>After account deletion: all personal data removed within 30 days</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Third Party Services -->
+    <div class="section" id="s5">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-purple">🔗</div>
+        <span class="section-title">5. Third-Party Services</span>
+        <span class="section-num">§5</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>We use the following trusted third-party services, each with their own privacy policies:</p>
+          <ul>
+            <li><strong>Supabase</strong> — Database, authentication, storage (<a href="https://supabase.com/privacy" target="_blank">supabase.com/privacy</a>)</li>
+            <li><strong>Google Play Billing</strong> — In-app purchases (<a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>)</li>
+            <li><strong>Flutter / Dart</strong> — App framework, no data collection</li>
+          </ul>
+          <p>We do not use Facebook SDK, TikTok SDK, or any advertising networks.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Your Rights -->
+    <div class="section" id="s6">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-cyan">⚖️</div>
+        <span class="section-title">6. Your Rights (GDPR / CCPA)</span>
+        <span class="section-num">§6</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>You have the following rights regarding your personal data:</p>
+          <ul>
+            <li><strong>Access:</strong> Request a copy of all data we hold about you</li>
+            <li><strong>Correction:</strong> Update inaccurate data directly within the app</li>
+            <li><strong>Deletion:</strong> Delete your account and all associated data from Settings → Account → Delete Account</li>
+            <li><strong>Data Portability:</strong> Export your parameter data as CSV (Pro feature)</li>
+            <li><strong>Objection:</strong> Object to any processing not required for app functionality</li>
+          </ul>
+          <p>To exercise any right, email <a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a>. We will respond within 30 days.</p>
+          <h3>Children's Privacy</h3>
+          <p>Tankly is not directed at children under 13. We do not knowingly collect data from children. If you believe a child has provided us data, contact us immediately.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Changes -->
+    <div class="section" id="s7">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-teal">📋</div>
+        <span class="section-title">7. Policy Updates</span>
+        <span class="section-num">§7</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>We may update this Privacy Policy when we add new features or when legal requirements change. We will notify you by:</p>
+          <ul>
+            <li>Updating the "Last Updated" date on this page</li>
+            <li>Showing an in-app notification for material changes</li>
+            <li>Requiring re-acceptance via the <code>user_legal_acceptance</code> table when the document version increments</li>
+          </ul>
+          <p>Continued use of Tankly after changes constitutes acceptance of the revised policy.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-privacy -->
+
+
+  <!-- ─────────── TERMS OF SERVICE ─────────── -->
+  <div id="tab-tos" class="tab-content">
+
+    <div class="updated-badge">
+      🗓 Last updated: May 10, 2026 &nbsp;·&nbsp; Version 1.0
+    </div>
+
+    <!-- T1 -->
+    <div class="section open">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-cyan">📜</div>
+        <span class="section-title">1. Agreement to Terms</span>
+        <span class="section-num">§1</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>These Terms of Service ("Terms") govern your use of the Tankly mobile application ("App"), operated by <strong>Piyush Golan</strong> ("Developer"). By downloading, installing, or using Tankly, you agree to be bound by these Terms.</p>
+          <p>If you do not agree with any part of these Terms, do not use the App.</p>
+          <div class="highlight-box">
+            <strong>These Terms apply to all users</strong> — free tier, Pro Monthly, and Pro Lifetime — across all versions of Tankly distributed via Google Play.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- T2 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-purple">🐠</div>
+        <span class="section-title">2. Description of Service</span>
+        <span class="section-num">§2</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>Tankly is an aquarium management application that allows users to:</p>
+          <ul>
+            <li>Track water parameters, livestock, and maintenance for freshwater, saltwater, reef, and planted tanks</li>
+            <li>Set and receive maintenance reminders</li>
+            <li>Log equipment, expenses, and tank history</li>
+            <li>Optionally sync data across devices via cloud backup (requires account)</li>
+          </ul>
+          <h3>Service Tiers</h3>
+          <ul>
+            <li><strong>Free:</strong> 1 tank, unlimited parameter logging, basic reminders, 10 photos</li>
+            <li><strong>Pro Monthly ($4.99/month):</strong> All features, unlimited tanks, cloud sync</li>
+            <li><strong>Pro Lifetime ($9.99 one-time):</strong> All Pro features, forever, one payment</li>
+          </ul>
+          <div class="warn-box">
+            Parameter logging is <strong>never locked behind a paywall</strong>. Free users always have unlimited parameter logging — this is a core commitment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- T3 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-teal">💳</div>
+        <span class="section-title">3. Purchases & Billing</span>
+        <span class="section-num">§3</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <h3>In-App Purchases</h3>
+          <p>All purchases are processed through <strong>Google Play Billing</strong>. By making a purchase, you also agree to Google's Terms of Service.</p>
+          <ul>
+            <li><strong>Pro Lifetime ($9.99):</strong> One-time, non-recurring charge. Grants permanent Pro access — no future payments required.</li>
+            <li><strong>Pro Monthly ($4.99/month):</strong> Recurring subscription. You will be charged monthly until you cancel.</li>
+          </ul>
+          <h3>Cancellations & Refunds</h3>
+          <ul>
+            <li>Cancel Pro Monthly anytime via Google Play — your access continues until the end of the billing period</li>
+            <li>Refunds for the Pro Lifetime purchase are subject to Google Play's refund policy (typically within 48 hours of purchase)</li>
+            <li>We may issue courtesy refunds at our discretion — contact us at <a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a></li>
+          </ul>
+          <h3>Price Changes</h3>
+          <p>We reserve the right to change pricing for future subscriptions. Existing Pro Lifetime users will never be charged again. Existing Pro Monthly subscribers will receive advance notice of price changes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- T4 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-indigo">🎯</div>
+        <span class="section-title">4. Acceptable Use</span>
+        <span class="section-num">§4</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>You agree <strong>not</strong> to:</p>
+          <ul>
+            <li>Reverse engineer, decompile, or attempt to extract the source code of the App</li>
+            <li>Use the App to store or transmit malicious code</li>
+            <li>Attempt to gain unauthorised access to other users' data or our servers</li>
+            <li>Circumvent subscription verification or licensing checks</li>
+            <li>Resell or sublicense access to the App</li>
+            <li>Use automated scripts to interact with the App's backend APIs</li>
+          </ul>
+          <p>Violation of these rules may result in immediate account termination without refund.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- T5 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-cyan">📸</div>
+        <span class="section-title">5. Your Content</span>
+        <span class="section-num">§5</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p><strong>You own your content.</strong> Tank data, photos, logs, and notes you create belong to you.</p>
+          <p>By uploading content to Tankly's cloud (if you enable sync), you grant us a limited, non-exclusive, royalty-free licence to store, process, and transmit your content solely for the purpose of providing the App's functionality to you.</p>
+          <p>We do not claim ownership of your data and will not use it for any purpose beyond service delivery.</p>
+          <h3>Data Export</h3>
+          <p>Pro users can export all parameter data as CSV at any time. We are committed to never holding your data hostage — you can always get it out.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- T6 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-purple">⚠️</div>
+        <span class="section-title">6. Disclaimers & Limitation of Liability</span>
+        <span class="section-num">§6</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <h3>No Professional Advice</h3>
+          <p>Tankly provides informational tools for hobbyist aquarium keeping. The App's parameter range indicators, species care information, and compatibility suggestions are general guidance only — not professional veterinary or aquaculture advice. We are not liable for fish loss, equipment damage, or any harm resulting from actions taken based on App data.</p>
+          <h3>Service Availability</h3>
+          <p>We strive for high uptime but do not guarantee uninterrupted service. Cloud sync features depend on Supabase's infrastructure. We are not liable for data loss due to third-party service outages, though we will always make reasonable efforts to maintain backups.</p>
+          <h3>Limitation of Liability</h3>
+          <p>To the maximum extent permitted by law, the Developer's total liability to you for any claim arising from your use of Tankly shall not exceed the amount you paid for the App in the 12 months preceding the claim.</p>
+          <div class="warn-box">
+            THE APP IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- T7 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-teal">🔚</div>
+        <span class="section-title">7. Termination</span>
+        <span class="section-num">§7</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>You may stop using the App at any time and delete your account from Settings.</p>
+          <p>We may suspend or terminate your account if you violate these Terms. In case of termination by us without cause, we will refund any unused Pro Monthly subscription time.</p>
+          <p><strong>Pro Lifetime:</strong> If we discontinue the App entirely, Lifetime Pro users will retain offline functionality indefinitely — the app will continue working locally on any devices it is already installed on.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- T8 -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-indigo">🌍</div>
+        <span class="section-title">8. Governing Law & Disputes</span>
+        <span class="section-num">§8</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>These Terms are governed by the laws of <strong>India</strong>. Any disputes will be resolved under Indian jurisdiction, with the courts of Chhattisgarh having primary jurisdiction.</p>
+          <p>Before initiating any legal action, both parties agree to attempt good-faith resolution by emailing <a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a>.</p>
+          <h3>Changes to Terms</h3>
+          <p>We may update these Terms. Material changes will be communicated via in-app notification. Your continued use after 30 days of notification constitutes acceptance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- T9 Contact -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-icon icon-cyan">✉️</div>
+        <span class="section-title">9. Contact Us</span>
+        <span class="section-num">§9</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>For any questions, concerns, or requests related to these Terms:</p>
+          <div class="contact-card">
+            <div class="contact-card-icon">📧</div>
+            <div>
+              <div class="contact-card-label">Developer — Piyush Golan</div>
+              <div class="contact-card-value">golanpiyush@gmail.com</div>
+            </div>
+          </div>
+          <p style="margin-top:1rem; font-size:13px; color:var(--muted);">We aim to respond to all enquiries within 5 business days.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-tos -->
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <p style="margin-bottom:6px;">
+    <a href="#" onclick="switchTab('privacy', document.querySelectorAll('.nav-tab')[0]); return false;">Privacy Policy</a>
+    &nbsp;·&nbsp;
+    <a href="#" onclick="switchTab('tos', document.querySelectorAll('.nav-tab')[1]); return false;">Terms of Service</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:golanpiyush@gmail.com">Contact</a>
+  </p>
+  <p>© 2026 Tankly · Piyush Golan · Bhilai, India</p>
+  <p style="margin-top:4px; font-size:11px; opacity:0.5;">Built with 🐠 for aquarium hobbyists everywhere</p>
+</footer>
+
+<script>
+  function switchTab(tab, el) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (el) el.classList.add('active');
+  }
+
+  function toggleSection(header) {
+    const section = header.parentElement;
+    const isOpen = section.classList.contains('open');
+    // Close all in same tab
+    header.closest('.tab-content').querySelectorAll('.section').forEach(s => s.classList.remove('open'));
+    if (!isOpen) section.classList.add('open');
+  }
+
+  // Open first section of each tab by default — already done in HTML
+  // Smooth scroll on nav click
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  });
+</script>
+</body>
+</html>
