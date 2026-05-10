@@ -19,11 +19,17 @@ if (!supabaseUrl || !supabaseAnonKey) {
   process.exit(1);
 }
 
-// Replace the CONFIG object with baked-in values
-html = html.replace(
-  /const CONFIG = \{[\s\S]*?\};/,
-  `const CONFIG = {\n    supabaseUrl:     '${supabaseUrl}',\n    supabaseAnonKey: '${supabaseAnonKey}',\n  };`
-);
+// Simple placeholder replacement — matches exactly what's in index.html
+html = html.replace('__SUPABASE_URL__',      supabaseUrl);
+html = html.replace('__SUPABASE_ANON_KEY__', supabaseAnonKey);
+
+// Verify the replacements actually happened
+if (html.includes('__SUPABASE_URL__') || html.includes('__SUPABASE_ANON_KEY__')) {
+  console.error('ERROR: Placeholder replacement failed — placeholders still present in output.');
+  process.exit(1);
+}
 
 fs.writeFileSync(filePath, html, 'utf8');
 console.log('✅ Built index.html with environment variables injected.');
+console.log(`   SUPABASE_URL      → ${supabaseUrl}`);
+console.log(`   SUPABASE_ANON_KEY → ${supabaseAnonKey.slice(0, 20)}...`);
