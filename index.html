@@ -309,8 +309,8 @@
   // public anon key and URL directly here — they are safe for client-side use.
   // ─────────────────────────────────────────────────────────────────────────
   const CONFIG = {
-    supabaseUrl:     process.env.SUPABASE_URL      || '__SUPABASE_URL__',
-    supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '__SUPABASE_ANON_KEY__',
+    supabaseUrl:     '__SUPABASE_URL__',
+    supabaseAnonKey: '__SUPABASE_ANON_KEY__',
   };
 
   async function fetchDocument(docId) {
