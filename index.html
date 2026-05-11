@@ -15,6 +15,9 @@
     --cyan: #00e5ff;
     --purple: #a855f7;
     --teal: #06b6d4;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --pink: #ec4899;
     --text: #c8dff0;
     --muted: #5f7f9a;
     --white: #eef6ff;
@@ -135,7 +138,7 @@
 
   /* ── Page layout ── */
   .page {
-    position: relative; z-index: 1; max-width: 860px; margin: 0 auto;
+    position: relative; z-index: 1; max-width: 900px; margin: 0 auto;
     padding: 3.5rem clamp(1rem,5vw,2.5rem) 5rem;
   }
   .tab-content { display: none; }
@@ -173,19 +176,9 @@
     border-radius: 16px; padding: 2rem 2.2rem; transition: border-color 0.3s;
   }
   .doc-content:hover { border-color: rgba(0,229,255,0.2); }
-  .doc-content h1 {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem;
-    color: var(--white); margin-bottom: 0.5rem; margin-top: 0;
-  }
-  .doc-content h2 {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem;
-    color: var(--cyan); letter-spacing: 0.04em; text-transform: uppercase;
-    margin: 2rem 0 0.7rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
-  }
-  .doc-content h3 {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
-    color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; margin: 1.4rem 0 0.5rem;
-  }
+  .doc-content h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 0.5rem; margin-top: 0; }
+  .doc-content h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--cyan); letter-spacing: 0.04em; text-transform: uppercase; margin: 2rem 0 0.7rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  .doc-content h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; margin: 1.4rem 0 0.5rem; }
   .doc-content p { color: var(--text); font-size: 14px; margin-bottom: 0.8rem; font-family: 'Cabin', sans-serif; }
   .doc-content ul, .doc-content ol { padding-left: 1.4rem; margin-bottom: 0.9rem; font-size: 14px; color: var(--text); font-family: 'Cabin', sans-serif; }
   .doc-content li { margin-bottom: 0.3rem; }
@@ -194,33 +187,32 @@
   .doc-content em { color: var(--muted); }
   .doc-content a { color: var(--cyan); text-decoration: none; }
   .doc-content a:hover { text-decoration: underline; }
-  .doc-content code {
-    background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.15);
-    border-radius: 5px; padding: 1px 6px; font-size: 12px; color: var(--cyan); font-family: monospace;
-  }
-  .doc-content pre {
-    background: rgba(5,13,26,0.7); border: 1px solid var(--border);
-    border-radius: 10px; padding: 1rem 1.2rem; overflow-x: auto; margin: 1rem 0;
-  }
+  .doc-content code { background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.15); border-radius: 5px; padding: 1px 6px; font-size: 12px; color: var(--cyan); font-family: monospace; }
+  .doc-content pre { background: rgba(5,13,26,0.7); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.2rem; overflow-x: auto; margin: 1rem 0; }
   .doc-content pre code { background: none; border: none; padding: 0; font-size: 13px; }
   .doc-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 13px; }
-  .doc-content th {
-    background: rgba(0,229,255,0.08); color: var(--cyan); font-weight: 600;
-    padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border);
-  }
+  .doc-content th { background: rgba(0,229,255,0.08); color: var(--cyan); font-weight: 600; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
   .doc-content td { padding: 7px 12px; border-bottom: 1px solid rgba(0,229,255,0.05); color: var(--text); }
   .doc-content tr:last-child td { border-bottom: none; }
   .doc-content tr:hover td { background: rgba(0,229,255,0.03); }
-  .doc-content blockquote {
-    border-left: 3px solid var(--cyan); padding-left: 1rem; margin: 1rem 0; color: var(--muted);
-  }
+  .doc-content blockquote { border-left: 3px solid var(--cyan); padding-left: 1rem; margin: 1rem 0; color: var(--muted); }
   .doc-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 
-  /* ── How It Works ── */
-  .hiw-intro {
-    font-family: 'Cabin', sans-serif; font-size: 15px; color: var(--text);
-    line-height: 1.8; margin-bottom: 2.5rem;
+  /* ── Section heading ── */
+  .section-head {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
+    color: var(--white); margin-bottom: 1.2rem;
   }
+  .section-head span {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .section-sub {
+    color: var(--muted); font-size: 14px; margin-bottom: 2rem; margin-top: -0.8rem; line-height: 1.7;
+  }
+
+  /* ── How It Works ── */
+  .hiw-intro { font-family: 'Cabin', sans-serif; font-size: 15px; color: var(--text); line-height: 1.8; margin-bottom: 2.5rem; }
   .hiw-steps { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem; }
   .hiw-step {
     display: flex; gap: 1.4rem; align-items: flex-start;
@@ -242,100 +234,211 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     margin-bottom: 0.45rem;
   }
-  .hiw-body p {
-    font-family: 'Cabin', sans-serif; font-size: 13.5px;
-    color: var(--text); line-height: 1.7; margin: 0;
-  }
+  .hiw-body p { font-family: 'Cabin', sans-serif; font-size: 13.5px; color: var(--text); line-height: 1.7; margin: 0; }
 
   /* ── Diagram block ── */
-  .diagram-block {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden; margin-bottom: 3rem;
-  }
-  .diagram-label {
-    padding: 10px 18px; border-bottom: 1px solid var(--border);
-    font-family: 'Cabin', sans-serif; font-size: 11px; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .diagram-label::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--cyan), var(--purple));
-  }
-  .diagram-block img {
-    width: 100%; display: block; padding: 1.5rem;
-  }
-  .diagram-block .diagram-svg-wrap {
-    padding: 1.5rem; overflow-x: auto;
-  }
-
-  /* ── Inline sync SVG ── */
-  .sync-svg-container {
-    width: 100%; overflow-x: auto;
-  }
-  .sync-svg-container svg {
-    min-width: 480px; width: 100%; display: block;
-  }
+  .diagram-block { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 3rem; }
+  .diagram-label { padding: 10px 18px; border-bottom: 1px solid var(--border); font-family: 'Cabin', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .diagram-label::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--purple)); }
+  .diagram-block .diagram-svg-wrap { padding: 1.5rem; overflow-x: auto; }
+  .sync-svg-container { width: 100%; overflow-x: auto; }
+  .sync-svg-container svg { min-width: 480px; width: 100%; display: block; }
 
   /* Pill tag */
-  .pill-tag {
-    display: inline-flex; align-items: center;
-    font-family: 'Cabin', sans-serif; font-size: 11px; font-weight: 600;
-    padding: 3px 10px; border-radius: 999px; letter-spacing: 0.04em; margin-bottom: 0.5rem;
-  }
+  .pill-tag { display: inline-flex; align-items: center; font-family: 'Cabin', sans-serif; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.04em; margin-bottom: 0.5rem; }
   .pill-sync   { background: rgba(0,229,255,0.10); color: var(--cyan); border: 1px solid rgba(0,229,255,0.25); }
   .pill-pro    { background: rgba(168,85,247,0.10); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
-  .pill-data   { background: rgba(6,182,212,0.10);  color: var(--teal); border: 1px solid rgba(6,182,212,0.25); }
+  .pill-data   { background: rgba(6,182,212,0.10); color: var(--teal); border: 1px solid rgba(6,182,212,0.25); }
   .pill-acct   { background: rgba(245,158,11,0.10); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
 
   /* ── FAQ ── */
-  .faq-section-label {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    background: linear-gradient(90deg, var(--cyan), var(--purple));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    margin: 2.2rem 0 0.75rem 2px;
-  }
+  .faq-section-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 2.2rem 0 0.75rem 2px; }
   .faq-section-label:first-of-type { margin-top: 0; }
-  .faq-item {
-    border: 1px solid var(--border); border-radius: 12px;
-    overflow: hidden; margin-bottom: 8px;
-    transition: border-color 0.2s;
-  }
+  .faq-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; transition: border-color 0.2s; }
   .faq-item:hover { border-color: rgba(0,229,255,0.22); }
-  .faq-btn {
-    width: 100%; background: var(--card); border: none;
-    padding: 15px 18px; display: flex; align-items: center;
-    justify-content: space-between; gap: 12px; cursor: pointer; text-align: left;
-    transition: background 0.2s;
-  }
+  .faq-btn { width: 100%; background: var(--card); border: none; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; text-align: left; transition: background 0.2s; }
   .faq-btn:hover { background: rgba(0,229,255,0.04); }
-  .faq-q {
-    font-family: 'Cabin', sans-serif; font-size: 14px; font-weight: 600;
-    color: var(--white); line-height: 1.4;
-  }
-  .faq-chevron {
-    flex-shrink: 0; width: 18px; height: 18px; color: var(--muted);
-    transition: transform 0.25s, color 0.2s;
-  }
+  .faq-q { font-family: 'Cabin', sans-serif; font-size: 14px; font-weight: 600; color: var(--white); line-height: 1.4; }
+  .faq-chevron { flex-shrink: 0; width: 18px; height: 18px; color: var(--muted); transition: transform 0.25s, color 0.2s; }
   .faq-btn[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); color: var(--cyan); }
-  .faq-body {
-    font-family: 'Cabin', sans-serif; font-size: 13.5px;
-    color: var(--text); line-height: 1.7;
-    padding: 0 18px 16px; border-top: 1px solid var(--border);
-    background: rgba(5,13,26,0.4);
-  }
+  .faq-body { font-family: 'Cabin', sans-serif; font-size: 13.5px; color: var(--text); line-height: 1.7; padding: 0 18px 16px; border-top: 1px solid var(--border); background: rgba(5,13,26,0.4); }
   .faq-body .pill-tag { margin-top: 14px; margin-bottom: 10px; }
 
-  /* ── Section heading in How It Works ── */
-  .section-head {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
-    color: var(--white); margin-bottom: 1.2rem;
+  /* ════════════════════════════════════════════
+     ACHIEVEMENTS TAB
+  ════════════════════════════════════════════ */
+
+  /* Level card */
+  .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 2.5rem; }
+  .level-card {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px;
+    transition: transform 0.2s, border-color 0.3s;
+    position: relative; overflow: hidden;
   }
-  .section-head span {
-    background: linear-gradient(90deg, var(--cyan), var(--purple));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  .level-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--lc-color, var(--cyan));
   }
+  .level-card:hover { transform: translateY(-2px); }
+  .level-emoji-wrap {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid var(--lc-color, var(--cyan));
+    box-shadow: 0 0 12px var(--lc-glow, rgba(0,229,255,0.2));
+  }
+  .level-info { flex: 1; min-width: 0; }
+  .level-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--white); }
+  .level-sub  { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .level-xp-badge {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
+    padding: 3px 9px; border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--lc-color, var(--cyan));
+    color: var(--lc-color, var(--cyan));
+    flex-shrink: 0;
+  }
+
+  /* XP weights row */
+  .xp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 2rem; }
+  .xp-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; gap: 8px;
+    transition: border-color 0.2s;
+  }
+  .xp-row:hover { border-color: rgba(0,229,255,0.22); }
+  .xp-row-label { font-size: 13px; color: var(--text); }
+  .xp-row-badge {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
+    padding: 2px 8px; border-radius: 999px;
+    background: rgba(0,229,255,0.08); color: var(--cyan);
+    border: 1px solid rgba(0,229,255,0.2); white-space: nowrap;
+  }
+  .xp-row-badge.highlight { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
+
+  /* Achievement category header */
+  .ach-category-head {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .ach-category-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Achievement cards grid */
+  .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .ach-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 15px; display: flex; gap: 12px;
+    align-items: flex-start; transition: transform 0.2s, border-color 0.2s;
+  }
+  .ach-card:hover { transform: translateY(-2px); border-color: rgba(0,229,255,0.22); }
+  .ach-card.secret { border-color: rgba(236,72,153,0.2); }
+  .ach-card.secret:hover { border-color: rgba(236,72,153,0.4); }
+  .ach-emoji-wrap {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+  }
+  .ach-body { flex: 1; min-width: 0; }
+  .ach-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--white); margin-bottom: 3px; }
+  .ach-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .ach-flavour { font-size: 11px; color: rgba(95,127,154,0.6); font-style: italic; margin-top: 4px; line-height: 1.4; }
+  .ach-xp {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px;
+    padding: 2px 7px; border-radius: 999px;
+    background: rgba(0,229,255,0.07); color: var(--cyan);
+    border: 1px solid rgba(0,229,255,0.15);
+    margin-top: 6px; display: inline-block;
+  }
+  .ach-xp.secret-xp { background: rgba(236,72,153,0.08); color: var(--pink); border-color: rgba(236,72,153,0.2); }
+
+  /* Category filter pills */
+  .ach-filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .ach-filter {
+    padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border); color: var(--muted);
+    cursor: pointer; transition: all 0.2s; background: transparent;
+    font-family: 'Cabin', sans-serif;
+  }
+  .ach-filter:hover { border-color: rgba(0,229,255,0.3); color: var(--cyan); }
+  .ach-filter.active { background: rgba(0,229,255,0.1); color: var(--cyan); border-color: rgba(0,229,255,0.4); }
+
+  /* Search */
+  .ach-search-wrap { position: relative; margin-bottom: 1.2rem; }
+  .ach-search {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 14px 10px 38px;
+    color: var(--white); font-family: 'Cabin', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .ach-search::placeholder { color: var(--muted); }
+  .ach-search:focus { border-color: rgba(0,229,255,0.4); }
+  .ach-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); }
+
+  /* Stats bar for achievements */
+  .ach-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .ach-stat {
+    flex: 1; min-width: 120px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px; text-align: center;
+  }
+  .ach-stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem; color: var(--cyan); }
+  .ach-stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ════════════════════════════════════════════
+     FEATURE SUGGESTIONS TAB
+  ════════════════════════════════════════════ */
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 2.5rem; }
+  .feat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px 20px 18px;
+    transition: transform 0.2s, border-color 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .feat-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--fc-grad, linear-gradient(90deg, var(--cyan), var(--purple)));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feat-card:hover { transform: translateY(-3px); border-color: rgba(0,229,255,0.25); }
+  .feat-card:hover::after { opacity: 1; }
+  .feat-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; margin-bottom: 12px;
+    font-family: 'Cabin', sans-serif;
+  }
+  .feat-tag.soon   { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+  .feat-tag.planned{ background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.25); }
+  .feat-tag.idea   { background: rgba(168,85,247,0.1); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+  .feat-tag.pro    { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .feat-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+  .feat-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--white); margin-bottom: 7px; }
+  .feat-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* Roadmap */
+  .roadmap { display: flex; flex-direction: column; gap: 0; margin-bottom: 2.5rem; }
+  .roadmap-item { display: flex; gap: 16px; align-items: flex-start; padding-bottom: 24px; position: relative; }
+  .roadmap-item:not(:last-child)::before { content: ''; position: absolute; left: 15px; top: 34px; bottom: 0; width: 2px; background: linear-gradient(180deg, rgba(0,229,255,0.3), rgba(0,229,255,0.05)); }
+  .roadmap-dot {
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--card); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    position: relative; z-index: 1;
+  }
+  .roadmap-dot.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,229,255,0.3); }
+  .roadmap-dot.future { border-color: rgba(168,85,247,0.4); }
+  .roadmap-body { flex: 1; padding-top: 4px; }
+  .roadmap-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--white); margin-bottom: 3px; }
+  .roadmap-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .roadmap-period { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cyan); margin-bottom: 4px; }
 
   /* ── Footer ── */
   footer {
@@ -346,8 +449,7 @@
   footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--cyan); }
 
-  /* ── Discord popup ── */
-  .discord-overlay
+  @media (max-width: 640px) {
     .nav-tabs { gap: 2px; }
     .nav-tab { padding: 5px 9px; font-size: 11px; }
     .doc-content { padding: 1.2rem 1rem; }
@@ -355,6 +457,9 @@
     .hiw-num { width: 32px; height: 32px; font-size: 13px; }
     .faq-btn { padding: 13px 14px; }
     .faq-body { padding: 0 14px 14px; }
+    .levels-grid { grid-template-columns: 1fr; }
+    .ach-grid { grid-template-columns: 1fr; }
+    .feat-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -376,13 +481,15 @@
     <a class="nav-tab active" href="#" onclick="switchTab('privacy',this);return false;">Privacy</a>
     <a class="nav-tab"        href="#" onclick="switchTab('tos',this);return false;">Terms</a>
     <a class="nav-tab"        href="#" onclick="switchTab('hiw',this);return false;">How it works</a>
+    <a class="nav-tab"        href="#" onclick="switchTab('achievements',this);return false;">Achievements</a>
+    <a class="nav-tab"        href="#" onclick="switchTab('features',this);return false;">Features</a>
     <a class="nav-tab"        href="#" onclick="switchTab('faq',this);return false;">FAQ</a>
   </div>
 </nav>
 
 <div class="hero">
   <div class="hero-pill"><span></span>Tankly docs</div>
-  <h1>Legal <span>Tankly</span></h1>
+  <h1>Legal <span>&amp; More</span></h1>
   <p class="hero-sub">No hidden fees, no shady data practices — just a clean aquarium tracker you can trust.</p>
   <div class="hero-meta">
     <span>
@@ -423,6 +530,7 @@
   <!-- ───────── HOW IT WORKS ───────── -->
   <div id="tab-hiw" class="tab-content">
     <p class="section-head">How <span>Tankly sync</span> works</p>
+    <p class="section-sub">Everything is saved locally first — cloud is a backup, never a requirement.</p>
 
     <div class="hiw-steps">
       <div class="hiw-step">
@@ -442,6 +550,13 @@
       <div class="hiw-step">
         <div class="hiw-num">3</div>
         <div class="hiw-body">
+          <h3>Earn XP &amp; unlock achievements</h3>
+          <p>Every log, post, and comment earns you XP. XP unlocks levels from "Tap Water" all the way to "Abyssal". Achievements are milestone badges with aquarist-flavoured names — some are secret and only discovered through unique actions. Your level shows on your community profile.</p>
+        </div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">4</div>
+        <div class="hiw-body">
           <h3>Switching devices is seamless</h3>
           <p>When you sign into a new device, Tankly pulls your data back down from the cloud in the right order — it checks your subscription first, then restores tanks and history, then refreshes suggestions and community data. If you were Pro, everything comes back exactly as you left it.</p>
         </div>
@@ -454,108 +569,262 @@
       <div class="diagram-svg-wrap sync-svg-container">
         <svg viewBox="0 0 680 480" role="img" xmlns="http://www.w3.org/2000/svg">
           <title>Tankly sync flow</title>
-          <desc>How Tankly saves locally, backs up to the cloud on sign-in, and restores data on a new device.</desc>
           <defs>
             <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </marker>
           </defs>
           <style>
-            .sv-box { rx:8; }
             .sv-th  { font-family:'Cabin',sans-serif; font-weight:700; font-size:13px; }
             .sv-ts  { font-family:'Cabin',sans-serif; font-weight:400; font-size:11px; }
-            /* teal node */
-            .nd-teal rect { fill:#0a2e28; stroke:#00e5ff; stroke-width:0.8; rx:8; }
+            .nd-teal rect   { fill:#0a2e28; stroke:#00e5ff; stroke-width:0.8; rx:8; }
             .nd-teal .sv-th { fill:#00e5ff; }
             .nd-teal .sv-ts { fill:#5dcaa5; }
-            /* purple node */
-            .nd-purple rect { fill:#1a0d33; stroke:#a855f7; stroke-width:0.8; rx:8; }
+            .nd-purple rect   { fill:#1a0d33; stroke:#a855f7; stroke-width:0.8; rx:8; }
             .nd-purple .sv-th { fill:#c084fc; }
             .nd-purple .sv-ts { fill:#9370c8; }
-            /* amber node */
-            .nd-amber rect { fill:#2a1c06; stroke:#f59e0b; stroke-width:0.8; rx:8; }
+            .nd-amber rect   { fill:#2a1c06; stroke:#f59e0b; stroke-width:0.8; rx:8; }
             .nd-amber .sv-th { fill:#fbbf24; }
             .nd-amber .sv-ts { fill:#d97706; }
-            /* blue node */
-            .nd-blue rect { fill:#071830; stroke:#38bdf8; stroke-width:0.8; rx:8; }
+            .nd-blue rect   { fill:#071830; stroke:#38bdf8; stroke-width:0.8; rx:8; }
             .nd-blue .sv-th { fill:#7dd3fc; }
             .nd-blue .sv-ts { fill:#0ea5e9; }
-            /* gray node */
-            .nd-gray rect { fill:#111820; stroke:#4a6080; stroke-width:0.8; rx:8; }
+            .nd-gray rect   { fill:#111820; stroke:#4a6080; stroke-width:0.8; rx:8; }
             .nd-gray .sv-th { fill:#94a3b8; }
             .nd-gray .sv-ts { fill:#64748b; }
           </style>
-
-          <!-- Row 1 -->
-          <g class="nd-teal">
-            <rect x="40" y="40" width="170" height="52"/>
-            <text class="sv-th" x="125" y="62" text-anchor="middle" dominant-baseline="central">You use the app</text>
-            <text class="sv-ts" x="125" y="80" text-anchor="middle" dominant-baseline="central">Saved instantly, offline</text>
-          </g>
-
+          <g class="nd-teal"><rect x="40" y="40" width="170" height="52"/><text class="sv-th" x="125" y="62" text-anchor="middle" dominant-baseline="central">You use the app</text><text class="sv-ts" x="125" y="80" text-anchor="middle" dominant-baseline="central">Saved instantly, offline</text></g>
           <line x1="210" y1="66" x2="250" y2="66" stroke="#00e5ff" stroke-width="1" opacity="0.6" marker-end="url(#arr)"/>
-
-          <g class="nd-purple">
-            <rect x="254" y="40" width="172" height="52"/>
-            <text class="sv-th" x="340" y="62" text-anchor="middle" dominant-baseline="central">Sign in with Google</text>
-            <text class="sv-ts" x="340" y="80" text-anchor="middle" dominant-baseline="central">Links your identity</text>
-          </g>
-
+          <g class="nd-purple"><rect x="254" y="40" width="172" height="52"/><text class="sv-th" x="340" y="62" text-anchor="middle" dominant-baseline="central">Sign in with Google</text><text class="sv-ts" x="340" y="80" text-anchor="middle" dominant-baseline="central">Links your identity</text></g>
           <line x1="426" y1="66" x2="466" y2="66" stroke="#a855f7" stroke-width="1" opacity="0.6" marker-end="url(#arr)"/>
-
-          <g class="nd-purple">
-            <rect x="470" y="40" width="170" height="52"/>
-            <text class="sv-th" x="555" y="62" text-anchor="middle" dominant-baseline="central">Plan check</text>
-            <text class="sv-ts" x="555" y="80" text-anchor="middle" dominant-baseline="central">Free or Pro?</text>
-          </g>
-
-          <!-- Down from sign-in -->
+          <g class="nd-purple"><rect x="470" y="40" width="170" height="52"/><text class="sv-th" x="555" y="62" text-anchor="middle" dominant-baseline="central">Plan check</text><text class="sv-ts" x="555" y="80" text-anchor="middle" dominant-baseline="central">Free or Pro?</text></g>
           <path d="M340 92 L340 168" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.45" marker-end="url(#arr)"/>
-
-          <!-- Row 2: cloud nodes -->
-          <g class="nd-amber">
-            <rect x="60" y="170" width="220" height="52"/>
-            <text class="sv-th" x="170" y="192" text-anchor="middle" dominant-baseline="central">Firebase</text>
-            <text class="sv-ts" x="170" y="210" text-anchor="middle" dominant-baseline="central">Streak · tanks · history</text>
-          </g>
-
-          <g class="nd-blue">
-            <rect x="400" y="170" width="220" height="52"/>
-            <text class="sv-th" x="510" y="192" text-anchor="middle" dominant-baseline="central">Supabase</text>
-            <text class="sv-ts" x="510" y="210" text-anchor="middle" dominant-baseline="central">Community · photos</text>
-          </g>
-
+          <g class="nd-amber"><rect x="60" y="170" width="220" height="52"/><text class="sv-th" x="170" y="192" text-anchor="middle" dominant-baseline="central">Firebase</text><text class="sv-ts" x="170" y="210" text-anchor="middle" dominant-baseline="central">Streak · tanks · history</text></g>
+          <g class="nd-blue"><rect x="400" y="170" width="220" height="52"/><text class="sv-th" x="510" y="192" text-anchor="middle" dominant-baseline="central">Supabase</text><text class="sv-ts" x="510" y="210" text-anchor="middle" dominant-baseline="central">Community · photos</text></g>
           <path d="M340 168 L170 168 L170 170" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.45" marker-end="url(#arr)"/>
           <path d="M340 168 L510 168 L510 170" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.45" marker-end="url(#arr)"/>
-
-          <!-- Down from cloud to restore -->
           <path d="M170 222 L170 300" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.35" marker-end="url(#arr)"/>
           <path d="M510 222 L510 300" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.35" marker-end="url(#arr)"/>
-
-          <!-- Row 3 -->
-          <g class="nd-gray">
-            <rect x="60" y="302" width="220" height="52"/>
-            <text class="sv-th" x="170" y="324" text-anchor="middle" dominant-baseline="central">Free restore</text>
-            <text class="sv-ts" x="170" y="342" text-anchor="middle" dominant-baseline="central">Streak + first tank</text>
-          </g>
-
-          <g class="nd-teal">
-            <rect x="400" y="302" width="220" height="52"/>
-            <text class="sv-th" x="510" y="324" text-anchor="middle" dominant-baseline="central">Pro restore</text>
-            <text class="sv-ts" x="510" y="342" text-anchor="middle" dominant-baseline="central">All tanks · history · profile</text>
-          </g>
-
-          <!-- Converge to final -->
+          <g class="nd-gray"><rect x="60" y="302" width="220" height="52"/><text class="sv-th" x="170" y="324" text-anchor="middle" dominant-baseline="central">Free restore</text><text class="sv-ts" x="170" y="342" text-anchor="middle" dominant-baseline="central">Streak + first tank</text></g>
+          <g class="nd-teal"><rect x="400" y="302" width="220" height="52"/><text class="sv-th" x="510" y="324" text-anchor="middle" dominant-baseline="central">Pro restore</text><text class="sv-ts" x="510" y="342" text-anchor="middle" dominant-baseline="central">All tanks · history · profile</text></g>
           <path d="M170 354 L170 408 L310 408" fill="none" stroke="#4a6080" stroke-width="1" opacity="0.4" marker-end="url(#arr)"/>
           <path d="M510 354 L510 408 L370 408" fill="none" stroke="#4a6080" stroke-width="1" opacity="0.4" marker-end="url(#arr)"/>
-
-          <!-- Final node -->
-          <g class="nd-teal">
-            <rect x="240" y="384" width="200" height="52"/>
-            <text class="sv-th" x="340" y="406" text-anchor="middle" dominant-baseline="central">New device ready</text>
-            <text class="sv-ts" x="340" y="424" text-anchor="middle" dominant-baseline="central">Data fully restored</text>
-          </g>
+          <g class="nd-teal"><rect x="240" y="384" width="200" height="52"/><text class="sv-th" x="340" y="406" text-anchor="middle" dominant-baseline="central">New device ready</text><text class="sv-ts" x="340" y="424" text-anchor="middle" dominant-baseline="central">Data fully restored</text></g>
         </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── ACHIEVEMENTS ───────── -->
+  <div id="tab-achievements" class="tab-content">
+    <p class="section-head">🏆 <span>Achievements</span> &amp; Levels</p>
+    <p class="section-sub">Earn XP from every action in Tankly. Level up from Tap Water to Abyssal. Unlock aquarist badges with legendary names.</p>
+
+    <!-- Stats -->
+    <div class="ach-stats">
+      <div class="ach-stat">
+        <div class="ach-stat-num">12</div>
+        <div class="ach-stat-label">Levels to unlock</div>
+      </div>
+      <div class="ach-stat">
+        <div class="ach-stat-num" id="total-ach-count">—</div>
+        <div class="ach-stat-label">Total achievements</div>
+      </div>
+      <div class="ach-stat">
+        <div class="ach-stat-num">2</div>
+        <div class="ach-stat-label">Secret achievements</div>
+      </div>
+    </div>
+
+    <!-- XP Weights -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:0.8rem;">⚡ How you earn <span>XP</span></p>
+    <div class="xp-grid" id="xp-grid"></div>
+
+    <!-- Levels -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:0.8rem; margin-top:1.5rem;">🎖️ <span>Level</span> Progression</p>
+    <div class="levels-grid" id="levels-grid"></div>
+
+    <!-- Achievement list with filter -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:0.8rem; margin-top:1.5rem;">🎯 All <span>Achievements</span></p>
+
+    <div class="ach-search-wrap">
+      <svg class="ach-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" class="ach-search" placeholder="Search achievements…" oninput="filterAchievements()" id="ach-search-input">
+    </div>
+
+    <div class="ach-filter-bar" id="ach-filter-bar"></div>
+    <div id="ach-list"></div>
+  </div>
+
+  <!-- ───────── FEATURES ───────── -->
+  <div id="tab-features" class="tab-content">
+    <p class="section-head">🚀 <span>Features</span> &amp; Roadmap</p>
+    <p class="section-sub">What's live, what's coming, and ideas brewing for the future of Tankly.</p>
+
+    <!-- Live features -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:1rem;">✅ <span>Currently</span> in Tankly</p>
+    <div class="feat-grid">
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#00e5ff,#06b6d4)">
+        <span class="feat-icon">📊</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Parameter Tracking</div>
+        <div class="feat-desc">Log water params for any tank type — freshwater, saltwater, reef, planted, brackish, coldwater — with visual history and trend lines.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#a855f7,#ec4899)">
+        <span class="feat-icon">🐠</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Livestock Tracker</div>
+        <div class="feat-desc">Add and manage your fish, corals, invertebrates, and plants. Track compatibility and species notes per tank.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#f59e0b,#ef4444)">
+        <span class="feat-icon">⚙️</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Equipment &amp; Tasks</div>
+        <div class="feat-desc">Track your filter, heater, lights, skimmer and more. Set maintenance reminders and log completions with streaks.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#22c55e,#06b6d4)">
+        <span class="feat-icon">🤝</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Community Feed</div>
+        <div class="feat-desc">Post showcases, ask for help, comment, like, follow other reefers. Earn XP for every interaction.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#00e5ff,#a855f7)">
+        <span class="feat-icon">🏆</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">XP &amp; Levels</div>
+        <div class="feat-desc">12-level progression from Tap Water to Abyssal. Earn XP from every action and show off your level on your profile.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#ec4899,#a855f7)">
+        <span class="feat-icon">🎖️</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Achievement Badges</div>
+        <div class="feat-desc">Unlock 80+ aquarist-themed achievements from "First Drop" to "Hall of Fame". Secret badges hide until discovered.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#f59e0b,#22c55e)">
+        <span class="feat-icon">☁️</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Cloud Sync (Pro)</div>
+        <div class="feat-desc">Sign in with Google to back up all tanks, history, photos, and equipment to Firebase. Restore seamlessly on any device.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#06b6d4,#22c55e)">
+        <span class="feat-icon">📷</span>
+        <div class="feat-tag planned">Live</div>
+        <div class="feat-title">Tank Photo Timeline</div>
+        <div class="feat-desc">Document your tank's evolution month-by-month. Pro users get unlimited photos; free gets 6 per tank.</div>
+      </div>
+    </div>
+
+    <!-- Coming soon -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:1rem; margin-top:0.5rem;">⏳ <span>Coming</span> Soon</p>
+    <div class="feat-grid">
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#22c55e,#00e5ff)">
+        <span class="feat-icon">🤖</span>
+        <div class="feat-tag soon">Soon</div>
+        <div class="feat-title">AI Water Quality Insights</div>
+        <div class="feat-desc">Claude-powered analysis of your parameter trends. Get proactive alerts before levels go critical and personalised maintenance suggestions.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#a855f7,#00e5ff)">
+        <span class="feat-icon">📈</span>
+        <div class="feat-tag soon">Soon</div>
+        <div class="feat-title">Advanced Charts &amp; Trends</div>
+        <div class="feat-desc">Overlay multiple parameters on one chart. Export your data as CSV. Spot correlations between temperature spikes and nitrite rises.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#f59e0b,#ec4899)">
+        <span class="feat-icon">🔔</span>
+        <div class="feat-tag soon">Soon</div>
+        <div class="feat-title">Smart Push Reminders</div>
+        <div class="feat-desc">AI-scheduled reminders based on your tank type, size, and livestock load. Never miss a water change again.</div>
+      </div>
+    </div>
+
+    <!-- Ideas / Suggestions -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:0.5rem; margin-top:0.5rem;">💡 <span>Ideas</span> &amp; Suggestions</p>
+    <p class="section-sub">Features the community has requested or we think would make Tankly unforgettable.</p>
+    <div class="feat-grid">
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#a855f7,#ec4899)">
+        <span class="feat-icon">🧬</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Species Compatibility Checker</div>
+        <div class="feat-desc">Before adding a new fish, check if it'll get along with everything already in your tank. Powered by a curated species database.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#00e5ff,#22c55e)">
+        <span class="feat-icon">🗓️</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Tank Journal</div>
+        <div class="feat-desc">A freeform daily log entry per tank. Attach photos, parameters, and notes. Searchable by date — your tank's full diary.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#f59e0b,#06b6d4)">
+        <span class="feat-icon">🛒</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Shopping List Builder</div>
+        <div class="feat-desc">Tap any missing chemical or equipment and add it to a running shopping list. Share with your LFS before you visit.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#ec4899,#a855f7)">
+        <span class="feat-icon">🌡️</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Smart Device Integration</div>
+        <div class="feat-desc">Connect to supported IoT probes (pH, temperature, salinity) via Bluetooth. Auto-log readings without lifting a test tube.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#22c55e,#a855f7)">
+        <span class="feat-icon">📦</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Dosing Tracker</div>
+        <div class="feat-desc">Log daily doses of calcium, alkalinity, magnesium, and other additives. Get warned if you forget or double-dose.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#06b6d4,#f59e0b)">
+        <span class="feat-icon">🏅</span>
+        <div class="feat-tag pro">Pro Idea</div>
+        <div class="feat-title">Community Leaderboard</div>
+        <div class="feat-desc">Monthly XP rankings by region and tank type. Top reefers earn a special badge on their profile for the month.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#a855f7,#f59e0b)">
+        <span class="feat-icon">📚</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Parameter Reference Library</div>
+        <div class="feat-desc">In-app guide explaining every parameter — what it means, safe ranges for each tank type, and how to fix it when it goes wrong.</div>
+      </div>
+      <div class="feat-card" style="--fc-grad: linear-gradient(90deg,#00e5ff,#ec4899)">
+        <span class="feat-icon">🤝</span>
+        <div class="feat-tag idea">Idea</div>
+        <div class="feat-title">Tank Mentorship</div>
+        <div class="feat-desc">Match new hobbyists with experienced reefers for private guidance. Mentors earn bonus XP and a special badge.</div>
+      </div>
+    </div>
+
+    <!-- Roadmap timeline -->
+    <p class="section-head" style="font-size:1.1rem; margin-bottom:1.2rem; margin-top:0.5rem;">🗺️ <span>Roadmap</span></p>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot active">✅</div>
+        <div class="roadmap-body">
+          <div class="roadmap-period">v1.0 — Now</div>
+          <div class="roadmap-title">Core Experience</div>
+          <div class="roadmap-desc">Parameter logging, livestock, equipment, community feed, XP system, achievements, cloud sync, tank photos.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot active">🔨</div>
+        <div class="roadmap-body">
+          <div class="roadmap-period">v1.1 — Q3 2026</div>
+          <div class="roadmap-title">AI Insights &amp; Smart Reminders</div>
+          <div class="roadmap-desc">AI-powered parameter analysis, predictive maintenance alerts, advanced charting and data export.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot future">🔬</div>
+        <div class="roadmap-body">
+          <div class="roadmap-period">v1.2 — Q4 2026</div>
+          <div class="roadmap-title">Deep Data</div>
+          <div class="roadmap-desc">Dosing tracker, species compatibility checker, parameter reference library, IoT probe beta.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot future">🌊</div>
+        <div class="roadmap-body">
+          <div class="roadmap-period">v2.0 — 2027</div>
+          <div class="roadmap-title">Community &amp; Marketplace</div>
+          <div class="roadmap-desc">Leaderboards, mentorship, tank journal, shopping list, and a community marketplace for livestock trades.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -564,7 +833,6 @@
   <div id="tab-faq" class="tab-content">
 
     <p class="faq-section-label">Sync &amp; data</p>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">Does Tankly work offline?</span>
@@ -575,7 +843,6 @@
         <p>Yes. Everything you log — parameters, livestock, maintenance — saves instantly to your device. No internet needed. Cloud sync happens silently in the background when you're connected.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">What gets backed up automatically?</span>
@@ -586,7 +853,6 @@
         <p>Free users: your streak and first tank are backed up. Pro users: all tanks, full parameter history, livestock, equipment, and your profile are backed up after every significant change.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">How do I restore my data on a new phone?</span>
@@ -598,8 +864,39 @@
       </div>
     </div>
 
-    <p class="faq-section-label">Pro plan</p>
+    <p class="faq-section-label">Achievements &amp; XP</p>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
+        <span class="faq-q">How do I earn XP?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-body" hidden>
+        <span class="pill-tag pill-pro">XP</span>
+        <p>XP is earned from almost every action: logging parameters (+10 XP), community posts (+15 XP), help-flair posts (+35 XP), comments (+5 XP), likes received (+2 XP), completing tasks (+12 XP), and more. Check the Achievements tab for the full breakdown.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
+        <span class="faq-q">Do my achievements carry over if I get a new phone?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-body" hidden>
+        <span class="pill-tag pill-pro">XP</span>
+        <p>Yes! Your XP, level, and unlocked achievements are stored in the cloud against your Google account. Sign in on your new device and everything is restored automatically.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
+        <span class="faq-q">How do I unlock secret achievements?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-body" hidden>
+        <span class="pill-tag pill-pro">XP</span>
+        <p>Secret achievements are unlocked through unusual or specific actions — like logging parameters at midnight, or recovering from a tank crash. Their conditions are intentionally hidden. You'll know when you find them.</p>
+      </div>
+    </div>
 
+    <p class="faq-section-label">Pro plan</p>
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">What does Pro include?</span>
@@ -610,7 +907,6 @@
         <p>Unlimited tanks, full cross-device sync, AI-powered water quality insights, unlimited tank photos, and priority support. Free users can manage one tank with basic logging.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">What happens to my data if I cancel Pro?</span>
@@ -623,7 +919,6 @@
     </div>
 
     <p class="faq-section-label">Your data</p>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">Is my data private?</span>
@@ -634,7 +929,6 @@
         <p>Your tank data — parameters, livestock, history — is private to your account. Only community posts and your public profile are visible to other users. We never sell your data.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">How many tank photos can I store?</span>
@@ -647,7 +941,6 @@
     </div>
 
     <p class="faq-section-label">Account</p>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">Do I need an account to use Tankly?</span>
@@ -658,7 +951,6 @@
         <p>No. Tankly works fully offline without signing in. An account (via Google) is only needed to back up your data to the cloud or access the community features.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)" aria-expanded="false">
         <span class="faq-q">How do I delete my account?</span>
@@ -682,27 +974,229 @@
     &nbsp;·&nbsp;
     <a href="#" onclick="switchTab('hiw',document.querySelectorAll('.nav-tab')[2]);return false;">How it works</a>
     &nbsp;·&nbsp;
-    <a href="#" onclick="switchTab('faq',document.querySelectorAll('.nav-tab')[3]);return false;">FAQ</a>
+    <a href="#" onclick="switchTab('achievements',document.querySelectorAll('.nav-tab')[3]);return false;">Achievements</a>
     &nbsp;·&nbsp;
-    <a href="mailto:support.tankly.app@gmail.com">Contact</a>
+    <a href="#" onclick="switchTab('features',document.querySelectorAll('.nav-tab')[4]);return false;">Features</a>
+    &nbsp;·&nbsp;
+    <a href="#" onclick="switchTab('faq',document.querySelectorAll('.nav-tab')[5]);return false;">FAQ</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:golanpiyush@gmail.com">Contact</a>
   </p>
-  <p>© 2026 Tankly · Piyush Golan · India</p>
+  <p>© 2026 Tankly · Piyush Golan · Bhilai, India</p>
   <p style="margin-top:4px; font-size:11px; opacity:0.5;">Built with 🐠 for aquarium hobbyists everywhere</p>
 </footer>
 
 <script>
+  /* ─── Supabase config (replace before deploy) ─── */
   const CONFIG = {
     supabaseUrl:     '__SUPABASE_URL__',
     supabaseAnonKey: '__SUPABASE_ANON_KEY__',
   };
 
+  /* ─── Levels data (mirrors achievement_model.dart) ─── */
+  const LEVELS = [
+    { level:1,  title:'Tap Water',       subtitle:'Every reefer starts here.',            emoji:'💧', color:'#9E9E9E', xpRequired:0     },
+    { level:2,  title:'Dechlorinated',   subtitle:'You know the basics.',                 emoji:'🫧', color:'#80CBC4', xpRequired:50    },
+    { level:3,  title:'Cycled',          subtitle:'Nitrogen cycle? Mastered.',             emoji:'🧪', color:'#4CAF50', xpRequired:150   },
+    { level:4,  title:'Planted',         subtitle:'Life is growing under your watch.',    emoji:'🌿', color:'#66BB6A', xpRequired:350   },
+    { level:5,  title:'Stocked',         subtitle:'Your tank is alive.',                  emoji:'🐠', color:'#29B6F6', xpRequired:700   },
+    { level:6,  title:'Biotope Builder', subtitle:'Recreating nature, one tank at a time.',emoji:'🏞️',color:'#1E88E5', xpRequired:1200  },
+    { level:7,  title:'Parameters Pro',  subtitle:'You test before you stress.',           emoji:'📊', color:'#7E57C2', xpRequired:2000  },
+    { level:8,  title:'Coral Keeper',    subtitle:'Alk, Cal, Mg — second nature.',         emoji:'🪸', color:'#EC407A', xpRequired:3200  },
+    { level:9,  title:'Reef Architect',  subtitle:'The community comes to you.',           emoji:'🏛️', color:'#FFB300', xpRequired:5000  },
+    { level:10, title:'Apex Reefer',     subtitle:'Legendary. The tank gods nod.',         emoji:'👑', color:'#FFD700', xpRequired:8000  },
+    { level:11, title:'Deep Diver',      subtitle:'Most never reach this depth.',           emoji:'🤿', color:'#00BCD4', xpRequired:12000 },
+    { level:12, title:'Abyssal',         subtitle:'Down here the water pressure is real.', emoji:'🌑', color:'#5C6BC0', xpRequired:20000 },
+  ];
+
+  /* ─── XP weights ─── */
+  const XP_WEIGHTS = [
+    { label:'🎯 Creating a Post',        xp:15  },
+    { label:'🤝 Help Flair Post',        xp:35, highlight:true },
+    { label:'🌟 Showcase Post',          xp:25, highlight:true },
+    { label:'💬 Commenting',             xp:5   },
+    { label:'❤️ Receiving a Like',       xp:2   },
+    { label:'👍 Giving a Like',          xp:1   },
+    { label:'📊 Logging Parameters',     xp:10  },
+    { label:'🐠 Adding Livestock',       xp:8   },
+    { label:'👥 Gaining a Follower',     xp:3   },
+    { label:'⚙️ Adding Equipment',       xp:10  },
+    { label:'📋 Creating a Task',        xp:5   },
+    { label:'✅ Completing a Task',      xp:12, highlight:true },
+    { label:'🛠️ Equipment Maintained',  xp:15  },
+    { label:'📷 Adding a Photo',         xp:5   },
+    { label:'🪣 Water Change Logged',    xp:8   },
+    { label:'⏰ Test Reminder Set',      xp:3   },
+    { label:'🧽 Filter Clean Logged',    xp:10  },
+  ];
+
+  /* ─── Achievement data ─── */
+  const ACHIEVEMENTS = [
+    // TRACKING
+    { id:'first_param_log', name:'First Drop',          desc:'Log your first water parameters.',         flavour:'"A baseline reading is worth a thousand guesses."',                                 emoji:'💧', cat:'Tracking',   xp:20  },
+    { id:'streak_7',        name:'Nitrogen Nerd',        desc:'Log parameters 7 days in a row.',          flavour:'"Daily testing during a cycle is not paranoia, it\'s protocol."',                  emoji:'🧪', cat:'Tracking',   xp:50  },
+    { id:'streak_30',       name:'The Obsessed',         desc:'Log parameters 30 days in a row.',         flavour:'"At this point just become a water chemist." — r/ReefTank',                       emoji:'📈', cat:'Tracking',   xp:150 },
+    { id:'streak_90',       name:'Iron Tester',          desc:'Log parameters 90 days in a row.',         flavour:'"Three months of daily tests. Your fish don\'t know how lucky they are."',        emoji:'⚗️', cat:'Tracking',   xp:350 },
+    { id:'streak_365',      name:'Full Cycle',           desc:'Log parameters 365 days in a row.',        flavour:'"A full orbit around the sun, never missing a test. Legendary."',                  emoji:'🌍', cat:'Tracking',   xp:1000},
+    { id:'logs_50',         name:'Lab Rat',              desc:'Submit 50 parameter readings.',             flavour:'"My test kit has seen more action than my gym membership."',                       emoji:'🔬', cat:'Tracking',   xp:80  },
+    { id:'logs_200',        name:'Analytical Mind',      desc:'Submit 200 parameter readings.',            flavour:'"Data doesn\'t lie. Ammonia does though."',                                       emoji:'📊', cat:'Tracking',   xp:200 },
+    { id:'logs_500',        name:'Data Hoarder',         desc:'Submit 500 parameter readings.',            flavour:'"Your parameter history is longer than most novels."',                             emoji:'🗄️',cat:'Tracking',   xp:400 },
+    { id:'logs_1000',       name:'The Archivist',        desc:'Submit 1,000 parameter readings.',          flavour:'"A thousand readings. You\'ve earned a degree in aquatic chemistry."',             emoji:'📚', cat:'Tracking',   xp:750 },
+    { id:'perfect_params',  name:'Zero Club',            desc:'Log a reading with ammonia AND nitrite at 0.',flavour:'"Fully cycled. Frame it." — r/Aquariums',                                      emoji:'✅', cat:'Tracking',   xp:60  },
+    { id:'all_params_green',name:'Full Spectrum',        desc:'Every parameter in acceptable range.',      flavour:'"100% green. Screenshot that dashboard." — r/Aquariums',                         emoji:'🟢', cat:'Tracking',   xp:80  },
+    { id:'reef_nirvana',    name:'Reef Nirvana',         desc:'All reef parameters in optimal range.',     flavour:'"All green on the reef dashboard. This is what it\'s all for."',                  emoji:'✨', cat:'Tracking',   xp:100 },
+    // EQUIPMENT
+    { id:'first_equipment', name:'Geared Up',            desc:'Add your first piece of equipment.',        flavour:'"The hardware obsession begins." — every reefer ever',                            emoji:'⚙️', cat:'Equipment',  xp:15  },
+    { id:'equipment_5',     name:'Full Rig',             desc:'Add 5 pieces of equipment.',                flavour:'"At this point your tank has more tech than your PC."',                           emoji:'🔧', cat:'Equipment',  xp:40  },
+    { id:'first_task',      name:'On Schedule',          desc:'Create your first maintenance task.',       flavour:'"A task written is a task remembered."',                                           emoji:'📋', cat:'Equipment',  xp:10  },
+    { id:'tasks_completed_50',name:'Zero Backlog',       desc:'Complete 50 maintenance tasks.',            flavour:'"Your tank never had a chance to crash." — r/PlantedTank',                       emoji:'💪', cat:'Equipment',  xp:150 },
+    { id:'tasks_completed_200',name:'Relentless',        desc:'Complete 200 maintenance tasks.',           flavour:'"200 tasks done. Your tank maintenance is basically a career."',                  emoji:'🚀', cat:'Equipment',  xp:400 },
+    { id:'water_change_50', name:'Water Changer',        desc:'Log a water change 50 times.',              flavour:'"The most underrated maintenance habit in the hobby."',                            emoji:'🪣', cat:'Equipment',  xp:120 },
+    { id:'filter_clean_25', name:'Pristine Filtration',  desc:'Log a filter clean 25 times.',              flavour:'"A clean filter is a happy filter. 25 cleans in. Respect."',                     emoji:'🧽', cat:'Equipment',  xp:80  },
+    // COMMUNITY
+    { id:'first_post',      name:'Surfaced',             desc:'Create your first community post.',         flavour:'"Everyone\'s first post is a tank photo. Don\'t fight it."',                     emoji:'📸', cat:'Community',  xp:20  },
+    { id:'posts_10',        name:'Regular',              desc:'Post 10 times in the community.',           flavour:'"A face we recognise. Pull up a chair."',                                         emoji:'🪑', cat:'Community',  xp:60  },
+    { id:'posts_50',        name:'Tank Talker',          desc:'Post 50 times in the community.',           flavour:'"At this point you live here." — every subreddit mod ever',                      emoji:'🗣️', cat:'Community',  xp:200 },
+    { id:'posts_100',       name:'Community Pillar',     desc:'Post 100 times in the community.',          flavour:'"100 posts. You\'re basically a founding member."',                               emoji:'🏛️', cat:'Community',  xp:400 },
+    { id:'first_comment',   name:'Ripple',               desc:'Leave your first comment.',                 flavour:'"Even one reply can save a stressed fish owner\'s day."',                         emoji:'💬', cat:'Community',  xp:10  },
+    { id:'comments_100',    name:'Voice of the Deep',    desc:'Leave 100 comments.',                       flavour:'"100 replies. You\'ve talked more fish than your local store."',                  emoji:'🔊', cat:'Community',  xp:150 },
+    { id:'likes_received_100',name:'Crowd Pleaser',      desc:'Receive 100 likes total.',                  flavour:'"They came for the content, they stayed for your parameters."',                   emoji:'🎯', cat:'Community',  xp:120 },
+    { id:'likes_received_1000',name:'Hall of Fame',      desc:'Receive 1,000 likes on your posts.',        flavour:'"1,000 likes. You\'re the benchmark everyone is chasing."',                      emoji:'🏆', cat:'Community',  xp:750 },
+    { id:'followers_10',    name:'Rising Tide',          desc:'Gain 10 followers.',                        flavour:'"People are watching. Keep the tank clean."',                                     emoji:'🌊', cat:'Community',  xp:50  },
+    { id:'followers_100',   name:'Tank Influencer',      desc:'Gain 100 followers.',                       flavour:'"You\'re basically the BRS of this app now."',                                    emoji:'📡', cat:'Community',  xp:300 },
+    { id:'followers_500',   name:'Reef Celebrity',       desc:'Gain 500 followers.',                       flavour:'"500 followers. You\'ve built a community within a community."',                 emoji:'⭐', cat:'Community',  xp:1000},
+    // KNOWLEDGE
+    { id:'first_help_post', name:'Mentor Fish',          desc:'Post with the Help flair for the first time.',flavour:'"Answering questions is how this hobby stays alive."',                         emoji:'🤝', cat:'Knowledge',  xp:40  },
+    { id:'help_posts_10',   name:'LFS Incarnate',        desc:'Make 10 Help-flair posts.',                 flavour:'"You\'re the good version of that LFS employee."',                               emoji:'🏪', cat:'Knowledge',  xp:120 },
+    { id:'help_posts_50',   name:'Oracle of the Deep',   desc:'Make 50 Help-flair posts.',                 flavour:'"People search your username before they post questions."',                       emoji:'🔮', cat:'Knowledge',  xp:400 },
+    { id:'showcase_post',   name:'TOTM Contender',       desc:'Post with the Showcase flair.',             flavour:'"Tank Of The Month energy. Respect."',                                            emoji:'🏆', cat:'Knowledge',  xp:30  },
+    { id:'showcase_posts_50',name:'Gallery Owner',       desc:'Post with Showcase flair 50 times.',        flavour:'"50 showcase posts. Your tank evolution is a work of art."',                     emoji:'🖼️',cat:'Knowledge',  xp:350 },
+    // COLLECTION
+    { id:'first_livestock', name:'Inhabited',            desc:'Add your first livestock.',                 flavour:'"And so it begins. One fish, then seventeen."',                                   emoji:'🐡', cat:'Collection', xp:15  },
+    { id:'livestock_10',    name:'Overstocked (Legally)',desc:'Add 10 species to your tanks.',             flavour:'"It\'s not overstocked if it\'s documented." — no one ever',                    emoji:'🐟', cat:'Collection', xp:60  },
+    { id:'livestock_25',    name:'Biodiversity Award',   desc:'Add 25 species to your tanks.',             flavour:'"25 species tracked. You\'re running a private aquarium."',                      emoji:'🌐', cat:'Collection', xp:150 },
+    { id:'reef_tank',       name:'Joined the Reef Cult', desc:'Add a reef tank.',                          flavour:'"Welcome. Your wallet will never be the same."',                                  emoji:'🪸', cat:'Collection', xp:40  },
+    { id:'multi_tank',      name:'Multiple Tank Syndrome',desc:'Add 3 or more tanks.',                     flavour:'"MTS: diagnosed, untreated, thriving." — r/PlantedTank',                         emoji:'🏠', cat:'Collection', xp:80  },
+    // PHOTO
+    { id:'first_photo',     name:'Shutter Fish',         desc:'Add your first tank photo.',                flavour:'"The journey documented. One photo at a time."',                                  emoji:'📷', cat:'Photo',      xp:15  },
+    { id:'photos_50',       name:'Visual Diary',         desc:'Add 50 tank photos.',                       flavour:'"50 photos. You\'re building a time-lapse of your tank\'s life."',               emoji:'🗃️',cat:'Photo',      xp:100 },
+    { id:'photos_100',      name:'Tank Photographer',    desc:'Add 100 tank photos.',                      flavour:'"David Attenborough could narrate this." — r/ReefTank',                          emoji:'🎞️',cat:'Photo',      xp:200 },
+    // MILESTONES
+    { id:'xp_1000',         name:'Deep Water',           desc:'Reach 1,000 XP.',                           flavour:'"You\'re past the shallows now."',                                               emoji:'🌊', cat:'Milestone',  xp:0   },
+    { id:'xp_5000',         name:'Abyssal',              desc:'Reach 5,000 XP.',                           flavour:'"Down here the water pressure is real."',                                         emoji:'🌑', cat:'Milestone',  xp:0   },
+    { id:'xp_10000',        name:'Hadal Zone',           desc:'Reach 10,000 XP.',                          flavour:'"You\'ve descended further than most reefers ever dream of."',                   emoji:'⚫', cat:'Milestone',  xp:0   },
+    { id:'xp_20000',        name:'Mariana Master',       desc:'Reach 20,000 XP.',                          flavour:'"20,000 XP. You\'ve mapped the deepest trench in the hobby."',                  emoji:'🌋', cat:'Milestone',  xp:0   },
+    // SECRET
+    { id:'midnight_logger', name:'Midnight Tester',      desc:'???',                                       flavour:'"Some things are only discovered in the dark."',                                  emoji:'🌙', cat:'Secret',     xp:50, secret:true },
+    { id:'crash_survivor',  name:'Survived the Crash',   desc:'???',                                       flavour:'"Every reefer has a crash story."',                                              emoji:'💀', cat:'Secret',     xp:100,secret:true },
+  ];
+
+  const CAT_COLORS = {
+    'Tracking':  '#7E57C2',
+    'Equipment': '#f59e0b',
+    'Community': '#29B6F6',
+    'Knowledge': '#66BB6A',
+    'Collection':'#FF7043',
+    'Photo':     '#EC407A',
+    'Milestone': '#00e5ff',
+    'Secret':    '#EC407A',
+  };
+
+  let activeFilter = 'All';
+
+  /* ─── Render levels grid ─── */
+  function renderLevels() {
+    const grid = document.getElementById('levels-grid');
+    grid.innerHTML = LEVELS.map(l => {
+      const hex = l.color;
+      const glow = hex + '33';
+      return `
+        <div class="level-card" style="--lc-color:${hex};--lc-glow:${glow};">
+          <div class="level-emoji-wrap">${l.emoji}</div>
+          <div class="level-info">
+            <div class="level-name">Lv.${l.level} — ${l.title}</div>
+            <div class="level-sub">${l.subtitle}</div>
+          </div>
+          <div class="level-xp-badge">${l.xpRequired.toLocaleString()} XP</div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ─── Render XP weights ─── */
+  function renderXpWeights() {
+    const grid = document.getElementById('xp-grid');
+    grid.innerHTML = XP_WEIGHTS.map(w => `
+      <div class="xp-row">
+        <span class="xp-row-label">${w.label}</span>
+        <span class="xp-row-badge${w.highlight ? ' highlight' : ''}">+${w.xp} XP</span>
+      </div>`).join('');
+  }
+
+  /* ─── Render achievement filter bar ─── */
+  function renderFilterBar() {
+    const cats = ['All', ...Object.keys(CAT_COLORS)];
+    const bar = document.getElementById('ach-filter-bar');
+    bar.innerHTML = cats.map(c => `
+      <button class="ach-filter${c === 'All' ? ' active' : ''}" onclick="setFilter('${c}',this)">${c}</button>`).join('');
+  }
+
+  function setFilter(cat, el) {
+    activeFilter = cat;
+    document.querySelectorAll('.ach-filter').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    renderAchievements();
+  }
+
+  /* ─── Render achievement list ─── */
+  function renderAchievements() {
+    const query = (document.getElementById('ach-search-input')?.value || '').toLowerCase();
+    const list  = document.getElementById('ach-list');
+
+    const filtered = ACHIEVEMENTS.filter(a => {
+      const catMatch = activeFilter === 'All' || a.cat === activeFilter;
+      const qMatch   = !query || a.name.toLowerCase().includes(query) || a.desc.toLowerCase().includes(query);
+      return catMatch && qMatch;
+    });
+
+    // Group by category
+    const groups = {};
+    filtered.forEach(a => {
+      if (!groups[a.cat]) groups[a.cat] = [];
+      groups[a.cat].push(a);
+    });
+
+    list.innerHTML = Object.entries(groups).map(([cat, achs]) => {
+      const color = CAT_COLORS[cat] || '#00e5ff';
+      return `
+        <div class="ach-category-head" style="color:${color};">
+          <div class="ach-category-dot" style="background:${color};"></div>
+          ${cat}
+          <span style="color:var(--muted);font-weight:400;font-size:10px;margin-left:4px;">${achs.length} badges</span>
+        </div>
+        <div class="ach-grid">
+          ${achs.map(a => `
+            <div class="ach-card${a.secret ? ' secret' : ''}">
+              <div class="ach-emoji-wrap" style="border-color:${a.secret ? 'rgba(236,72,153,0.3)' : 'var(--border)'};">${a.emoji}</div>
+              <div class="ach-body">
+                <div class="ach-name">${a.name}</div>
+                <div class="ach-desc">${a.secret ? '??? — discover the secret' : a.desc}</div>
+                <div class="ach-flavour">${a.flavour}</div>
+                ${a.xp > 0 ? `<span class="ach-xp${a.secret ? ' secret-xp' : ''}">+${a.xp} XP</span>` : '<span class="ach-xp" style="background:rgba(95,127,154,0.08);color:var(--muted);border-color:rgba(95,127,154,0.2);">Milestone</span>'}
+              </div>
+            </div>`).join('')}
+        </div>`;
+    }).join('') || '<p style="color:var(--muted);text-align:center;padding:2rem;">No achievements match your search.</p>';
+
+    document.getElementById('total-ach-count').textContent = ACHIEVEMENTS.length;
+  }
+
+  function filterAchievements() { renderAchievements(); }
+
+  /* ─── Supabase loader ─── */
   async function fetchDocument(docId) {
     const url = `${CONFIG.supabaseUrl}/rest/v1/legal_documents?id=eq.${docId}&published=eq.true&select=title,content,version,last_updated`;
     const res = await fetch(url, {
-      headers: {
-        'apikey': CONFIG.supabaseAnonKey,
-        'Authorization': `Bearer ${CONFIG.supabaseAnonKey}`,
-      }
+      headers: { 'apikey': CONFIG.supabaseAnonKey, 'Authorization': `Bearer ${CONFIG.supabaseAnonKey}` }
     });
     if (!res.ok) throw new Error(`Supabase error: HTTP ${res.status}`);
     const data = await res.json();
@@ -737,6 +1231,7 @@
     }
   }
 
+  /* ─── Tab switching ─── */
   function switchTab(tab, el) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -745,6 +1240,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /* ─── FAQ accordion ─── */
   function toggleFaq(btn) {
     const body   = btn.nextElementSibling;
     const isOpen = !body.hidden;
@@ -752,9 +1248,14 @@
     btn.setAttribute('aria-expanded', String(!isOpen));
   }
 
+  /* ─── Boot ─── */
   document.addEventListener('DOMContentLoaded', () => {
     loadDoc('privacy_policy',   'privacy-body', 'privacy-badge');
     loadDoc('terms_of_service', 'tos-body',     'tos-badge');
+    renderLevels();
+    renderXpWeights();
+    renderFilterBar();
+    renderAchievements();
   });
 </script>
 </body>
