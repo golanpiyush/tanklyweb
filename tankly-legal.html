@@ -1,0 +1,1902 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tankly — Premium Aquarium Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean: #0B1F3A;
+    --ocean-mid: #0d2444;
+    --ocean-light: #132e52;
+    --teal: #00D4AA;
+    --teal-dim: #00b894;
+    --teal-glow: rgba(0,212,170,0.18);
+    --coral: #FF6B6B;
+    --pearl: #F0F4F8;
+    --gold: #E8C547;
+    --card-dark: #111827;
+    --muted: #8B9BB4;
+    --muted-dim: #5a6d87;
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ocean);
+    color: var(--pearl);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── BUBBLES ─── */
+  .bubble-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .bubble {
+    position: absolute;
+    bottom: -120px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 30% 28%,
+      rgba(255,255,255,0.55) 0%,
+      rgba(0,212,170,0.12) 25%,
+      rgba(0,180,148,0.06) 55%,
+      rgba(0,100,90,0.03) 80%,
+      transparent 100%
+    );
+    border: 1px solid rgba(0,212,170,0.25);
+    box-shadow:
+      inset 0 -4px 12px rgba(0,212,170,0.08),
+      inset 3px 3px 10px rgba(255,255,255,0.18),
+      0 0 20px rgba(0,212,170,0.04);
+    animation: bubbleRise linear infinite;
+  }
+
+  .bubble::before {
+    content: '';
+    position: absolute;
+    top: 14%;
+    left: 18%;
+    width: 28%;
+    height: 20%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.7) 0%, transparent 100%);
+    border-radius: 50%;
+    transform: rotate(-35deg);
+  }
+
+  .bubble::after {
+    content: '';
+    position: absolute;
+    top: 22%;
+    left: 22%;
+    width: 12%;
+    height: 8%;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+  }
+
+  @keyframes bubbleRise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    5%   { opacity: 1; }
+    50%  { transform: translateY(-50vh) translateX(var(--drift)) scale(1.01); opacity: 0.85; }
+    95%  { opacity: 0.4; }
+    100% { transform: translateY(-115vh) translateX(calc(var(--drift) * 1.4)) scale(0.97); opacity: 0; }
+  }
+
+  /* ─── CAUSTIC LIGHT ─── */
+  .caustics {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 300px 80px at 20% 15%, rgba(0,212,170,0.045) 0%, transparent 100%),
+      radial-gradient(ellipse 200px 60px at 70% 40%, rgba(0,212,170,0.03) 0%, transparent 100%),
+      radial-gradient(ellipse 400px 100px at 50% 70%, rgba(0,180,148,0.025) 0%, transparent 100%);
+    animation: causticShift 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes causticShift {
+    0%   { transform: translateX(0) scale(1); }
+    50%  { transform: translateX(30px) scale(1.03); }
+    100% { transform: translateX(-20px) scale(0.98); }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 60px;
+    background: linear-gradient(to bottom, rgba(11,31,58,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--teal) 0%, #00a882 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 16px rgba(0,212,170,0.4);
+  }
+
+  .nav-wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--teal);
+    color: var(--ocean) !important;
+    padding: 9px 22px;
+    border-radius: 8px;
+    font-weight: 500 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .nav-cta:hover { background: #00b894 !important; transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 60px 80px;
+    gap: 60px;
+  }
+
+  .hero-left {
+    flex: 1;
+    max-width: 560px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,170,0.12);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 6vw, 78px);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--teal);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 42px;
+    max-width: 440px;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--teal);
+    color: var(--ocean);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 8px 32px rgba(0,212,170,0.35);
+  }
+
+  .btn-primary:hover {
+    background: #00c49a;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,212,170,0.45);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    border: 1px solid rgba(139,155,180,0.3);
+    padding: 14px 24px;
+    border-radius: 10px;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .hero-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--muted-dim);
+  }
+
+  /* ─── PHONE MOCKUP ─── */
+  .hero-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .phone-float {
+    position: relative;
+    animation: floatPhone 6s ease-in-out infinite;
+  }
+
+  @keyframes floatPhone {
+    0%, 100% { transform: translateY(0px) rotate(-1deg); }
+    50% { transform: translateY(-16px) rotate(0.5deg); }
+  }
+
+  .phone-wrap {
+    position: relative;
+  }
+
+  .phone-glow {
+    position: absolute;
+    inset: -40px;
+    background: radial-gradient(ellipse at center, rgba(0,212,170,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(20px);
+    animation: glowPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+
+  .phone-frame {
+    width: 280px;
+    background: #0a0a14;
+    border-radius: 42px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.5),
+      0 40px 80px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .phone-notch {
+    width: 80px;
+    height: 8px;
+    background: #0a0a14;
+    border-radius: 0 0 12px 12px;
+    margin: 0 auto 8px;
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-top: none;
+  }
+
+  .phone-screen {
+    background: var(--card-dark);
+    border-radius: 32px;
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+    position: relative;
+  }
+
+  /* Dashboard Screen */
+  .screen-dashboard {
+    background: linear-gradient(160deg, #0f1f38 0%, #0b1a2e 100%);
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen-header {
+    padding: 16px 16px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .screen-greeting {
+    font-size: 9px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .screen-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .screen-avatar {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, var(--teal), #00a882);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: var(--ocean);
+  }
+
+  .tank-card-mini {
+    margin: 0 12px 10px;
+    background: linear-gradient(135deg, #0d2847, #0a1f38);
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid rgba(0,212,170,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tank-card-mini::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 35%;
+    background: linear-gradient(to top, rgba(0,212,170,0.08), transparent);
+    border-radius: 0 0 14px 14px;
+  }
+
+  .tank-mini-name { font-size: 10px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+  .tank-mini-age { font-size: 7px; color: var(--muted); margin-bottom: 8px; }
+
+  .tank-params-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .param-chip {
+    flex: 1;
+    background: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    padding: 5px 4px;
+    text-align: center;
+  }
+
+  .param-val { font-size: 9px; font-weight: 600; color: var(--teal); font-family: 'DM Mono', monospace; }
+  .param-label { font-size: 6px; color: var(--muted); margin-top: 1px; }
+
+  .health-dot {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 7px; height: 7px;
+    background: var(--teal);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--teal);
+  }
+
+  .mini-section-title {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 12px;
+    margin-bottom: 6px;
+  }
+
+  .reminders-list {
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .reminder-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 7px 8px;
+  }
+
+  .reminder-icon {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+
+  .reminder-text { font-size: 8px; color: var(--pearl); flex: 1; }
+  .reminder-time { font-size: 7px; color: var(--muted); }
+
+  .bottom-nav-mini {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 8px 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.3);
+  }
+
+  .nav-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    opacity: 0.45;
+  }
+
+  .nav-tab.active { opacity: 1; }
+  .nav-tab .dot { width: 14px; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.1); }
+  .nav-tab.active .dot { background: var(--teal); }
+  .nav-tab span { font-size: 5px; color: var(--muted); }
+  .nav-tab.active span { color: var(--teal); }
+
+  /* secondary floating phones */
+  .phone-secondary {
+    position: absolute;
+    animation: floatPhone2 7s ease-in-out infinite;
+  }
+
+  @keyframes floatPhone2 {
+    0%, 100% { transform: translateY(0) rotate(4deg); }
+    50% { transform: translateY(-10px) rotate(6deg); }
+  }
+
+  .phone-frame-sm {
+    width: 170px;
+    background: #0a0a14;
+    border-radius: 28px;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.09);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+
+  .phone-screen-sm {
+    background: var(--card-dark);
+    border-radius: 22px;
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+  }
+
+  /* Param screen */
+  .screen-params {
+    background: linear-gradient(160deg, #0a1624, #061220);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .graph-area {
+    flex: 1;
+    position: relative;
+    margin: 8px 0;
+  }
+
+  .graph-svg { width: 100%; height: 100%; }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 0 60px;
+    margin-bottom: 80px;
+  }
+
+  .stat-item {
+    flex: 1;
+    max-width: 260px;
+    text-align: center;
+    padding: 32px 20px;
+    border-top: 1px solid rgba(0,212,170,0.15);
+    border-bottom: 1px solid rgba(0,212,170,0.1);
+    position: relative;
+  }
+
+  .stat-item + .stat-item {
+    border-left: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-val span { color: var(--teal); }
+  .stat-label { font-size: 13px; color: var(--muted); font-weight: 300; }
+
+  /* ─── SCREENS SECTION ─── */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 0 60px 100px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 14px;
+  }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 480px;
+    margin-bottom: 56px;
+  }
+
+  /* ─── SCREENS GALLERY ─── */
+  .screens-scroll-wrap {
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -60px;
+    padding: 20px 60px 40px;
+  }
+
+  .screens-scroll-wrap::-webkit-scrollbar { display: none; }
+
+  .screens-row {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+  }
+
+  .screen-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .screen-card:hover { transform: translateY(-8px); }
+
+  .screen-phone {
+    width: 180px;
+    background: #08111f;
+    border-radius: 32px;
+    padding: 9px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.6),
+      0 24px 56px rgba(0,0,0,0.5),
+      0 0 40px rgba(0,212,170,0.04);
+  }
+
+  .screen-phone-inner {
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+    position: relative;
+  }
+
+  .screen-name {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  /* Individual screen content designs */
+  .s-bg-1 { background: linear-gradient(160deg, #0f1f38 0%, #0b1a2e 100%); }
+  .s-bg-2 { background: linear-gradient(160deg, #061a2e 0%, #040f1e 100%); }
+  .s-bg-3 { background: linear-gradient(160deg, #071824 0%, #050e18 100%); }
+  .s-bg-4 { background: linear-gradient(160deg, #0c1a10 0%, #070f08 100%); }
+  .s-bg-5 { background: linear-gradient(160deg, #1a0c20 0%, #0f0713 100%); }
+  .s-bg-6 { background: linear-gradient(160deg, #141822 0%, #0c1018 100%); }
+
+  .screen-fill {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 8px;
+    gap: 5px;
+  }
+
+  .s-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .s-title { font-size: 9px; font-weight: 600; color: var(--white); }
+  .s-sub { font-size: 7px; color: var(--muted); }
+
+  .s-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 7px;
+    padding: 6px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .s-teal-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+    border-radius: 2px;
+    margin-bottom: 5px;
+  }
+
+  .s-row { display: flex; gap: 4px; }
+  .s-chip {
+    flex: 1;
+    background: rgba(0,212,170,0.1);
+    border-radius: 5px;
+    padding: 4px 3px;
+    text-align: center;
+    font-size: 6px;
+    color: var(--teal);
+  }
+
+  .s-line { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+
+  .s-fish-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 0;
+  }
+
+  .s-fish-icon {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(0,212,170,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+  }
+
+  .s-fish-info { flex: 1; }
+  .s-fish-name { font-size: 7px; color: var(--pearl); }
+  .s-fish-species { font-size: 6px; color: var(--muted); }
+
+  .s-graph {
+    flex: 1;
+    position: relative;
+    margin: 4px 0;
+  }
+
+  .s-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(232,197,71,0.15);
+    border: 1px solid rgba(232,197,71,0.3);
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 6px;
+    color: var(--gold);
+  }
+
+  .s-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), #00a882);
+    margin: 0 auto 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: var(--ocean);
+  }
+
+  .s-progress {
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 3px 0;
+  }
+
+  .s-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), #00a882);
+    border-radius: 2px;
+  }
+
+  .s-achievement {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .s-ach-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .community-post {
+    background: rgba(255,255,255,0.04);
+    border-radius: 7px;
+    padding: 6px;
+    margin-bottom: 5px;
+  }
+
+  .cp-header { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+  .cp-avatar { width: 14px; height: 14px; border-radius: 50%; }
+  .cp-name { font-size: 7px; color: var(--pearl); }
+  .cp-img { width: 100%; height: 30px; border-radius: 5px; object-fit: cover; }
+  .cp-img-bg { width: 100%; height: 30px; border-radius: 5px; background: linear-gradient(135deg, #0d3a4a, #061c2e); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .cp-stats { display: flex; gap: 6px; margin-top: 3px; }
+  .cp-stat { font-size: 6px; color: var(--muted); }
+
+  /* ─── FEATURES GRID ─── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .feature-cell {
+    padding: 36px 32px;
+    background: var(--ocean);
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-cell::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 0;
+    background: var(--teal);
+    transition: height 0.4s;
+  }
+
+  .feature-cell:hover { background: rgba(0,212,170,0.04); }
+  .feature-cell:hover::before { height: 100%; }
+
+  .feat-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feat-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .feat-desc {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ─── PRICING ─── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 900px;
+  }
+
+  .price-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 36px 28px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+  }
+
+  .price-card:hover {
+    border-color: rgba(0,212,170,0.3);
+    transform: translateY(-4px);
+  }
+
+  .price-card.featured {
+    border-color: rgba(0,212,170,0.4);
+    background: rgba(0,212,170,0.05);
+  }
+
+  .price-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--teal);
+    color: var(--ocean);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .price-tier {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-period {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .price-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin-bottom: 24px;
+  }
+
+  .price-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .price-features li .check {
+    color: var(--teal);
+    font-size: 13px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .price-features li .lock {
+    color: var(--muted-dim);
+    opacity: 0.5;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .price-cta {
+    display: block;
+    text-align: center;
+    margin-top: 28px;
+    padding: 12px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .price-cta-ghost {
+    border: 1px solid rgba(139,155,180,0.3);
+    color: var(--muted);
+  }
+
+  .price-cta-ghost:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .price-cta-filled {
+    background: var(--teal);
+    color: var(--ocean);
+    box-shadow: 0 6px 24px rgba(0,212,170,0.3);
+  }
+
+  .price-cta-filled:hover {
+    background: #00c49a;
+    box-shadow: 0 8px 32px rgba(0,212,170,0.4);
+  }
+
+  .price-cta-gold {
+    border: 1px solid rgba(232,197,71,0.4);
+    color: var(--gold);
+  }
+
+  .price-cta-gold:hover {
+    background: rgba(232,197,71,0.08);
+    border-color: var(--gold);
+  }
+
+  /* ─── SOCIAL PROOF ─── */
+  .testimonials-row {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 10px;
+  }
+
+  .testimonials-row::-webkit-scrollbar { display: none; }
+
+  .testi-card {
+    flex-shrink: 0;
+    width: 280px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .testi-stars { color: var(--gold); font-size: 12px; margin-bottom: 12px; }
+
+  .testi-text {
+    font-size: 13px;
+    color: var(--pearl);
+    font-weight: 300;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .testi-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ocean-light), var(--teal-dim));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: var(--teal);
+    border: 1px solid rgba(0,212,170,0.3);
+  }
+
+  .testi-name { font-size: 12px; font-weight: 500; color: var(--white); }
+  .testi-handle { font-size: 11px; color: var(--muted-dim); }
+
+  /* ─── CTA BOTTOM ─── */
+  .cta-section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .cta-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(0,212,170,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
+
+  .cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .cta-section p {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p { font-size: 13px; color: var(--muted-dim); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 13px; color: var(--muted-dim); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--teal); }
+
+  /* ─── SEPARATOR ─── */
+  .water-separator {
+    position: relative;
+    height: 2px;
+    margin: 0 60px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,170,0.3), transparent);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { flex-direction: column; padding: 100px 24px 60px; text-align: center; }
+    .hero-sub { margin-left: auto; margin-right: auto; }
+    .hero-actions { justify-content: center; }
+    .hero-right { width: 100%; }
+    .stats-bar { padding: 0 24px; flex-wrap: wrap; }
+    .section { padding: 0 24px 80px; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .cta-section { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 20px; padding: 30px 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Fixed background layers -->
+<div class="caustics"></div>
+<div class="bubble-canvas" id="bubbleCanvas"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">🐠</div>
+    <span class="nav-wordmark">Tankly</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#screens">Screens</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#pricing" class="nav-cta">Get the App</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Design-First Aquarium Tracker
+    </div>
+    <h1>
+      Your tanks.<br>
+      <em>Beautifully</em><br>
+      managed.
+    </h1>
+    <p class="hero-sub">
+      Track water parameters, manage livestock, and build a living journal of your aquarium. 
+      The premium app serious hobbyists have been waiting for.
+    </p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">
+        🎣 &nbsp;Download Free
+      </a>
+      <a href="#screens" class="btn-secondary">
+        See all screens →
+      </a>
+    </div>
+    <p class="hero-note">Free forever · No credit card · Pro from $4.99/mo</p>
+  </div>
+
+  <div class="hero-right">
+    <!-- Secondary phone (params) -->
+    <div class="phone-secondary" style="right: -10px; top: 30px; z-index: 0;">
+      <div class="phone-frame-sm">
+        <div class="phone-screen-sm">
+          <div class="screen-fill s-bg-2">
+            <div class="s-header">
+              <div>
+                <div class="s-title">Parameters</div>
+                <div class="s-sub">Living Room Reef · 7 days</div>
+              </div>
+            </div>
+            <div class="s-graph">
+              <svg width="100%" height="100%" viewBox="0 0 140 80" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="gr1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00D4AA" stop-opacity="0.4"/>
+                    <stop offset="100%" stop-color="#00D4AA" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="gr2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FF6B6B" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#FF6B6B" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- teal line (pH) -->
+                <path d="M0,55 C20,50 30,45 50,48 C65,50 80,35 100,30 C120,25 130,28 140,25"
+                      fill="none" stroke="#00D4AA" stroke-width="1.5"/>
+                <path d="M0,55 C20,50 30,45 50,48 C65,50 80,35 100,30 C120,25 130,28 140,25 L140,80 L0,80 Z"
+                      fill="url(#gr1)"/>
+                <!-- coral line (nitrate) -->
+                <path d="M0,65 C25,62 40,58 60,60 C80,62 95,55 110,52 C125,49 135,50 140,48"
+                      fill="none" stroke="#FF6B6B" stroke-width="1" stroke-dasharray="3 2"/>
+                <path d="M0,65 C25,62 40,58 60,60 C80,62 95,55 110,52 C125,49 135,50 140,48 L140,80 L0,80 Z"
+                      fill="url(#gr2)"/>
+                <!-- grid lines -->
+                <line x1="0" y1="20" x2="140" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <line x1="0" y1="40" x2="140" y2="40" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <line x1="0" y1="60" x2="140" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+              </svg>
+            </div>
+            <div class="s-row">
+              <div class="s-chip">pH 8.2</div>
+              <div class="s-chip">Alk 9.2</div>
+              <div class="s-chip">Ca 440</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main phone -->
+    <div class="phone-float" style="position: relative; z-index: 2;">
+      <div class="phone-wrap">
+        <div class="phone-glow"></div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <!-- Dashboard screen -->
+            <div class="screen-dashboard">
+              <div class="screen-header">
+                <div>
+                  <div class="screen-greeting">Good morning, Piyush</div>
+                  <div class="screen-title">My Tanks</div>
+                </div>
+                <div class="screen-avatar">PG</div>
+              </div>
+
+              <div class="tank-card-mini">
+                <div class="health-dot"></div>
+                <div class="tank-mini-name">🪸 Living Room Reef</div>
+                <div class="tank-mini-age">125 gal · 287 days old · Last change 3d ago</div>
+                <div class="tank-params-row">
+                  <div class="param-chip"><div class="param-val">8.2</div><div class="param-label">pH</div></div>
+                  <div class="param-chip"><div class="param-val">78°</div><div class="param-label">Temp</div></div>
+                  <div class="param-chip"><div class="param-val">1.025</div><div class="param-label">Sal</div></div>
+                  <div class="param-chip"><div class="param-val">9.1</div><div class="param-label">Alk</div></div>
+                </div>
+              </div>
+
+              <div class="tank-card-mini" style="border-color: rgba(255,255,255,0.08); margin-top: 0;">
+                <div class="tank-mini-name" style="color: var(--muted);">🌿 Planted Corner</div>
+                <div class="tank-mini-age">40 gal · 54 days old</div>
+                <div class="tank-params-row">
+                  <div class="param-chip"><div class="param-val" style="color:var(--muted);">7.1</div><div class="param-label">pH</div></div>
+                  <div class="param-chip"><div class="param-val" style="color:var(--muted);">76°</div><div class="param-label">Temp</div></div>
+                  <div class="param-chip"><div class="param-val" style="color:var(--muted);">0.0</div><div class="param-label">NH₃</div></div>
+                  <div class="param-chip"><div class="param-val" style="color:var(--muted);">5.0</div><div class="param-label">NO₃</div></div>
+                </div>
+              </div>
+
+              <div class="mini-section-title">Today's Reminders</div>
+              <div class="reminders-list">
+                <div class="reminder-item">
+                  <div class="reminder-icon" style="background: rgba(0,212,170,0.15);">💧</div>
+                  <div class="reminder-text">10% water change — Reef</div>
+                  <div class="reminder-time">Today</div>
+                </div>
+                <div class="reminder-item">
+                  <div class="reminder-icon" style="background: rgba(255,107,107,0.12);">⚗️</div>
+                  <div class="reminder-text">Test parameters</div>
+                  <div class="reminder-time">3d</div>
+                </div>
+              </div>
+
+              <div class="bottom-nav-mini">
+                <div class="nav-tab active"><div class="dot"></div><span>Home</span></div>
+                <div class="nav-tab"><div class="dot"></div><span>Tanks</span></div>
+                <div class="nav-tab"><div class="dot"></div><span>Species</span></div>
+                <div class="nav-tab"><div class="dot"></div><span>Community</span></div>
+                <div class="nav-tab"><div class="dot"></div><span>Profile</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-val">$<span>6.6</span>B</div>
+    <div class="stat-label">Global aquarium market</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-val"><span>14.7</span>M</div>
+    <div class="stat-label">US fishkeeping households</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-val"><span>10</span></div>
+    <div class="stat-label">Beautifully crafted screens</div>
+  </div>
+</div>
+
+<!-- Screens Gallery -->
+<section class="section" id="screens">
+  <div class="section-label">All Screens</div>
+  <h2 class="section-heading">Every view, <em style="font-style: italic; color: var(--teal);">crafted</em><br>with intention</h2>
+  <p class="section-sub">10 premium screens designed for the serious hobbyist who wants beauty as much as function.</p>
+
+  <div class="screens-scroll-wrap">
+    <div class="screens-row">
+
+      <!-- 1. Dashboard -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-1">
+              <div class="s-header"><div class="s-title">Dashboard</div><div class="s-badge">✦ Pro</div></div>
+              <div class="s-card"><div class="s-teal-bar"></div><div class="s-row"><div class="s-chip">pH 8.2</div><div class="s-chip">78°F</div><div class="s-chip">✓ Safe</div></div></div>
+              <div class="s-card" style="opacity:0.6;"><div style="font-size:7px;color:var(--muted);margin-bottom:3px;">Planted Corner</div><div class="s-row"><div class="s-chip">pH 7.1</div><div class="s-chip">76°F</div></div></div>
+              <div class="s-line"></div>
+              <div style="font-size:7px;color:var(--muted);margin-bottom:4px;">REMINDERS</div>
+              <div style="display:flex;align-items:center;gap:5px;padding:4px 0;"><div style="width:14px;height:14px;border-radius:4px;background:rgba(0,212,170,0.15);display:flex;align-items:center;justify-content:center;font-size:7px;">💧</div><div style="font-size:7px;color:var(--pearl);">Water change today</div></div>
+              <div style="display:flex;align-items:center;gap:5px;padding:4px 0;"><div style="width:14px;height:14px;border-radius:4px;background:rgba(255,107,107,0.1);display:flex;align-items:center;justify-content:center;font-size:7px;">⚗️</div><div style="font-size:7px;color:var(--pearl);">Test params in 3 days</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Dashboard</div>
+      </div>
+
+      <!-- 2. My Tanks -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-2">
+              <div class="s-header"><div class="s-title">My Tanks</div><div style="font-size:13px;">＋</div></div>
+              <div class="s-card" style="border-color:rgba(0,212,170,0.25);">
+                <div style="font-size:8px;color:var(--white);font-weight:600;margin-bottom:2px;">🪸 Living Room Reef</div>
+                <div style="font-size:6px;color:var(--muted);margin-bottom:5px;">125 gal · Reef · 287 days</div>
+                <div class="s-progress"><div class="s-progress-fill" style="width:82%;"></div></div>
+                <div style="font-size:6px;color:var(--teal);margin-top:2px;">Health: Excellent</div>
+              </div>
+              <div style="height:5px;"></div>
+              <div class="s-card">
+                <div style="font-size:8px;color:var(--white);font-weight:600;margin-bottom:2px;">🌿 Planted Corner</div>
+                <div style="font-size:6px;color:var(--muted);margin-bottom:5px;">40 gal · Freshwater · 54 days</div>
+                <div class="s-progress"><div class="s-progress-fill" style="width:65%;background:linear-gradient(90deg,#7ecf6a,#4a9e35);"></div></div>
+                <div style="font-size:6px;color:#7ecf6a;margin-top:2px;">Health: Good</div>
+              </div>
+              <div style="height:8px;"></div>
+              <div style="text-align:center;padding:7px;border:1px dashed rgba(0,212,170,0.25);border-radius:7px;font-size:7px;color:var(--teal);">＋ Add new tank</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">My Tanks</div>
+      </div>
+
+      <!-- 3. Species DB -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-3">
+              <div class="s-header"><div class="s-title">Species DB</div></div>
+              <div style="background:rgba(255,255,255,0.06);border-radius:6px;padding:5px 8px;font-size:7px;color:var(--muted);margin-bottom:8px;">🔍 Search 1,400+ species…</div>
+              <div style="display:flex;gap:4px;margin-bottom:8px;">
+                <div style="flex:1;background:rgba(0,212,170,0.12);border-radius:5px;padding:3px 5px;text-align:center;font-size:6px;color:var(--teal);">Reef</div>
+                <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:5px;padding:3px 5px;text-align:center;font-size:6px;color:var(--muted);">Freshwater</div>
+                <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:5px;padding:3px 5px;text-align:center;font-size:6px;color:var(--muted);">Coral</div>
+              </div>
+              <div class="s-fish-row"><div class="s-fish-icon">🐠</div><div class="s-fish-info"><div class="s-fish-name">Ocellaris Clownfish</div><div class="s-fish-species">Amphiprion ocellaris · Easy</div></div><div style="font-size:7px;color:var(--teal);">＋</div></div>
+              <div class="s-line"></div>
+              <div class="s-fish-row"><div class="s-fish-icon">🐡</div><div class="s-fish-info"><div class="s-fish-name">Royal Gramma</div><div class="s-fish-species">Gramma loreto · Moderate</div></div><div style="font-size:7px;color:var(--teal);">＋</div></div>
+              <div class="s-line"></div>
+              <div class="s-fish-row"><div class="s-fish-icon">🦐</div><div class="s-fish-info"><div class="s-fish-name">Cleaner Shrimp</div><div class="s-fish-species">Lysmata amboinensis · Easy</div></div><div style="font-size:7px;color:var(--teal);">＋</div></div>
+              <div class="s-line"></div>
+              <div class="s-fish-row"><div class="s-fish-icon">🪸</div><div class="s-fish-info"><div class="s-fish-name">Torch Coral</div><div class="s-fish-species">Euphyllia glabrescens · Expert</div></div><div style="font-size:7px;color:var(--coral);">＋</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Species DB</div>
+      </div>
+
+      <!-- 4. Feeding -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-4">
+              <div class="s-header"><div class="s-title">Feeding Log</div></div>
+              <div style="text-align:center;padding:10px 0 6px;">
+                <div style="font-size:22px;margin-bottom:4px;">🐟</div>
+                <div style="font-size:8px;color:var(--teal);font-weight:500;">Living Room Reef</div>
+                <div style="font-size:6px;color:var(--muted);">Last fed: 18h ago</div>
+              </div>
+              <div class="s-card" style="border-color:rgba(126,207,106,0.2);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><div style="font-size:8px;color:var(--white);">Morning feed</div><div style="font-size:6px;color:var(--muted);">Reef Roids · 8:00 AM</div></div>
+                  <div style="font-size:8px;color:#7ecf6a;">✓</div>
+                </div>
+              </div>
+              <div style="height:4px;"></div>
+              <div class="s-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><div style="font-size:8px;color:var(--white);">Evening feed</div><div style="font-size:6px;color:var(--muted);">Mysis Shrimp · 7:00 PM</div></div>
+                  <div style="font-size:8px;color:var(--muted);">—</div>
+                </div>
+              </div>
+              <div style="height:6px;"></div>
+              <div style="font-size:7px;color:var(--muted);margin-bottom:4px;">THIS WEEK</div>
+              <div style="display:flex;gap:3px;">
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:16px;background:rgba(0,212,170,0.4);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--muted);margin-top:2px;">M</div></div>
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:20px;background:rgba(0,212,170,0.5);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--muted);margin-top:2px;">T</div></div>
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:14px;background:rgba(0,212,170,0.35);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--muted);margin-top:2px;">W</div></div>
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:18px;background:rgba(0,212,170,0.45);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--muted);margin-top:2px;">T</div></div>
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:22px;background:var(--teal);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--teal);margin-top:2px;">F</div></div>
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:10px;background:rgba(255,255,255,0.1);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--muted);margin-top:2px;">S</div></div>
+                <div style="flex:1;text-align:center;"><div style="width:100%;height:10px;background:rgba(255,255,255,0.1);border-radius:3px 3px 0 0;"></div><div style="font-size:5px;color:var(--muted);margin-top:2px;">S</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Feeding Log</div>
+      </div>
+
+      <!-- 5. Community -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-5">
+              <div class="s-header"><div class="s-title">Community</div></div>
+              <div style="display:flex;gap:4px;margin-bottom:8px;">
+                <div style="flex:1;background:rgba(0,212,170,0.12);border-radius:5px;padding:3px;text-align:center;font-size:6px;color:var(--teal);">Feed</div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:5px;padding:3px;text-align:center;font-size:6px;color:var(--muted);">Trending</div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:5px;padding:3px;text-align:center;font-size:6px;color:var(--muted);">Suggest</div>
+              </div>
+              <div class="community-post">
+                <div class="cp-header"><div class="cp-avatar" style="background:linear-gradient(135deg,#1a3a5c,var(--teal));"></div><div><div class="cp-name">reef_master_jay</div></div></div>
+                <div class="cp-img-bg">🪸</div>
+                <div style="font-size:6px;color:var(--muted);margin-top:3px;">125g SPS reef · Alk 9.2 · Ca 440 · Mg 1350</div>
+                <div class="cp-stats"><div class="cp-stat">❤️ 47</div><div class="cp-stat">💬 12</div></div>
+              </div>
+              <div class="community-post">
+                <div class="cp-header"><div class="cp-avatar" style="background:linear-gradient(135deg,#2a1a4c,#9b59b6);"></div><div><div class="cp-name">planted_paradise</div></div></div>
+                <div class="cp-img-bg" style="background:linear-gradient(135deg,#0d3a14,#062210);">🌿</div>
+                <div style="font-size:6px;color:var(--muted);margin-top:3px;">Dutch planted · CO₂ 30ppm · pH 6.8</div>
+                <div class="cp-stats"><div class="cp-stat">❤️ 31</div><div class="cp-stat">💬 8</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Community</div>
+      </div>
+
+      <!-- 6. Profile -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-6">
+              <div style="text-align:center;padding:12px 0 8px;">
+                <div class="s-avatar">PG</div>
+                <div style="font-size:9px;font-weight:600;color:var(--white);">Piyush Golan</div>
+                <div style="font-size:6px;color:var(--muted);margin-top:2px;">Member since April 2026</div>
+                <div class="s-badge" style="display:inline-flex;margin-top:4px;">⭐ Pro Lifetime</div>
+              </div>
+              <div class="s-card" style="margin-bottom:5px;">
+                <div style="display:flex;justify-content:space-between;font-size:7px;"><span style="color:var(--muted);">Tanks owned</span><span style="color:var(--white);font-weight:500;">2</span></div>
+              </div>
+              <div class="s-card" style="margin-bottom:5px;">
+                <div style="display:flex;justify-content:space-between;font-size:7px;"><span style="color:var(--muted);">Parameter logs</span><span style="color:var(--white);font-weight:500;">143</span></div>
+              </div>
+              <div class="s-card" style="margin-bottom:5px;">
+                <div style="display:flex;justify-content:space-between;font-size:7px;"><span style="color:var(--muted);">Species tracked</span><span style="color:var(--white);font-weight:500;">18</span></div>
+              </div>
+              <div class="s-card">
+                <div style="display:flex;justify-content:space-between;font-size:7px;"><span style="color:var(--muted);">Achievements</span><span style="color:var(--gold);font-weight:500;">7 / 30 🏆</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Your Profile</div>
+      </div>
+
+      <!-- 7. Tank Overview -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-1">
+              <div class="s-header">
+                <div><div class="s-title">Living Room Reef</div><div class="s-sub">125 gal · 287 days old</div></div>
+                <div style="font-size:7px;color:var(--teal);">● Healthy</div>
+              </div>
+              <div style="text-align:center;padding:6px;font-size:24px;background:rgba(0,212,170,0.05);border-radius:8px;margin-bottom:6px;">🪸</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;">
+                <div class="s-card"><div style="font-size:7px;color:var(--muted);">Volume</div><div style="font-size:10px;color:var(--white);font-weight:600;">125 gal</div></div>
+                <div class="s-card"><div style="font-size:7px;color:var(--muted);">Type</div><div style="font-size:10px;color:var(--white);font-weight:600;">Reef</div></div>
+                <div class="s-card"><div style="font-size:7px;color:var(--muted);">Livestock</div><div style="font-size:10px;color:var(--white);font-weight:600;">11 items</div></div>
+                <div class="s-card"><div style="font-size:7px;color:var(--muted);">Last change</div><div style="font-size:10px;color:var(--coral);font-weight:600;">3d ago</div></div>
+              </div>
+              <div class="s-card">
+                <div style="font-size:7px;color:var(--muted);margin-bottom:4px;">RESIDENTS</div>
+                <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                  <div style="font-size:12px;">🐠</div><div style="font-size:12px;">🐠</div><div style="font-size:12px;">🦐</div><div style="font-size:12px;">🐡</div><div style="font-size:12px;">🪸</div><div style="font-size:12px;">🐙</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Tank Overview</div>
+      </div>
+
+      <!-- 8. Parameter History -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-2">
+              <div class="s-header"><div class="s-title">Param History</div></div>
+              <div style="display:flex;gap:3px;margin-bottom:6px;">
+                <div style="flex:1;background:rgba(0,212,170,0.15);border-radius:4px;padding:3px;text-align:center;font-size:6px;color:var(--teal);">7d</div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;padding:3px;text-align:center;font-size:6px;color:var(--muted);">30d</div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;padding:3px;text-align:center;font-size:6px;color:var(--muted);">90d</div>
+              </div>
+              <div style="flex:1;position:relative;height:70px;margin-bottom:6px;">
+                <svg width="100%" height="100%" viewBox="0 0 150 70" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#00D4AA" stop-opacity="0.35"/>
+                      <stop offset="100%" stop-color="#00D4AA" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#FF6B6B" stop-opacity="0.2"/>
+                      <stop offset="100%" stop-color="#FF6B6B" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#E8C547" stop-opacity="0.2"/>
+                      <stop offset="100%" stop-color="#E8C547" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <line x1="0" y1="17" x2="150" y2="17" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  <line x1="0" y1="35" x2="150" y2="35" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  <line x1="0" y1="52" x2="150" y2="52" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  <path d="M0,42 C20,38 35,30 55,32 C75,34 90,22 115,18 C130,15 140,17 150,14" fill="none" stroke="#00D4AA" stroke-width="1.5"/>
+                  <path d="M0,42 C20,38 35,30 55,32 C75,34 90,22 115,18 C130,15 140,17 150,14 L150,70 L0,70 Z" fill="url(#g1)"/>
+                  <path d="M0,56 C25,52 45,50 65,53 C85,56 105,48 125,44 C140,41 148,43 150,40" fill="none" stroke="#FF6B6B" stroke-width="1" stroke-dasharray="3 2"/>
+                  <path d="M0,56 C25,52 45,50 65,53 C85,56 105,48 125,44 C140,41 148,43 150,40 L150,70 L0,70Z" fill="url(#g2)"/>
+                  <path d="M0,62 C30,60 55,56 75,58 C95,60 115,54 135,51 C145,49 148,50 150,49" fill="none" stroke="#E8C547" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6"/>
+                </svg>
+              </div>
+              <div style="display:flex;gap:8px;margin-bottom:4px;">
+                <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:2px;background:var(--teal);border-radius:1px;"></div><div style="font-size:6px;color:var(--muted);">pH</div></div>
+                <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:2px;background:var(--coral);border-radius:1px;"></div><div style="font-size:6px;color:var(--muted);">NO₃</div></div>
+                <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:2px;background:var(--gold);border-radius:1px;opacity:0.7;"></div><div style="font-size:6px;color:var(--muted);">Alk</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;">
+                <div style="background:rgba(0,212,170,0.1);border-radius:5px;padding:4px;text-align:center;"><div style="font-size:9px;font-weight:600;color:var(--teal);font-family:'DM Mono',monospace;">8.2</div><div style="font-size:5px;color:var(--muted);">pH avg</div></div>
+                <div style="background:rgba(255,107,107,0.1);border-radius:5px;padding:4px;text-align:center;"><div style="font-size:9px;font-weight:600;color:var(--coral);font-family:'DM Mono',monospace;">3.8</div><div style="font-size:5px;color:var(--muted);">NO₃ avg</div></div>
+                <div style="background:rgba(232,197,71,0.1);border-radius:5px;padding:4px;text-align:center;"><div style="font-size:9px;font-weight:600;color:var(--gold);font-family:'DM Mono',monospace;">9.1</div><div style="font-size:5px;color:var(--muted);">Alk avg</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Parameter History</div>
+      </div>
+
+      <!-- 9. About Tankly -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill" style="background:linear-gradient(160deg,#0a1624,#05101c);">
+              <div style="text-align:center;padding:14px 0 8px;">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--teal),#00a882);border-radius:10px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 16px rgba(0,212,170,0.4);">🐠</div>
+                <div style="font-size:11px;font-weight:600;color:var(--white);font-family:'Cormorant Garamond',serif;">Tankly</div>
+                <div style="font-size:6px;color:var(--muted);">Version 1.0.0 · April 2026</div>
+              </div>
+              <div class="s-card" style="margin-bottom:4px;">
+                <div style="font-size:7px;color:var(--muted);line-height:1.6;">The design-first aquarium manager built for serious hobbyists who want beautiful and functional.</div>
+              </div>
+              <div class="s-card" style="margin-bottom:4px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:7px;"><span style="color:var(--muted);">Made with ❤️ by</span><span style="color:var(--white);">Piyush Golan</span></div>
+              </div>
+              <div class="s-card" style="margin-bottom:4px;">
+                <div style="display:flex;justify-content:space-between;font-size:7px;"><span style="color:var(--muted);">Privacy Policy</span><span style="color:var(--teal);">→</span></div>
+              </div>
+              <div class="s-card">
+                <div style="display:flex;justify-content:space-between;font-size:7px;"><span style="color:var(--muted);">Rate on Play Store</span><span style="color:var(--gold);">★★★★★</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">About Tankly</div>
+      </div>
+
+      <!-- 10. Achievements -->
+      <div class="screen-card">
+        <div class="screen-phone">
+          <div class="screen-phone-inner">
+            <div class="screen-fill s-bg-6">
+              <div class="s-header"><div class="s-title">Achievements</div><div style="font-size:7px;color:var(--gold);">7 / 30 🏆</div></div>
+              <div style="margin-bottom:5px;"><div class="s-progress"><div class="s-progress-fill" style="width:23%;background:linear-gradient(90deg,var(--gold),#c9a820);"></div></div><div style="font-size:6px;color:var(--muted);margin-top:2px;">23% complete</div></div>
+              <div class="s-achievement" style="margin-bottom:4px;border:1px solid rgba(0,212,170,0.2);">
+                <div class="s-ach-icon" style="background:rgba(0,212,170,0.15);">🌊</div>
+                <div><div style="font-size:7px;color:var(--white);font-weight:500;">First Log</div><div style="font-size:6px;color:var(--teal);">Logged your first parameter</div></div>
+              </div>
+              <div class="s-achievement" style="margin-bottom:4px;border:1px solid rgba(232,197,71,0.2);">
+                <div class="s-ach-icon" style="background:rgba(232,197,71,0.12);">🐠</div>
+                <div><div style="font-size:7px;color:var(--white);font-weight:500;">Reef Keeper</div><div style="font-size:6px;color:var(--gold);">Added 5+ reef species</div></div>
+              </div>
+              <div class="s-achievement" style="margin-bottom:4px;border:1px solid rgba(255,255,255,0.07);opacity:0.5;">
+                <div class="s-ach-icon" style="background:rgba(255,255,255,0.05);">🔒</div>
+                <div><div style="font-size:7px;color:var(--muted);">100 Day Streak</div><div style="font-size:6px;color:var(--muted-dim);">Log every day for 100 days</div></div>
+              </div>
+              <div class="s-achievement" style="border:1px solid rgba(255,255,255,0.07);opacity:0.5;">
+                <div class="s-ach-icon" style="background:rgba(255,255,255,0.05);">🔒</div>
+                <div><div style="font-size:7px;color:var(--muted);">Community Star</div><div style="font-size:6px;color:var(--muted-dim);">Get 100 likes on a post</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-name">Achievements</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Features Grid -->
+<section class="section" id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-heading">Everything you need,<br>nothing you don't</h2>
+  <p class="section-sub">Built around the features hobbyists actually ask for — and a few they didn't know they wanted.</p>
+
+  <div class="features-grid">
+    <div class="feature-cell">
+      <span class="feat-icon">📊</span>
+      <div class="feat-title">Multi-parameter graphs</div>
+      <div class="feat-desc">View pH, alkalinity, calcium, and nitrate overlaid on one chart. The #1 most-requested missing feature in competing apps — we built it from day one.</div>
+    </div>
+    <div class="feature-cell">
+      <span class="feat-icon">🐠</span>
+      <div class="feat-title">Species database</div>
+      <div class="feat-desc">1,400+ species with care requirements, compatibility info, and temperament data. Tap once to add to your tank. Rare species? Add manually.</div>
+    </div>
+    <div class="feature-cell">
+      <span class="feat-icon">🌊</span>
+      <div class="feat-title">Living ripple feedback</div>
+      <div class="feat-desc">Our signature UI moment: a water ripple plays when parameters are in safe range. Pulses red when out of range. No other app does this.</div>
+    </div>
+    <div class="feature-cell">
+      <span class="feat-icon">⏰</span>
+      <div class="feat-title">Smart reminders</div>
+      <div class="feat-desc">Water change, filter cleaning, parameter testing — all auto-scheduled and logged with timestamps when marked done. Home screen widget shows what's next.</div>
+    </div>
+    <div class="feature-cell">
+      <span class="feat-icon">📸</span>
+      <div class="feat-title">Tank timeline</div>
+      <div class="feat-desc">Dated photo journal becomes a visual month-by-month evolution of your tank. The emotional hook that keeps users coming back — and sharing on Reddit.</div>
+    </div>
+    <div class="feature-cell">
+      <span class="feat-icon">☁️</span>
+      <div class="feat-title">Cloud sync & export</div>
+      <div class="feat-desc">Pro users get cross-device sync, full cloud backup, and CSV/Excel export. Your data is yours — always. We never lock parameter logging behind a paywall.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section">
+  <div class="section-label">From the Community</div>
+  <h2 class="section-heading">What hobbyists<br>actually say</h2>
+  <p class="section-sub" style="margin-bottom: 36px;">Real quotes from Reef2Reef, Reddit, and aquarium forums that shaped every feature decision.</p>
+
+  <div class="testimonials-row">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I would prefer a one-time fee to have all access forever. Finally an app that listens."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">R2</div>
+        <div><div class="testi-name">Reef2Reef user</div><div class="testi-handle">r/ReefTank</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I can only view one graph at a time which isn't ideal when troubleshooting. Someone needs to fix this."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AL</div>
+        <div><div class="testi-name">Aquarium Log reviewer</div><div class="testi-handle">Play Store</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I've been using Pocket Marine for years but I don't like the UI, looking for another option."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RF</div>
+        <div><div class="testi-name">Reef forum member</div><div class="testi-handle">Reef2Reef</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"$5/month auto-billing? Yeah, no. Deleted." — The reason Tankly chose a one-time purchase model.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">FI</div>
+        <div><div class="testi-name">Fishi user</div><div class="testi-handle">App Store review</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"There should be a middle hobbyist tier. $29.99/year for 2 tanks is too much. $5–7 would be perfect."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AQ</div>
+        <div><div class="testi-name">AquaticLog reviewer</div><div class="testi-handle">Play Store</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-heading">Fair pricing.<br><em style="font-style:italic;color:var(--teal);">No surprises.</em></h2>
+  <p class="section-sub" style="margin-bottom: 48px;">No hidden subscription reveals. No feature locks that ruin trust. Pay once, own it forever.</p>
+
+  <div class="pricing-grid">
+    <!-- Free -->
+    <div class="price-card">
+      <div class="price-tier">Free</div>
+      <div class="price-amount">$0</div>
+      <div class="price-period">forever</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> 1 tank</li>
+        <li><span class="check">✓</span> Unlimited parameter logging</li>
+        <li><span class="check">✓</span> Basic maintenance reminders</li>
+        <li><span class="check">✓</span> Up to 10 photos</li>
+        <li><span class="check">✓</span> Browse community feed</li>
+        <li><span class="lock">—</span> Multi-tank management</li>
+        <li><span class="lock">—</span> Multi-graph overlay</li>
+        <li><span class="lock">—</span> Cloud backup</li>
+        <li><span class="lock">—</span> Dark mode</li>
+      </ul>
+      <a href="#" class="price-cta price-cta-ghost">Download Free</a>
+    </div>
+
+    <!-- Pro Monthly -->
+    <div class="price-card featured">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-tier">Pro Monthly</div>
+      <div class="price-amount">$4<span style="font-size:28px;">.99</span></div>
+      <div class="price-period">per month</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Unlimited tanks</li>
+        <li><span class="check">✓</span> Unlimited parameter logging</li>
+        <li><span class="check">✓</span> Multi-graph overlay (Pro)</li>
+        <li><span class="check">✓</span> Unlimited photos + gallery</li>
+        <li><span class="check">✓</span> Full species database</li>
+        <li><span class="check">✓</span> Cloud backup + sync</li>
+        <li><span class="check">✓</span> Post in community</li>
+        <li><span class="check">✓</span> Dark mode</li>
+        <li><span class="check">✓</span> Home screen widget</li>
+      </ul>
+      <a href="#" class="price-cta price-cta-filled">Start Pro</a>
+    </div>
+
+    <!-- Lifetime -->
+    <div class="price-card">
+      <div class="price-tier">Pro Lifetime</div>
+      <div class="price-amount">$9<span style="font-size:28px;">.99</span></div>
+      <div class="price-period">one-time · own forever</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check" style="color:var(--gold);">★</span> Everything in Pro</li>
+        <li><span class="check" style="color:var(--gold);">★</span> Pay once, never again</li>
+        <li><span class="check" style="color:var(--gold);">★</span> All future updates free</li>
+        <li><span class="check" style="color:var(--gold);">★</span> CSV & Excel data export</li>
+        <li><span class="check" style="color:var(--gold);">★</span> Tank timeline (visual history)</li>
+        <li><span class="check" style="color:var(--gold);">★</span> Priority feature requests</li>
+        <li><span class="check" style="color:var(--gold);">★</span> Expense tracker</li>
+        <li><span class="check" style="color:var(--gold);">★</span> Equipment log + alerts</li>
+        <li><span class="check" style="color:var(--gold);">★</span> Lifetime badge in community</li>
+      </ul>
+      <a href="#" class="price-cta price-cta-gold">Buy Lifetime — $9.99</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Bottom -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2>Your reef deserves<br><em style="font-style:italic;color:var(--teal);">better tools.</em></h2>
+  <p>Join serious hobbyists who track smarter, not harder.</p>
+  <div class="cta-buttons">
+    <a href="#" class="btn-primary">🎣 &nbsp;Download Free on Android</a>
+    <a href="#" class="btn-secondary">See pricing →</a>
+  </div>
+</section>
+
+<div class="water-separator"></div>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="logo-mark" style="width:28px;height:28px;font-size:14px;border-radius:8px;">🐠</div>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--white);">Tankly</span>
+  </div>
+  <p>© 2026 Tankly · Crafted for the serious hobbyist</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Support</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Generate realistic bubbles
+  const canvas = document.getElementById('bubbleCanvas');
+  const count = 28;
+
+  const sizes = [8, 12, 16, 20, 26, 32, 40, 50, 14, 18];
+  const durations = [14, 18, 22, 26, 20, 24, 30, 16, 28, 19];
+
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+
+    const size = sizes[Math.floor(Math.random() * sizes.length)] + (Math.random() * 10 - 5);
+    const left = Math.random() * 100;
+    const delay = Math.random() * -30;
+    const dur = durations[Math.floor(Math.random() * durations.length)] + (Math.random() * 8 - 4);
+    const drift = (Math.random() * 80 - 40).toFixed(0) + 'px';
+
+    b.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${left}%;
+      animation-duration: ${dur}s;
+      animation-delay: ${delay}s;
+      --drift: ${drift};
+      opacity: 0;
+    `;
+    canvas.appendChild(b);
+  }
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#') return;
+      e.preventDefault();
+      document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Parallax caustics on scroll
+  const caustics = document.querySelector('.caustics');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY * 0.02;
+    caustics.style.transform = `translateY(${y}px)`;
+  }, { passive: true });
+</script>
+</body>
+</html> -->

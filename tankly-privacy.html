@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tankly — Privacy Policy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+<style>
+  :root{--navy:#050d1a;--card:rgba(10,22,44,0.72);--border:rgba(0,230,255,0.10);--cyan:#00e5ff;--purple:#a855f7;--teal:#06b6d4;--text:#c8dff0;--muted:#5f7f9a;--white:#eef6ff}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--navy);color:var(--text);font-family:'Cabin',sans-serif;font-size:15px;line-height:1.75;overflow-x:hidden}
+  #vanta-bg{position:fixed;inset:0;z-index:0}
+  #vanta-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,13,26,0.62) 0%,rgba(5,13,26,0.32) 40%,rgba(5,13,26,0.78) 100%);pointer-events:none}
+
+  .bubbles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .bubble{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,229,255,0.45),rgba(0,229,255,0.04));border:1px solid rgba(0,229,255,0.22);animation:rise linear infinite}
+  .bubble:nth-child(1){width:8px;height:8px;left:8%;animation-duration:14s}
+  .bubble:nth-child(2){width:5px;height:5px;left:20%;animation-duration:20s;animation-delay:3s}
+  .bubble:nth-child(3){width:12px;height:12px;left:33%;animation-duration:17s;animation-delay:1s}
+  .bubble:nth-child(4){width:4px;height:4px;left:47%;animation-duration:22s;animation-delay:6s}
+  .bubble:nth-child(5){width:9px;height:9px;left:62%;animation-duration:15s;animation-delay:2s}
+  .bubble:nth-child(6){width:6px;height:6px;left:75%;animation-duration:19s;animation-delay:9s}
+  .bubble:nth-child(7){width:14px;height:14px;left:88%;animation-duration:25s;animation-delay:4s}
+  .bubble:nth-child(8){width:5px;height:5px;left:55%;animation-duration:18s;animation-delay:11s}
+  .bubble:nth-child(9){width:7px;height:7px;left:5%;animation-duration:23s;animation-delay:7s}
+  .bubble:nth-child(10){width:10px;height:10px;left:92%;animation-duration:16s;animation-delay:13s}
+  @keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:0.6}100%{transform:translateY(-110vh) translateX(30px);opacity:0}}
+
+  nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,5vw,3rem);height:60px;background:rgba(5,13,26,0.85);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+  .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 18px rgba(0,229,255,0.35)}
+  .logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .nav-tabs{display:flex;gap:4px;flex-wrap:wrap}
+  .nav-tab{padding:6px 14px;border-radius:8px;font-family:'Cabin',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:none;transition:all 0.2s;border:1px solid transparent}
+  .nav-tab:hover,.nav-tab.active{color:var(--cyan);background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.2)}
+
+  .hero{position:relative;z-index:2;text-align:center;padding:clamp(4rem,10vw,7rem) clamp(1rem,5vw,3rem) 4rem;perspective:900px}
+  .hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);border-radius:999px;padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:1.5rem;animation:fadeUp 0.7s ease both;backdrop-filter:blur(8px)}
+  .hero-pill span{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 2s ease infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.4rem,6vw,4.2rem);color:var(--white);line-height:1.05;animation:fadeUp 0.7s 0.1s ease both;text-shadow:0 0 60px rgba(0,229,255,0.18)}
+  .hero h1 span{background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero-sub{margin-top:1rem;color:var(--muted);font-size:15px;max-width:480px;margin-inline:auto;animation:fadeUp 0.7s 0.2s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+  .parallax-scene{transform-style:preserve-3d}
+  .p-layer-back,.p-layer-mid,.p-layer-front{will-change:transform;transition:transform 0.08s linear}
+
+  .shimmer-line{height:1px;position:relative;z-index:2;background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);background-size:200% 100%;animation:shimmer 3s linear infinite;margin:0 clamp(1rem,5vw,4rem);opacity:0.6}
+  @keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+
+  .page{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:3.5rem clamp(1rem,5vw,2.5rem) 5rem}
+
+  .updated-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:3px 10px;margin-bottom:2rem;font-family:'Cabin',sans-serif}
+
+  .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:4rem 2rem;color:var(--muted);font-size:14px}
+  .spinner{width:36px;height:36px;border-radius:50%;border:2px solid rgba(0,229,255,0.15);border-top-color:var(--cyan);animation:spin 0.8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .error-state{background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.18);border-radius:12px;padding:2rem;text-align:center;color:var(--muted)}
+  .error-state strong{color:var(--white);display:block;margin-bottom:6px}
+
+  /* ── Markdown doc styles ── */
+  .doc-content{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem 2.2rem;transition:border-color 0.3s;backdrop-filter:blur(12px)}
+  .doc-content:hover{border-color:rgba(0,229,255,0.2)}
+  .doc-content h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--white);margin-bottom:0.5rem;margin-top:0}
+  .doc-content h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:var(--cyan);letter-spacing:0.04em;text-transform:uppercase;margin:2rem 0 0.7rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+  .doc-content h3{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;margin:1.4rem 0 0.5rem}
+  .doc-content p{color:var(--text);font-size:14px;margin-bottom:0.8rem;font-family:'Cabin',sans-serif}
+  .doc-content ul,.doc-content ol{padding-left:1.4rem;margin-bottom:0.9rem;font-size:14px;color:var(--text);font-family:'Cabin',sans-serif}
+  .doc-content li{margin-bottom:0.3rem}
+  .doc-content li::marker{color:var(--cyan)}
+  .doc-content strong{color:var(--white);font-weight:600}
+  .doc-content em{color:var(--muted)}
+  .doc-content a{color:var(--cyan);text-decoration:none}
+  .doc-content a:hover{text-decoration:underline}
+  .doc-content code{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);border-radius:5px;padding:1px 6px;font-size:12px;color:var(--cyan);font-family:monospace}
+  .doc-content pre{background:rgba(5,13,26,0.7);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;overflow-x:auto;margin:1rem 0}
+  .doc-content pre code{background:none;border:none;padding:0;font-size:13px}
+  .doc-content table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+  .doc-content th{background:rgba(0,229,255,0.08);color:var(--cyan);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+  .doc-content td{padding:7px 12px;border-bottom:1px solid rgba(0,229,255,0.05);color:var(--text)}
+  .doc-content tr:last-child td{border-bottom:none}
+  .doc-content tr:hover td{background:rgba(0,229,255,0.03)}
+  .doc-content blockquote{border-left:3px solid var(--cyan);padding-left:1rem;margin:1rem 0;color:var(--muted)}
+  .doc-content hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+
+  /* Fallback inline privacy content */
+  .privacy-sections{display:flex;flex-direction:column;gap:0}
+  .privacy-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem 2rem;margin-bottom:1rem;backdrop-filter:blur(12px);transition:border-color 0.25s,transform 0.2s}
+  .privacy-section:hover{border-color:rgba(0,229,255,0.22);transform:translateY(-2px)}
+  .privacy-section h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--cyan);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+  .privacy-section p,.privacy-section li{font-family:'Cabin',sans-serif;font-size:14px;color:var(--text);line-height:1.75}
+  .privacy-section ul{padding-left:1.3rem;margin-top:0.5rem}
+  .privacy-section li{margin-bottom:0.3rem}
+  .privacy-section li::marker{color:var(--cyan)}
+  .privacy-section strong{color:var(--white)}
+
+  footer{position:relative;z-index:2;text-align:center;padding:2rem 1rem 3rem;border-top:1px solid var(--border);font-family:'Cabin',sans-serif;font-size:12px;color:var(--muted)}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--cyan)}
+</style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+<div class="bubbles">
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="tankly-home.html">
+    <div class="logo-icon">🐠</div>
+    <span class="logo-text">Tankly</span>
+  </a>
+  <div class="nav-tabs">
+    <a class="nav-tab" href="tankly-home.html">Home</a>
+    <a class="nav-tab active" href="tankly-privacy.html">Privacy</a>
+    <a class="nav-tab" href="tankly-tos.html">Terms</a>
+    <a class="nav-tab" href="tankly-home.html#hiw">How it works</a>
+    <a class="nav-tab" href="tankly-home.html#faq">FAQ</a>
+  </div>
+</nav>
+
+<div class="hero parallax-scene" id="hero">
+  <div class="p-layer-back">
+    <div class="hero-pill"><span></span>Legal · Privacy</div>
+  </div>
+  <div class="p-layer-mid">
+    <h1><span>Privacy</span> Policy</h1>
+    <p class="hero-sub">We only collect what we need. Your tank data is yours. Always.</p>
+  </div>
+</div>
+
+<div class="shimmer-line"></div>
+
+<main class="page">
+  <div class="updated-badge" id="privacy-badge">🗓 Last updated: May 2026 · Version 1.0</div>
+  <div id="privacy-body">
+    <!-- Supabase content loads here; fallback inline below -->
+    <div class="privacy-sections">
+
+      <div class="privacy-section">
+        <h2>1. Who we are</h2>
+        <p>Tankly is an aquarium tracking app developed by <strong>Piyush Golan</strong>, Bhilai, India (<a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a>). When this policy says "we", "us", or "our", it means Piyush Golan operating Tankly.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2>2. What data we collect</h2>
+        <p>We collect the minimum data needed to run the app:</p>
+        <ul>
+          <li><strong>Account data</strong> — Your Google account name, email, and profile photo, obtained when you sign in via Google OAuth.</li>
+          <li><strong>Tank & aquarium data</strong> — Parameters (pH, temperature, etc.), livestock, equipment, and maintenance logs you enter.</li>
+          <li><strong>Usage data</strong> — Your daily streak count and app activity, used for the streak feature.</li>
+          <li><strong>Community data</strong> — Posts, photos, and comments you voluntarily share in the community section.</li>
+          <li><strong>Device data</strong> — Anonymous crash reports and basic diagnostics to help us fix bugs (no personally identifiable information).</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section">
+        <h2>3. How we use your data</h2>
+        <ul>
+          <li>To provide the app's core features — logging, syncing, and restoring your aquarium data.</li>
+          <li>To display your streak, profile, and community contributions.</li>
+          <li>To generate AI-powered water quality suggestions (Pro plan only) — this uses your parameter data, not your identity.</li>
+          <li>To send important account emails (e.g. subscription confirmation, deletion confirmation).</li>
+          <li>To improve app stability using anonymous crash data.</li>
+        </ul>
+        <p>We <strong>never</strong> sell your data, use it for advertising, or share it with third parties for marketing.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2>4. Data storage & infrastructure</h2>
+        <p>Your data is stored across two cloud services:</p>
+        <ul>
+          <li><strong>Firebase (Google)</strong> — Stores your streak, tanks, parameter history, and account info. Servers located in the US/EU.</li>
+          <li><strong>Supabase (AWS)</strong> — Stores community posts, photos, and public profile data. Servers located in the EU.</li>
+        </ul>
+        <p>Both services use encryption in transit (TLS) and at rest. We follow their respective data processing agreements.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2>5. Free vs Pro data handling</h2>
+        <ul>
+          <li><strong>Free users</strong> — Your streak and first tank are backed up to the cloud. All other tank data remains local on your device only.</li>
+          <li><strong>Pro users</strong> — All tanks, full parameter history, livestock, equipment, and profile are backed up after every significant change.</li>
+          <li>In both cases, local data on your device is entirely under your control.</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section">
+        <h2>6. Your rights (GDPR &amp; general)</h2>
+        <p>You have the right to:</p>
+        <ul>
+          <li><strong>Access</strong> — Request a copy of all data we hold about you.</li>
+          <li><strong>Correction</strong> — Ask us to fix inaccurate data.</li>
+          <li><strong>Deletion</strong> — Delete your account anytime via Settings → Account → Delete account. This erases your profile, posts, photos, and auth record from our servers immediately.</li>
+          <li><strong>Portability</strong> — Request your data in a machine-readable format.</li>
+          <li><strong>Objection</strong> — Object to processing of your data for any purpose.</li>
+        </ul>
+        <p>To exercise these rights, email <a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a>. We respond within 30 days.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2>7. Children's privacy</h2>
+        <p>Tankly is not directed at children under 13. We do not knowingly collect personal data from children. If you believe a child has provided us data, contact us immediately and we will delete it.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2>8. Third-party services</h2>
+        <p>Tankly integrates with:</p>
+        <ul>
+          <li><strong>Google Sign-In</strong> — for authentication. Governed by <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+          <li><strong>Google Play Billing</strong> — for Pro subscriptions. Payment data is handled entirely by Google; we never see your card details.</li>
+          <li><strong>Firebase</strong> — cloud database and analytics. See <a href="https://firebase.google.com/support/privacy" target="_blank">Firebase Privacy</a>.</li>
+          <li><strong>Supabase</strong> — community database. See <a href="https://supabase.com/privacy" target="_blank">Supabase Privacy</a>.</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section">
+        <h2>9. Changes to this policy</h2>
+        <p>We may update this policy as the app evolves. We'll notify you of material changes via an in-app notice or email. Continued use of Tankly after changes constitutes acceptance of the updated policy.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2>10. Contact</h2>
+        <p>Questions about privacy? Email us at <a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a>. We're a small indie team and we read every email.</p>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p style="margin-bottom:6px;">
+    <a href="tankly-privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="tankly-tos.html">Terms of Service</a> &nbsp;·&nbsp;
+    <a href="tankly-home.html">How it works</a> &nbsp;·&nbsp;
+    <a href="tankly-home.html">FAQ</a> &nbsp;·&nbsp;
+    <a href="mailto:golanpiyush@gmail.com">Contact</a>
+  </p>
+  <p>© 2026 Tankly · Piyush Golan · Bhilai, India</p>
+  <p style="margin-top:4px;font-size:11px;opacity:0.5;">Built with 🐠 for aquarium hobbyists everywhere</p>
+</footer>
+
+<script>
+VANTA.WAVES({
+  el:'#vanta-bg', THREE:THREE,
+  mouseControls:true, touchControls:true, gyroControls:true,
+  minHeight:200, minWidth:200, scale:1.0, scaleMobile:1.0,
+  color:0x020a16, shininess:45, waveHeight:15, waveSpeed:0.5, zoom:0.9
+});
+
+(function(){
+  const hero=document.getElementById('hero');
+  const layers=[
+    {el:hero.querySelector('.p-layer-back'),d:0.010},
+    {el:hero.querySelector('.p-layer-mid'), d:0.024},
+  ];
+  let cx=innerWidth/2,cy=innerHeight/2;
+  document.addEventListener('mousemove',e=>{
+    const dx=e.clientX-cx,dy=e.clientY-cy;
+    layers.forEach(({el,d})=>el.style.transform=`translate3d(${dx*d}px,${dy*d}px,0)`);
+  });
+  addEventListener('resize',()=>{cx=innerWidth/2;cy=innerHeight/2});
+})();
+
+// Try to load from Supabase if configured
+const CONFIG={supabaseUrl:'__SUPABASE_URL__',supabaseAnonKey:'__SUPABASE_ANON_KEY__'};
+if(!CONFIG.supabaseUrl.includes('__')) {
+  (async()=>{
+    try{
+      const res=await fetch(`${CONFIG.supabaseUrl}/rest/v1/legal_documents?id=eq.privacy_policy&published=eq.true&select=title,content,version,last_updated`,{headers:{'apikey':CONFIG.supabaseAnonKey,'Authorization':`Bearer ${CONFIG.supabaseAnonKey}`}});
+      const data=await res.json();
+      if(data.length){
+        const doc=data[0];
+        const fmt=new Date(doc.last_updated).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+        document.getElementById('privacy-badge').textContent=`🗓 Last updated: ${fmt} · Version ${doc.version}`;
+        document.getElementById('privacy-body').innerHTML=`<div class="doc-content">${marked.parse(doc.content||'')}</div>`;
+      }
+    }catch(e){}
+  })();
+}
+</script>
+</body>
+</html>

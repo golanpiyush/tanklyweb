@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tankly — Terms of Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+<style>
+  :root{--navy:#050d1a;--card:rgba(10,22,44,0.72);--border:rgba(0,230,255,0.10);--cyan:#00e5ff;--purple:#a855f7;--teal:#06b6d4;--text:#c8dff0;--muted:#5f7f9a;--white:#eef6ff}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--navy);color:var(--text);font-family:'Cabin',sans-serif;font-size:15px;line-height:1.75;overflow-x:hidden}
+  #vanta-bg{position:fixed;inset:0;z-index:0}
+  #vanta-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,13,26,0.62) 0%,rgba(5,13,26,0.32) 40%,rgba(5,13,26,0.78) 100%);pointer-events:none}
+
+  .bubbles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .bubble{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(168,85,247,0.35),rgba(168,85,247,0.04));border:1px solid rgba(168,85,247,0.2);animation:rise linear infinite}
+  .bubble:nth-child(1){width:8px;height:8px;left:8%;animation-duration:14s}
+  .bubble:nth-child(2){width:5px;height:5px;left:20%;animation-duration:20s;animation-delay:3s}
+  .bubble:nth-child(3){width:12px;height:12px;left:33%;animation-duration:17s;animation-delay:1s}
+  .bubble:nth-child(4){width:4px;height:4px;left:47%;animation-duration:22s;animation-delay:6s}
+  .bubble:nth-child(5){width:9px;height:9px;left:62%;animation-duration:15s;animation-delay:2s}
+  .bubble:nth-child(6){width:6px;height:6px;left:75%;animation-duration:19s;animation-delay:9s}
+  .bubble:nth-child(7){width:14px;height:14px;left:88%;animation-duration:25s;animation-delay:4s}
+  .bubble:nth-child(8){width:5px;height:5px;left:55%;animation-duration:18s;animation-delay:11s}
+  .bubble:nth-child(9){width:7px;height:7px;left:5%;animation-duration:23s;animation-delay:7s}
+  .bubble:nth-child(10){width:10px;height:10px;left:92%;animation-duration:16s;animation-delay:13s}
+  @keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:0.6}100%{transform:translateY(-110vh) translateX(30px);opacity:0}}
+
+  nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,5vw,3rem);height:60px;background:rgba(5,13,26,0.85);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+  .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 18px rgba(168,85,247,0.4)}
+  .logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .nav-tabs{display:flex;gap:4px;flex-wrap:wrap}
+  .nav-tab{padding:6px 14px;border-radius:8px;font-family:'Cabin',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:none;transition:all 0.2s;border:1px solid transparent}
+  .nav-tab:hover,.nav-tab.active{color:var(--purple);background:rgba(168,85,247,0.07);border-color:rgba(168,85,247,0.2)}
+
+  .hero{position:relative;z-index:2;text-align:center;padding:clamp(4rem,10vw,7rem) clamp(1rem,5vw,3rem) 4rem;perspective:900px}
+  .hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:999px;padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#c084fc;margin-bottom:1.5rem;animation:fadeUp 0.7s ease both;backdrop-filter:blur(8px)}
+  .hero-pill span{width:6px;height:6px;background:#c084fc;border-radius:50%;animation:pulse 2s ease infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+  .hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.4rem,6vw,4.2rem);color:var(--white);line-height:1.05;animation:fadeUp 0.7s 0.1s ease both;text-shadow:0 0 60px rgba(168,85,247,0.2)}
+  .hero h1 span{background:linear-gradient(90deg,var(--purple),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero-sub{margin-top:1rem;color:var(--muted);font-size:15px;max-width:480px;margin-inline:auto;animation:fadeUp 0.7s 0.2s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+  .parallax-scene{transform-style:preserve-3d}
+  .p-layer-back,.p-layer-mid{will-change:transform;transition:transform 0.08s linear}
+
+  .shimmer-line{height:1px;position:relative;z-index:2;background:linear-gradient(90deg,transparent,var(--purple),var(--cyan),transparent);background-size:200% 100%;animation:shimmer 3s linear infinite;margin:0 clamp(1rem,5vw,4rem);opacity:0.6}
+  @keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+
+  .page{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:3.5rem clamp(1rem,5vw,2.5rem) 5rem}
+
+  .updated-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:3px 10px;margin-bottom:2rem;font-family:'Cabin',sans-serif}
+
+  .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:4rem 2rem;color:var(--muted);font-size:14px}
+  .spinner{width:36px;height:36px;border-radius:50%;border:2px solid rgba(168,85,247,0.15);border-top-color:var(--purple);animation:spin 0.8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .error-state{background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.18);border-radius:12px;padding:2rem;text-align:center;color:var(--muted)}
+  .error-state strong{color:var(--white);display:block;margin-bottom:6px}
+
+  /* Markdown styles — purple accent variant */
+  .doc-content{background:var(--card);border:1px solid rgba(168,85,247,0.12);border-radius:16px;padding:2rem 2.2rem;transition:border-color 0.3s;backdrop-filter:blur(12px)}
+  .doc-content:hover{border-color:rgba(168,85,247,0.22)}
+  .doc-content h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--white);margin-bottom:0.5rem;margin-top:0}
+  .doc-content h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:#c084fc;letter-spacing:0.04em;text-transform:uppercase;margin:2rem 0 0.7rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(168,85,247,0.12)}
+  .doc-content h3{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;margin:1.4rem 0 0.5rem}
+  .doc-content p{color:var(--text);font-size:14px;margin-bottom:0.8rem;font-family:'Cabin',sans-serif}
+  .doc-content ul,.doc-content ol{padding-left:1.4rem;margin-bottom:0.9rem;font-size:14px;color:var(--text);font-family:'Cabin',sans-serif}
+  .doc-content li{margin-bottom:0.3rem}
+  .doc-content li::marker{color:#c084fc}
+  .doc-content strong{color:var(--white);font-weight:600}
+  .doc-content em{color:var(--muted)}
+  .doc-content a{color:#c084fc;text-decoration:none}
+  .doc-content a:hover{text-decoration:underline}
+  .doc-content code{background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.15);border-radius:5px;padding:1px 6px;font-size:12px;color:#c084fc;font-family:monospace}
+  .doc-content blockquote{border-left:3px solid var(--purple);padding-left:1rem;margin:1rem 0;color:var(--muted)}
+  .doc-content hr{border:none;border-top:1px solid rgba(168,85,247,0.12);margin:2rem 0}
+
+  /* Inline TOS sections */
+  .tos-section{background:var(--card);border:1px solid rgba(168,85,247,0.12);border-radius:16px;padding:1.8rem 2rem;margin-bottom:1rem;backdrop-filter:blur(12px);transition:border-color 0.25s,transform 0.2s}
+  .tos-section:hover{border-color:rgba(168,85,247,0.28);transform:translateY(-2px)}
+  .tos-section h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#c084fc;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(168,85,247,0.12)}
+  .tos-section p,.tos-section li{font-family:'Cabin',sans-serif;font-size:14px;color:var(--text);line-height:1.75}
+  .tos-section ul{padding-left:1.3rem;margin-top:0.5rem}
+  .tos-section li{margin-bottom:0.3rem}
+  .tos-section li::marker{color:#c084fc}
+  .tos-section strong{color:var(--white)}
+  .tos-section a{color:#c084fc;text-decoration:none}
+  .tos-section a:hover{text-decoration:underline}
+
+  footer{position:relative;z-index:2;text-align:center;padding:2rem 1rem 3rem;border-top:1px solid var(--border);font-family:'Cabin',sans-serif;font-size:12px;color:var(--muted)}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--purple)}
+</style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+<div class="bubbles">
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="tankly-home.html">
+    <div class="logo-icon">🐠</div>
+    <span class="logo-text">Tankly</span>
+  </a>
+  <div class="nav-tabs">
+    <a class="nav-tab" href="tankly-home.html">Home</a>
+    <a class="nav-tab" href="tankly-privacy.html">Privacy</a>
+    <a class="nav-tab active" href="tankly-tos.html">Terms</a>
+    <a class="nav-tab" href="tankly-home.html">How it works</a>
+    <a class="nav-tab" href="tankly-home.html">FAQ</a>
+  </div>
+</nav>
+
+<div class="hero parallax-scene" id="hero">
+  <div class="p-layer-back">
+    <div class="hero-pill"><span></span>Legal · Terms</div>
+  </div>
+  <div class="p-layer-mid">
+    <h1>Terms of <span>Service</span></h1>
+    <p class="hero-sub">Plain English. No legal traps. Just what you need to know before using Tankly.</p>
+  </div>
+</div>
+
+<div class="shimmer-line"></div>
+
+<main class="page">
+  <div class="updated-badge" id="tos-badge">🗓 Last updated: May 2026 · Version 1.0</div>
+  <div id="tos-body">
+
+    <div class="tos-section">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By downloading, installing, or using Tankly ("the App"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the App. These terms apply to all users, whether or not you create an account.</p>
+    </div>
+
+    <div class="tos-section">
+      <h2>2. Who can use Tankly</h2>
+      <ul>
+        <li>You must be at least 13 years old to use Tankly.</li>
+        <li>If you are between 13 and 18, you confirm that a parent or guardian has reviewed and agreed to these terms on your behalf.</li>
+        <li>By using the App, you represent that you meet these eligibility requirements.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>3. Your account</h2>
+      <ul>
+        <li>Tankly works without an account. Signing in via Google is optional and enables cloud backup and community features.</li>
+        <li>You are responsible for maintaining the security of your Google account.</li>
+        <li>You must not use another person's account without their permission.</li>
+        <li>You may delete your account at any time via Settings → Account → Delete account.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>4. Free &amp; Pro plans</h2>
+      <ul>
+        <li><strong>Free plan</strong> — Includes one tank, basic logging, streak tracking, and first-tank cloud backup. No time limit.</li>
+        <li><strong>Pro plan</strong> — Paid subscription (billed via Google Play). Includes unlimited tanks, full sync, AI insights, unlimited photos, and priority support.</li>
+        <li>Subscriptions auto-renew unless cancelled at least 24 hours before the renewal date via your Google Play account settings.</li>
+        <li>Refunds are governed by Google Play's refund policy.</li>
+        <li>We reserve the right to change Pro pricing with reasonable notice.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>5. Acceptable use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use the App for any unlawful purpose or in violation of any regulations.</li>
+        <li>Upload content that is abusive, harassing, hateful, obscene, or that infringes any third-party rights.</li>
+        <li>Attempt to reverse-engineer, decompile, or extract the source code of the App.</li>
+        <li>Use automated scripts, bots, or scrapers to interact with the App or its backend services.</li>
+        <li>Circumvent, disable, or interfere with security features of the App.</li>
+        <li>Impersonate another person or entity.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>6. Community content</h2>
+      <ul>
+        <li>Content you post publicly (tank photos, comments, posts) is visible to other Tankly users.</li>
+        <li>You retain ownership of your content but grant Tankly a non-exclusive, royalty-free licence to display it within the App.</li>
+        <li>We may remove content that violates these Terms without notice.</li>
+        <li>You are solely responsible for the content you post.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>7. AI-powered suggestions (Pro)</h2>
+      <p>Tankly's AI water quality insights are provided for <strong>informational purposes only</strong>. They are not a substitute for professional aquatic advice. We make no warranty that AI suggestions will be accurate or suitable for your specific tank and livestock. You act on them at your own risk.</p>
+    </div>
+
+    <div class="tos-section">
+      <h2>8. Intellectual property</h2>
+      <ul>
+        <li>All code, design, branding, and content in Tankly (excluding user-generated content) are owned by Piyush Golan / Tankly.</li>
+        <li>You may not reproduce, distribute, or create derivative works from Tankly's IP without written permission.</li>
+        <li>"Tankly" and the 🐠 logo are trademarks of Piyush Golan.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>9. Disclaimers &amp; limitation of liability</h2>
+      <ul>
+        <li>Tankly is provided "as is" without warranties of any kind, express or implied.</li>
+        <li>We do not guarantee that the App will be error-free, uninterrupted, or available at all times.</li>
+        <li>To the maximum extent permitted by law, Tankly's total liability for any claim arising from your use of the App shall not exceed the amount you paid for a Pro subscription in the 12 months preceding the claim, or INR 500, whichever is greater.</li>
+        <li>We are not liable for any loss of data, loss of livestock, or indirect/consequential damages.</li>
+      </ul>
+    </div>
+
+    <div class="tos-section">
+      <h2>10. Termination</h2>
+      <p>We reserve the right to suspend or terminate your account if you violate these Terms. You may stop using the App at any time. On termination, your right to use the App ceases; Sections 8, 9, and 11 survive termination.</p>
+    </div>
+
+    <div class="tos-section">
+      <h2>11. Governing law</h2>
+      <p>These Terms are governed by the laws of <strong>India</strong>. Any disputes shall be subject to the exclusive jurisdiction of the courts of <strong>Chhattisgarh, India</strong>.</p>
+    </div>
+
+    <div class="tos-section">
+      <h2>12. Changes to these Terms</h2>
+      <p>We may update these Terms from time to time. We'll notify you of material changes via in-app notice or email. Continued use after changes constitutes acceptance of the updated Terms.</p>
+    </div>
+
+    <div class="tos-section">
+      <h2>13. Contact</h2>
+      <p>Questions about these Terms? Email <a href="mailto:golanpiyush@gmail.com">golanpiyush@gmail.com</a>. We aim to respond within 5 business days.</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p style="margin-bottom:6px;">
+    <a href="tankly-privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="tankly-tos.html">Terms of Service</a> &nbsp;·&nbsp;
+    <a href="tankly-home.html">How it works</a> &nbsp;·&nbsp;
+    <a href="tankly-home.html">FAQ</a> &nbsp;·&nbsp;
+    <a href="mailto:golanpiyush@gmail.com">Contact</a>
+  </p>
+  <p>© 2026 Tankly · Piyush Golan · Bhilai, India</p>
+  <p style="margin-top:4px;font-size:11px;opacity:0.5;">Built with 🐠 for aquarium hobbyists everywhere</p>
+</footer>
+
+<script>
+VANTA.WAVES({
+  el:'#vanta-bg', THREE:THREE,
+  mouseControls:true, touchControls:true, gyroControls:true,
+  minHeight:200, minWidth:200, scale:1.0, scaleMobile:1.0,
+  color:0x0a0416, shininess:35, waveHeight:14, waveSpeed:0.45, zoom:0.9
+});
+
+(function(){
+  const hero=document.getElementById('hero');
+  const layers=[
+    {el:hero.querySelector('.p-layer-back'),d:0.010},
+    {el:hero.querySelector('.p-layer-mid'), d:0.024},
+  ];
+  let cx=innerWidth/2,cy=innerHeight/2;
+  document.addEventListener('mousemove',e=>{
+    const dx=e.clientX-cx,dy=e.clientY-cy;
+    layers.forEach(({el,d})=>el.style.transform=`translate3d(${dx*d}px,${dy*d}px,0)`);
+  });
+  addEventListener('resize',()=>{cx=innerWidth/2;cy=innerHeight/2});
+})();
+
+// Try Supabase if configured
+const CONFIG={supabaseUrl:'__SUPABASE_URL__',supabaseAnonKey:'__SUPABASE_ANON_KEY__'};
+if(!CONFIG.supabaseUrl.includes('__')){
+  (async()=>{
+    try{
+      const res=await fetch(`${CONFIG.supabaseUrl}/rest/v1/legal_documents?id=eq.terms_of_service&published=eq.true&select=title,content,version,last_updated`,{headers:{'apikey':CONFIG.supabaseAnonKey,'Authorization':`Bearer ${CONFIG.supabaseAnonKey}`}});
+      const data=await res.json();
+      if(data.length){
+        const doc=data[0];
+        const fmt=new Date(doc.last_updated).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+        document.getElementById('tos-badge').textContent=`🗓 Last updated: ${fmt} · Version ${doc.version}`;
+        document.getElementById('tos-body').innerHTML=`<div class="doc-content">${marked.parse(doc.content||'')}</div>`;
+      }
+    }catch(e){}
+  })();
+}
+</script>
+</body>
+</html>
