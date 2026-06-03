@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tankly — iOS Waitlist · Aquarium Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #01060f;
+      font-family: 'Inter', sans-serif;
+      color: #eef5ff;
+      overflow-x: hidden;
+    }
+
+    /* DEEP OCEAN ANIMATED BG */
+    .ocean-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(circle at 20% 30%, #04172e, #01060f 80%);
+    }
+
+    .water-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at 50% 40%, rgba(0, 212, 170, 0.08), transparent 70%);
+      pointer-events: none;
+      animation: breatheGlow 8s infinite alternate;
+    }
+
+    @keyframes breatheGlow {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    /* floating bubbles */
+    .bubble-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bubble {
+      position: absolute;
+      background: radial-gradient(circle at 30% 30%, rgba(0,212,170,0.3), rgba(0,212,170,0.02));
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+      animation: rise 12s infinite ease-in;
+    }
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(0.3);
+        opacity: 0;
+      }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.4; }
+      100% {
+        transform: translateY(-120vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* shimmer line effect */
+    .shimmer-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00D4AA, #A855F7, transparent);
+      opacity: 0.5;
+      margin: 1.5rem 0;
+    }
+
+    /* main layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* nav bar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2rem;
+      backdrop-filter: blur(20px);
+      background: rgba(1, 6, 15, 0.5);
+      border-bottom: 1px solid rgba(0, 212, 170, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #00D4AA, #A855F7);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px rgba(0,212,170,0.4);
+    }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, #00D4AA, #A855F7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .nav-badge {
+      background: rgba(0,212,170,0.12);
+      border: 1px solid rgba(0,212,170,0.3);
+      border-radius: 40px;
+      padding: 0.5rem 1.3rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #00D4AA;
+    }
+    .nav-badge i {
+      margin-right: 6px;
+    }
+
+    /* hero section iOS emphasis */
+    .hero-waitlist {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      padding: 3rem 0 2rem;
+    }
+    .hero-left {
+      flex: 1.2;
+    }
+    .hero-right {
+      flex: 0.9;
+      display: flex;
+      justify-content: center;
+    }
+    .iphone-mock {
+      background: rgba(255,255,255,0.02);
+      border-radius: 48px;
+      padding: 1rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0,212,170,0.25);
+      box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5);
+    }
+    .iphone-mock img {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      border-radius: 34px;
+      display: block;
+      box-shadow: 0 0 20px rgba(0,212,170,0.2);
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,212,170,0.1);
+      border: 1px solid rgba(0,212,170,0.3);
+      border-radius: 100px;
+      padding: 0.35rem 1.2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #00D4AA;
+      margin-bottom: 1.5rem;
+    }
+    .pill span {
+      width: 8px;
+      height: 8px;
+      background: #00D4AA;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.4; transform: scale(0.8);}
+      50% { opacity: 1; transform: scale(1.2);}
+    }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.6rem, 5vw, 4.8rem);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(120deg, #FFFFFF, #B0E0FF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    h1 em {
+      background: linear-gradient(90deg, #00D4AA, #A855F7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-style: normal;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: #9ab3cf;
+      max-width: 500px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .badge-strip {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .store-badge {
+      background: rgba(10, 20, 40, 0.6);
+      backdrop-filter: blur(8px);
+      border-radius: 14px;
+      padding: 0.5rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(0,212,170,0.25);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .store-badge img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+    .store-badge span {
+      font-weight: 600;
+    }
+
+    /* Waitlist form */
+    .waitlist-card {
+      background: rgba(8, 18, 38, 0.65);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0,212,170,0.25);
+      border-radius: 32px;
+      padding: 2rem;
+      margin: 2rem 0;
+      transition: all 0.3s;
+    }
+    .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    .input-wrapper {
+      flex: 2;
+    }
+    .input-wrapper label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.4rem;
+      color: #00D4AA;
+      font-weight: 600;
+    }
+    .input-wrapper input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0,212,170,0.3);
+      border-radius: 20px;
+      padding: 1rem 1.2rem;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .input-wrapper input:focus {
+      border-color: #00D4AA;
+      box-shadow: 0 0 15px rgba(0,212,170,0.2);
+    }
+    .btn-submit {
+      background: linear-gradient(95deg, #00D4AA, #A855F7);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #01060f;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Syne', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,212,170,0.3);
+    }
+    .message-area {
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .success-message { color: #00D4AA; }
+    .error-message { color: #FF6B6B; }
+
+    /* feature grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+    .feature-block {
+      background: rgba(8, 18, 38, 0.5);
+      border: 1px solid rgba(0,212,170,0.15);
+      border-radius: 28px;
+      padding: 1.8rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s;
+    }
+    .feature-block:hover {
+      border-color: rgba(0,212,170,0.4);
+      transform: translateY(-5px);
+    }
+    .feature-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+    .feature-block h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .feature-block p {
+      font-size: 0.85rem;
+      color: #9ab3cf;
+      line-height: 1.5;
+    }
+
+    /* stats section */
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+      background: rgba(0,0,0,0.25);
+      border-radius: 48px;
+      padding: 2rem;
+      margin: 3rem 0;
+      border: 1px solid rgba(0,212,170,0.2);
+    }
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00D4AA, #A855F7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7c95b3;
+    }
+
+    /* footer */
+    footer {
+      border-top: 1px solid rgba(0,212,170,0.2);
+      padding: 2rem 2rem 1.5rem;
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #5f7f9a;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+    .footer-links a {
+      color: #7c95b3;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: #00D4AA;
+    }
+
+    @media (max-width: 780px) {
+      .hero-waitlist {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-left {
+        text-align: center;
+      }
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .badge-strip {
+        justify-content: center;
+      }
+      .form-group {
+        flex-direction: column;
+      }
+      .btn-submit {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="ocean-bg"></div>
+<div class="water-glow"></div>
+<div class="bubble-container" id="bubbleContainer"></div>
+
+<nav class="navbar">
+  <div class="logo-area">
+    <div class="logo-icon">🐠</div>
+    <span class="logo-text">Tankly</span>
+  </div>
+  <div class="nav-badge">
+    <i>📱</i> iOS · Coming Soon
+  </div>
+</nav>
+
+<div class="container">
+  <div class="hero-waitlist">
+    <div class="hero-left">
+      <div class="pill">
+        <span></span> EXCLUSIVE iOS WAITLIST
+      </div>
+      <h1>Your reef, <em>perfected.</em><br>First on iPhone.</h1>
+      <p class="hero-desc">
+        Tankly redefines aquarium tracking — parameter logging, AI insights, photo timeline & cloud sync.  
+        Join the iOS waitlist, get early access + lifetime discount.
+      </p>
+      <div class="badge-strip">
+        <!-- Apple App Store icon and generic app store badges (visual) -->
+        <div class="store-badge">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300D4AA'%3E%3Cpath d='M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 15.36 5.54 10 8.2 9.6c1.33-.19 2.59.9 3.41.9.82 0 2.36-1.11 3.98-.95.67.03 2.56.27 3.77 2.05-.1.06-2.27 1.32-2.24 3.94.03 2.22 1.94 2.96 1.96 2.97-.02.05-.3 1.04-.99 2.04zM15 4.5c.7-.84 1.17-2 1.04-3.16-.99.04-2.19.66-2.9 1.49-.64.73-1.2 1.88-1.04 2.98 1.1.09 2.22-.53 2.9-1.31z'/%3E%3C/svg%3E" alt="apple">
+          <span>App Store</span>
+        </div>
+        <div class="store-badge">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A855F7'%3E%3Cpath d='M4 6h16v2H4V6zm2-4h12v2H6V2zm16 6v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8h18z'/%3E%3C/svg%3E" alt="appstore">
+          <span>TestFlight</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="iphone-mock">
+        <!-- placeholder for iPhone screen mock, we use elegant SVG / fish icon to represent app preview - using creative parameter preview asset -->
+        <svg width="280" height="560" viewBox="0 0 280 560" fill="none" xmlns="http://www.w3.org/2000/svg" style="border-radius: 34px; background: radial-gradient(ellipse at 50% 30%, #0A1A2F, #01060f);">
+          <rect x="8" y="20" width="264" height="520" rx="32" fill="rgba(0,20,40,0.7)" stroke="#00D4AA" stroke-width="1.2" stroke-opacity="0.4"/>
+          <!-- dynamic island -->
+          <rect x="100" y="28" width="80" height="20" rx="12" fill="rgba(0,0,0,0.5)" stroke="#00D4AA" stroke-opacity="0.3"/>
+          <!-- inside app preview: parameter graph mock -->
+          <text x="30" y="85" fill="#00D4AA" font-size="12" font-weight="bold">Living Reef</text>
+          <rect x="28" y="100" width="224" height="90" rx="16" fill="rgba(0,212,170,0.08)" stroke="rgba(0,212,170,0.2)"/>
+          <rect x="40" y="115" width="60" height="6" rx="3" fill="#00D4AA" opacity="0.7"/>
+          <rect x="40" y="135" width="90" height="6" rx="3" fill="#A855F7" opacity="0.6"/>
+          <rect x="40" y="155" width="45" height="6" rx="3" fill="#10b981" opacity="0.6"/>
+          <text x="200" y="128" fill="#aaccff" font-size="10">pH 8.2</text>
+          <text x="200" y="148" fill="#aaccff" font-size="10">NO₃ 5ppm</text>
+          <!-- fish icon -->
+          <text x="110" y="250" font-size="38">🐠🐡</text>
+          <text x="50" y="320" fill="#c8dff0" font-size="11">Next water change</text>
+          <text x="50" y="340" fill="#00D4AA" font-size="16" font-weight="bold">In 2 days</text>
+          <rect x="40" y="370" width="200" height="40" rx="12" fill="rgba(0,212,170,0.15)" stroke="#00D4AA" stroke-opacity="0.3"/>
+          <text x="80" y="395" fill="#E0F2FE" font-size="12">Log parameters →</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- waitlist card with email capture - no duplicate emails -->
+  <div class="waitlist-card">
+    <h3 style="font-family:'Syne'; margin-bottom:0.5rem;">🐋 Be the first to dive in</h3>
+    <p style="margin-bottom:1.5rem; color:#9ab3cf;">Get iOS early access, exclusive Pro discount & launch updates. No spam.</p>
+    <div class="form-group">
+      <div class="input-wrapper">
+        <label>Email address</label>
+        <input type="email" id="waitlistEmail" placeholder="you@example.com" required>
+      </div>
+      <button class="btn-submit" id="joinBtn">🚀 Join Waitlist →</button>
+    </div>
+    <div class="message-area" id="messageArea"></div>
+    <p style="font-size:0.7rem; margin-top:1rem; opacity:0.6;">🔒 We protect your data. You'll receive updates and can unsubscribe anytime.</p>
+  </div>
+
+  <!-- features highlight derived from research -->
+  <div class="features-grid">
+    <div class="feature-block">
+      <div class="feature-icon">📊</div>
+      <h3>Parameter Trends</h3>
+      <p>Unlimited logs, multi-parameter graphs, out-of-range warnings. Free forever essential logging.</p>
+    </div>
+    <div class="feature-block">
+      <div class="feature-icon">☁️</div>
+      <h3>iCloud + Cross-device</h3>
+      <p>Seamless sync across iPhone, iPad & Mac. Your tank history travels with you.</p>
+    </div>
+    <div class="feature-block">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Water Coach</h3>
+      <p>Pro users get AI recommendations based on livestock & parameters — spot issues early.</p>
+    </div>
+    <div class="feature-block">
+      <div class="feature-icon">🖼️</div>
+      <h3>Photo Timeline</h3>
+      <p>Track coral growth, fish health, monthly evolution — unforgettable visual diary.</p>
+    </div>
+    <div class="feature-block">
+      <div class="feature-icon">🧾</div>
+      <h3>Maintenance Scheduler</h3>
+      <p>Smart reminders, equipment log, water change history — never miss a task.</p>
+    </div>
+    <div class="feature-block">
+      <div class="feature-icon">🌊</div>
+      <h3>Offline-first</h3>
+      <p>Works in your fish room without internet. Syncs when back online.</p>
+    </div>
+  </div>
+
+  <!-- social proof / stats inspired by research -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number">14.7M</div>
+      <div class="stat-label">US fish households</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">4.9★</div>
+      <div class="stat-label">Beta rating</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">$0</div>
+      <div class="stat-label">Core tracking free</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">200+</div>
+      <div class="stat-label">species database</div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 2rem 0 1rem;">
+    <div class="shimmer-divider"></div>
+    <p style="font-size: 0.8rem; color:#7c95b3;">🐠 From the creators of research-backed aquarium tools — built by hobbyists, for hobbyists.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact Support</a>
+    <a href="#">iOS Beta FAQ</a>
+  </div>
+  <p>© 2026 Tankly — Piyush Golan. Reef & freshwater passion. iOS waitlist — exclusive early access.</p>
+  <p style="margin-top:0.5rem;">🐡 No duplicate emails. One tap, lifetime access.</p>
+</footer>
+
+<script>
+  // Generate bubbles (decorative)
+  const bubbleContainer = document.getElementById('bubbleContainer');
+  for (let i = 0; i < 35; i++) {
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
+    const size = Math.random() * 28 + 6;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDuration = Math.random() * 12 + 8 + 's';
+    bubble.style.animationDelay = Math.random() * 8 + 's';
+    bubble.style.opacity = Math.random() * 0.4 + 0.2;
+    bubbleContainer.appendChild(bubble);
+  }
+
+  // ---------- NO DUPLICATE EMAILS (in-memory storage + localStorage to persist across refresh) ----------
+  let registeredEmails = new Set();
+
+  // load previously joined emails from localStorage (avoid duplicates even after page refresh)
+  const storedEmails = localStorage.getItem('tankly_waitlist_emails');
+  if (storedEmails) {
+    try {
+      const arr = JSON.parse(storedEmails);
+      if (Array.isArray(arr)) {
+        registeredEmails = new Set(arr);
+      }
+    } catch(e) {}
+  }
+
+  // Helper to save set to localStorage
+  function persistEmailSet() {
+    localStorage.setItem('tankly_waitlist_emails', JSON.stringify(Array.from(registeredEmails)));
+  }
+
+  const joinBtn = document.getElementById('joinBtn');
+  const emailInput = document.getElementById('waitlistEmail');
+  const messageDiv = document.getElementById('messageArea');
+
+  // simple email regex
+  function isValidEmail(email) {
+    return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
+  }
+
+  async function addToWaitlist(email) {
+    // check duplicate local
+    if (registeredEmails.has(email.toLowerCase())) {
+      messageDiv.innerHTML = '<span class="error-message">⚠️ This email is already on the waitlist! We got you.</span>';
+      return false;
+    }
+
+    // Simulate API call to backend (here we just store locally & show success)
+    // In real world, you'd POST to your server / Firebase / Supabase.
+    // For demonstration, we mark as success and store locally (no duplication)
+    try {
+      // fake network delay
+      await new Promise(resolve => setTimeout(resolve, 600));
+      // store email in "remote" sense (here just localstorage and set)
+      registeredEmails.add(email.toLowerCase());
+      persistEmailSet();
+
+      // Optional: you could also send to a webhook / google form, but we keep pure client demo
+      messageDiv.innerHTML = '<span class="success-message">✨ You\'re on the list! Expect iOS TestFlight invite soon. Early bird perk: 30% off Pro lifetime 🎉</span>';
+      emailInput.value = '';
+      return true;
+    } catch (err) {
+      messageDiv.innerHTML = '<span class="error-message">❌ Network glitch. Please try again.</span>';
+      return false;
+    }
+  }
+
+  joinBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    if (!email) {
+      messageDiv.innerHTML = '<span class="error-message">🐟 Please enter your email address.</span>';
+      return;
+    }
+    if (!isValidEmail(email)) {
+      messageDiv.innerHTML = '<span class="error-message">📧 Enter a valid email (e.g., name@domain.com)</span>';
+      return;
+    }
+    // disable button briefly to avoid spamming
+    joinBtn.disabled = true;
+    joinBtn.innerText = 'Processing...';
+    await addToWaitlist(email);
+    joinBtn.disabled = false;
+    joinBtn.innerText = '🚀 Join Waitlist →';
+    setTimeout(() => {
+      if (!messageDiv.innerHTML.includes('already on the waitlist')) {
+        // clear success message after 4s but not critical
+        if (messageDiv.innerHTML.includes('You\'re on the list')) {
+          setTimeout(() => {
+            if (messageDiv.innerHTML.includes('You\'re on the list')) messageDiv.innerHTML = '';
+          }, 5000);
+        }
+      } else {
+        setTimeout(() => { if(messageDiv.innerHTML.includes('already on the waitlist')) messageDiv.innerHTML = ''; }, 4000);
+      }
+    }, 5000);
+  });
+
+  // Add subtle enter key
+  emailInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      joinBtn.click();
+    }
+  });
+
+  // Preload some demo showcase stat digits animated (countup optional)
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const animateNumbers = () => {
+    statNumbers.forEach(el => {
+      const rawText = el.innerText;
+      if (rawText.includes('M') || rawText.includes('★') || rawText.includes('+')) return;
+    });
+  };
+  // just for visual
+  console.log('Tankly iOS waitlist ready — duplicate prevention active');
+</script>
+</body>
+</html>
