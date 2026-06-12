@@ -392,32 +392,26 @@
   if (URL_TYPE && TYPE_CFG[URL_TYPE]) setType(URL_TYPE);
   else setType('feature');
 
-  /* ── Email send via Resend ── */
-  // Replace with your actual Resend key — or inject via build.js as __RESEND_API_KEY__
-  const RESEND_KEY = '__RESEND_API_KEY__';
-  const TO_EMAIL   = 'golanlabs.apps@gmail.com';
+ /* ── Send via Supabase Edge Function ── */
+const SB_URL  = '__SUPABASE_URL__';
+const SB_ANON = '__SUPABASE_ANON_KEY__';
 
-  async function sendViaResend({ subject, html, replyTo }) {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_KEY}`,
-      },
-      body: JSON.stringify({
-        from: 'Tankly Feedback <onboarding@resend.dev>',
-        to: [TO_EMAIL],
-        reply_to: replyTo || undefined,
-        subject,
-        html,
-      }),
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || `Resend error ${res.status}`);
-    }
-    return res.json();
+async function sendViaEdgeFunction(payload) {
+  const res = await fetch(`${SB_URL}/functions/v1/send-feedback`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SB_ANON,
+      'Authorization': `Bearer ${SB_ANON}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Edge function error ${res.status}`);
   }
+  return res.json();
+}
 
   /* ── Form submission ── */
   const form       = document.getElementById('requestForm');
@@ -489,7 +483,15 @@
     messageBox.style.display = 'none';
 
     try {
-      await sendViaResend({ subject, html, replyTo: USER_EMAIL || undefined });
+      await sendViaEdgeFunction({
+  type, details,
+  user_name: USER_NAME,
+  user_email: USER_EMAIL,
+  firebase_uid: FIREBASE_UID,
+  supabase_uid: SUPABASE_UID,
+  app_version: APP_VERSION,
+  device_id: DEVICE_ID,
+});
       showMsg('✅ Sent! We\'ll review your request soon.', 'success');
       detailTA.value = '';
     } catch (err) {
