@@ -5,826 +5,1665 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Tankly — Your Aquarium, Smarter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════════ */
+/* ─────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────── */
 :root {
-  --navy:   #050d1a;
-  --navy2:  #080f1f;
-  --card:   rgba(8,18,38,0.75);
-  --border: rgba(0,229,255,0.10);
-  --bpurp:  rgba(168,85,247,0.10);
-  --cyan:   #00e5ff;
-  --purple: #a855f7;
-  --teal:   #06b6d4;
-  --green:  #10b981;
-  --amber:  #f59e0b;
-  --text:   #c8dff0;
-  --muted:  #5f7f9a;
-  --white:  #eef6ff;
-  --r:16px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--navy);color:var(--text);font-family:'Cabin',sans-serif;font-size:15px;line-height:1.75;overflow-x:hidden;cursor:none}
-
-/* ═══════════════════════════════════════════
-   CUSTOM CURSOR
-═══════════════════════════════════════════ */
-.cursor-dot, .cursor-ring {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999; transition: opacity .3s;
-}
-.cursor-dot  { width:6px; height:6px; background:var(--cyan); top:-3px; left:-3px; }
-.cursor-ring { width:32px; height:32px; border:1.5px solid rgba(0,229,255,0.5); top:-16px; left:-16px; transition: transform .12s ease, border-color .2s; }
-
-/* ═══════════════════════════════════════════
-   VANTA BG
-═══════════════════════════════════════════ */
-#vanta-bg { position:fixed; inset:0; z-index:0; }
-#vanta-bg::after {
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background: linear-gradient(180deg,
-    rgba(5,13,26,0.50) 0%,
-    rgba(5,14,26,0.15) 30%,
-    rgba(5,13,26,0.65) 70%,
-    rgba(5,13,26,0.95) 100%);
+  --ink:       #05080f;
+  --ink2:      #070d16;
+  --surface:   #0a1220;
+  --panel:     rgba(10,18,32,0.72);
+  --panel2:    rgba(14,22,38,0.85);
+  --edge:      rgba(0,196,168,0.09);
+  --edge2:     rgba(255,255,255,0.055);
+  --teal:      #00c4a8;
+  --teal2:     #6edcd0;
+  --teal3:     rgba(0,196,168,0.12);
+  --slate:     #8fa8bc;
+  --slate2:    #4a6880;
+  --white:     #e8f4f0;
+  --white2:    #f4faf8;
+  --mono:      'DM Mono', monospace;
+  --r-sm:      10px;
+  --r:         16px;
+  --r-lg:      24px;
+  --r-xl:      32px;
 }
 
-/* ═══════════════════════════════════════════
-   AMBIENT ORBS (extra glow behind sections)
-═══════════════════════════════════════════ */
-.orb {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px);
-  animation: orbFloat 12s ease-in-out infinite;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--ink);
+  color: var(--slate);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
-.orb-1 { width:500px; height:500px; background:rgba(0,229,255,0.055); top:-150px; left:-100px; animation-delay:0s; }
-.orb-2 { width:400px; height:400px; background:rgba(168,85,247,0.055); bottom:-100px; right:-80px; animation-delay:4s; }
-.orb-3 { width:300px; height:300px; background:rgba(6,182,212,0.04);  top:50%; left:50%; transform:translate(-50%,-50%); animation-delay:8s; }
-@keyframes orbFloat {
-  0%,100%{transform:translateY(0) scale(1)}
-  50%{transform:translateY(-30px) scale(1.05)}
+img { display: block; }
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ─────────────────────────────────────────
+   CANVAS — Deep ocean ambient layer
+───────────────────────────────────────── */
+#ocean-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
 }
 
-/* ═══════════════════════════════════════════
-   BUBBLES
-═══════════════════════════════════════════ */
-.bubbles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-.bubble{position:absolute;bottom:-40px;border-radius:50%;animation:rise linear infinite;
-  background:radial-gradient(circle at 35% 35%,rgba(0,229,255,0.5),rgba(0,229,255,0.03));
-  border:1px solid rgba(0,229,255,0.2);}
-.bubble:nth-child(1) {width:7px;height:7px;left:5%;animation-duration:16s;animation-delay:0s}
-.bubble:nth-child(2) {width:4px;height:4px;left:15%;animation-duration:22s;animation-delay:2s}
-.bubble:nth-child(3) {width:10px;height:10px;left:26%;animation-duration:18s;animation-delay:5s}
-.bubble:nth-child(4) {width:5px;height:5px;left:38%;animation-duration:25s;animation-delay:8s}
-.bubble:nth-child(5) {width:8px;height:8px;left:50%;animation-duration:14s;animation-delay:1s}
-.bubble:nth-child(6) {width:12px;height:12px;left:63%;animation-duration:20s;animation-delay:11s}
-.bubble:nth-child(7) {width:5px;height:5px;left:74%;animation-duration:17s;animation-delay:6s}
-.bubble:nth-child(8) {width:9px;height:9px;left:83%;animation-duration:23s;animation-delay:3s}
-.bubble:nth-child(9) {width:6px;height:6px;left:91%;animation-duration:19s;animation-delay:9s}
-.bubble:nth-child(10){width:13px;height:13px;left:97%;animation-duration:28s;animation-delay:14s}
-@keyframes rise{
-  0%{transform:translateY(0) translateX(0);opacity:0}
-  8%{opacity:1}
-  92%{opacity:.5}
-  100%{transform:translateY(-110vh) translateX(25px);opacity:0}
+/* ─────────────────────────────────────────
+   BUBBLES — SVG path animated
+───────────────────────────────────────── */
+.bubble-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bubble-layer svg {
+  position: absolute;
+  bottom: -60px;
+  animation: bubbleRise linear infinite;
+  opacity: 0;
+}
+.bubble-layer svg circle {
+  fill: none;
+  stroke: rgba(0,196,168,0.28);
+  stroke-width: 1;
+}
+.b1  { left: 4%;  width:9px;  height:9px;  animation-duration:18s; animation-delay:0s;   }
+.b2  { left: 11%; width:5px;  height:5px;  animation-duration:24s; animation-delay:3s;   }
+.b3  { left: 19%; width:13px; height:13px; animation-duration:20s; animation-delay:7s;   }
+.b4  { left: 29%; width:7px;  height:7px;  animation-duration:27s; animation-delay:11s;  }
+.b5  { left: 39%; width:10px; height:10px; animation-duration:16s; animation-delay:1.5s; }
+.b6  { left: 52%; width:6px;  height:6px;  animation-duration:22s; animation-delay:9s;   }
+.b7  { left: 61%; width:14px; height:14px; animation-duration:19s; animation-delay:5s;   }
+.b8  { left: 72%; width:8px;  height:8px;  animation-duration:25s; animation-delay:13s;  }
+.b9  { left: 83%; width:5px;  height:5px;  animation-duration:21s; animation-delay:2s;   }
+.b10 { left: 91%; width:11px; height:11px; animation-duration:17s; animation-delay:8s;   }
+.b11 { left: 47%; width:4px;  height:4px;  animation-duration:30s; animation-delay:15s;  }
+.b12 { left: 67%; width:7px;  height:7px;  animation-duration:23s; animation-delay:6s;   }
+
+@keyframes bubbleRise {
+  0%   { transform: translateY(0) translateX(0);       opacity: 0;    }
+  5%   { opacity: 1; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-110vh) translateX(18px); opacity: 0; }
 }
 
-/* ═══════════════════════════════════════════
+/* ─────────────────────────────────────────
+   LAYOUT UTILITIES
+───────────────────────────────────────── */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3rem); position: relative; z-index: 2; }
+.wrap-sm { max-width: 760px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3rem); position: relative; z-index: 2; }
+section { position: relative; z-index: 2; }
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY HELPERS
+───────────────────────────────────────── */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1.2rem;
+}
+.eyebrow-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: dotBreath 2.4s ease-in-out infinite;
+}
+@keyframes dotBreath {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.65); }
+}
+
+.display {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5.5vw, 4rem);
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.display em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(130deg, var(--teal) 0%, var(--teal2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lead {
+  font-size: 16px;
+  color: var(--slate);
+  line-height: 1.8;
+  max-width: 520px;
+  margin-top: 1.1rem;
+}
+
+/* ─────────────────────────────────────────
+   REVEAL ANIMATION
+───────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+.delay-1 { transition-delay: 0.08s; }
+.delay-2 { transition-delay: 0.16s; }
+.delay-3 { transition-delay: 0.24s; }
+.delay-4 { transition-delay: 0.32s; }
+
+/* ─────────────────────────────────────────
+   SVG DIVIDER — caustic water light
+───────────────────────────────────────── */
+.caustic-divider {
+  width: 100%;
+  height: 1px;
+  position: relative;
+  overflow: visible;
+  margin: 0;
+  z-index: 2;
+}
+.caustic-divider svg {
+  width: 100%;
+  height: 40px;
+  display: block;
+  overflow: visible;
+}
+
+/* ─────────────────────────────────────────
    NAV
-═══════════════════════════════════════════ */
+───────────────────────────────────────── */
 nav {
-  position:fixed; top:0; left:0; right:0; z-index:200;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 clamp(1.2rem,5vw,3.5rem); height:64px;
-  background:rgba(5,13,26,0.7); backdrop-filter:blur(28px);
-  border-bottom:1px solid var(--border);
-  transition:background .3s;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1.25rem, 5vw, 3rem);
+  background: rgba(5,8,15,0.6);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--edge);
+  transition: background 0.35s;
 }
-nav.scrolled { background:rgba(5,13,26,0.92); }
-.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-.logo-icon {
-  width:34px; height:34px;
-  background:linear-gradient(135deg,var(--cyan),var(--purple));
-  border-radius:10px; display:flex; align-items:center; justify-content:center;
-  font-size:17px; box-shadow:0 0 20px rgba(0,229,255,0.4);
+nav.opaque { background: rgba(5,8,15,0.9); }
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.logo-text {
-  font-family:'Syne',sans-serif; font-weight:800; font-size:19px;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+.nav-logo {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: linear-gradient(140deg, #00c4a8, #0a7d6e);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 18px rgba(0,196,168,0.35);
+  flex-shrink: 0;
+  overflow: hidden;
 }
-.nav-links { display:flex; gap:4px; align-items:center; }
+.nav-logo img { width: 20px; height: 20px; object-fit: contain; }
+.nav-wordmark {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+@media (max-width: 768px) {
+  .nav-links .nav-link { display: none; }
+  .nav-links .nav-link.show-mobile { display: flex; }
+}
 .nav-link {
-  padding:7px 15px; border-radius:9px; font-size:13px; font-weight:600;
-  color:var(--muted); text-decoration:none; transition:all .2s; border:1px solid transparent;
+  padding: 6px 13px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  transition: color 0.2s, background 0.2s;
 }
-.nav-link:hover { color:var(--cyan); background:rgba(0,229,255,0.07); border-color:rgba(0,229,255,0.18); }
+.nav-link:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+
 .nav-cta {
-  margin-left:8px; padding:8px 20px; border-radius:10px;
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  color:#050d1a; font-weight:700; font-size:13px; text-decoration:none;
-  box-shadow:0 0 20px rgba(0,229,255,0.3); transition:box-shadow .2s, transform .15s;
+  margin-left: 10px;
+  padding: 8px 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #040b10;
+  background: var(--teal);
+  box-shadow: 0 0 22px rgba(0,196,168,0.28);
+  transition: box-shadow 0.2s, transform 0.15s, background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
-.nav-cta:hover { box-shadow:0 0 34px rgba(0,229,255,0.55); transform:translateY(-1px); }
-
-/* ═══════════════════════════════════════════
-   SECTIONS — shared
-═══════════════════════════════════════════ */
-section { position:relative; z-index:2; }
-.section-inner { max-width:1080px; margin:0 auto; padding:0 clamp(1.2rem,5vw,3rem); }
-.section-eyebrow {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(0,229,255,0.07); border:1px solid rgba(0,229,255,0.2);
-  border-radius:999px; padding:5px 14px; font-size:11px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase; color:var(--cyan);
-  margin-bottom:1.2rem; backdrop-filter:blur(8px);
+.nav-cta img { width: 16px; height: 16px; object-fit: contain; }
+.nav-cta:hover {
+  background: var(--teal2);
+  box-shadow: 0 0 34px rgba(0,196,168,0.5);
+  transform: translateY(-1px);
 }
-.section-eyebrow span { width:5px; height:5px; background:var(--cyan); border-radius:50%; animation:pulse 2s ease infinite; }
-.section-title {
-  font-family:'Syne',sans-serif; font-weight:800;
-  font-size:clamp(1.9rem,4.5vw,3.2rem); color:var(--white); line-height:1.1;
-}
-.section-title em {
-  font-style:normal;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-}
-.section-sub { font-size:15px; color:var(--muted); max-width:560px; margin-top:.9rem; line-height:1.8; }
 
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-
-/* Scroll reveal */
-.reveal { opacity:0; transform:translateY(32px); transition:opacity .7s ease, transform .7s ease; }
-.reveal.visible { opacity:1; transform:translateY(0); }
-.reveal-delay-1 { transition-delay:.1s; }
-.reveal-delay-2 { transition-delay:.2s; }
-.reveal-delay-3 { transition-delay:.3s; }
-.reveal-delay-4 { transition-delay:.4s; }
-
-/* ═══════════════════════════════════════════
-   SHIMMER LINE
-═══════════════════════════════════════════ */
-.shimmer-line {
-  height:1px; position:relative; z-index:2;
-  background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);
-  background-size:200% 100%; animation:shimmer 3.5s linear infinite; opacity:.5;
-}
-@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
-
-/* ═══════════════════════════════════════════
-   ── HERO ──
-═══════════════════════════════════════════ */
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
 #hero {
-  min-height:100svh; display:flex; align-items:center; justify-content:center;
-  text-align:center; padding:120px clamp(1.2rem,5vw,3rem) 80px;
-  perspective:1000px;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 130px clamp(1.25rem, 5vw, 3rem) 80px;
+  text-align: center;
+  position: relative;
 }
-.hero-inner { max-width:820px; transform-style:preserve-3d; }
 
-.hero-pill {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.28);
-  border-radius:999px; padding:6px 16px; font-size:11px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase; color:var(--cyan);
-  margin-bottom:2rem; backdrop-filter:blur(10px);
-  animation:fadeUp .8s ease both;
+.hero-inner { max-width: 780px; margin: 0 auto; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,196,168,0.07);
+  border: 1px solid rgba(0,196,168,0.22);
+  border-radius: 999px;
+  padding: 5px 14px 5px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--teal2);
+  margin-bottom: 2.2rem;
+  animation: fadeUp 0.75s ease both;
+  backdrop-filter: blur(8px);
 }
-.hero-pill span { width:6px; height:6px; background:var(--cyan); border-radius:50%; animation:pulse 2s ease infinite; }
+.hero-badge img { width: 18px; height: 18px; object-fit: contain; }
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: dotBreath 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
 
 .hero-h1 {
-  font-family:'Syne',sans-serif; font-weight:800;
-  font-size:clamp(3rem,8vw,6.5rem); color:var(--white); line-height:.95;
-  animation:fadeUp .8s .1s ease both;
-  text-shadow:0 0 80px rgba(0,229,255,0.15);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.8rem, 8vw, 6rem);
+  color: var(--white);
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  animation: fadeUp 0.75s 0.08s ease both;
 }
-.hero-h1 .line2 {
-  display:block;
-  background:linear-gradient(95deg,var(--cyan) 0%,var(--purple) 60%,var(--teal) 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+.hero-h1 .serif-line {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(130deg, var(--teal), var(--teal2) 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
 }
+
 .hero-sub {
-  font-size:clamp(15px,2vw,18px); color:var(--muted); margin:1.6rem auto 0;
-  max-width:500px; line-height:1.8; animation:fadeUp .8s .2s ease both;
+  font-size: 16px;
+  color: var(--slate);
+  margin: 1.5rem auto 0;
+  max-width: 500px;
+  line-height: 1.8;
+  font-weight: 400;
+  animation: fadeUp 0.75s 0.16s ease both;
 }
 
 .hero-actions {
-  margin-top:2.5rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;
-  animation:fadeUp .8s .3s ease both;
+  margin-top: 2.4rem;
+  display: flex;
+  gap: 0.9rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.75s 0.24s ease both;
 }
+
 .btn-primary {
-  display:inline-flex; align-items:center; gap:8px;
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  color:#050d1a; font-family:'Syne',sans-serif; font-weight:700; font-size:14px;
-  padding:14px 28px; border-radius:12px; text-decoration:none;
-  box-shadow:0 0 30px rgba(0,229,255,0.35);
-  transition:box-shadow .2s, transform .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--teal);
+  color: #040b10;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 13px 26px;
+  border-radius: 11px;
+  box-shadow: 0 0 28px rgba(0,196,168,0.3), 0 2px 12px rgba(0,0,0,0.3);
+  transition: box-shadow 0.2s, transform 0.15s, background 0.2s;
 }
-.btn-primary:hover { box-shadow:0 0 50px rgba(0,229,255,0.6); transform:translateY(-2px) scale(1.02); }
+.btn-primary img { width: 18px; height: 18px; object-fit: contain; }
+.btn-primary:hover {
+  background: var(--teal2);
+  box-shadow: 0 0 46px rgba(0,196,168,0.5), 0 2px 12px rgba(0,0,0,0.3);
+  transform: translateY(-2px) scale(1.02);
+}
+
 .btn-ghost {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.22);
-  color:var(--cyan); font-family:'Syne',sans-serif; font-weight:700; font-size:14px;
-  padding:14px 28px; border-radius:12px; text-decoration:none;
-  transition:background .2s, border-color .2s, transform .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--edge2);
+  color: var(--white);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 13px 26px;
+  border-radius: 11px;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
 }
-.btn-ghost:hover { background:rgba(0,229,255,0.12); border-color:rgba(0,229,255,0.45); transform:translateY(-2px); }
-
-.hero-stats {
-  margin-top:4rem; display:flex; gap:3rem; justify-content:center; flex-wrap:wrap;
-  animation:fadeUp .8s .45s ease both;
-}
-.hero-stat { text-align:center; }
-.hero-stat-num {
-  font-family:'Syne',sans-serif; font-weight:800; font-size:2rem;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  display:block;
-}
-.hero-stat-label { font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
-
-/* Fish float */
-.hero-fish {
-  position:absolute; font-size:clamp(60px,12vw,120px);
-  animation:fishFloat 6s ease-in-out infinite; filter:drop-shadow(0 0 30px rgba(0,229,255,0.3));
-  user-select:none; pointer-events:none;
-}
-.fish-1 { top:18%; right:8%;  animation-delay:0s; }
-.fish-2 { bottom:22%; left:6%; animation-delay:2.5s; font-size:clamp(30px,5vw,60px); opacity:.6; }
-.fish-3 { top:55%; right:4%; font-size:clamp(20px,3vw,38px); animation-delay:1.2s; opacity:.4; }
-@keyframes fishFloat {
-  0%,100%{transform:translateY(0) rotate(-5deg)}
-  50%{transform:translateY(-20px) rotate(5deg)}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-1px);
 }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-
-/* Scroll indicator */
-.scroll-hint {
-  position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
-  display:flex; flex-direction:column; align-items:center; gap:8px;
-  font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
-  animation:fadeUp 1s .8s ease both;
+/* Mobile preview mockup in hero */
+.hero-phone-wrap {
+  margin-top: 4.5rem;
+  animation: fadeUp 0.75s 0.36s ease both;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.4rem;
 }
-.scroll-hint-line {
-  width:1px; height:40px;
-  background:linear-gradient(to bottom,var(--cyan),transparent);
-  animation:scrollPulse 2s ease-in-out infinite;
+.phone-glow {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 80px;
+  background: radial-gradient(ellipse, rgba(0,196,168,0.2) 0%, transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
 }
-@keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
 
-/* ═══════════════════════════════════════════
-   ── FEATURES SECTION ──
-═══════════════════════════════════════════ */
-#features { padding:clamp(5rem,10vw,9rem) 0; }
-.features-header { text-align:center; margin-bottom:4rem; }
-.features-header .section-sub { margin-inline:auto; }
-
-.features-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:1.2rem;
+.phone-frame {
+  width: 195px;
+  background: #0d1825;
+  border-radius: 36px;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  overflow: hidden;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(0,196,168,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  flex-shrink: 0;
+  position: relative;
+  animation: phoneFloat 6s ease-in-out infinite;
 }
-.feat-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r); padding:2rem;
-  backdrop-filter:blur(14px);
-  transition:border-color .3s, transform .2s, box-shadow .2s;
-  transform-style:preserve-3d;
+.phone-frame.secondary {
+  width: 155px;
+  opacity: 0.5;
+  transform: scale(0.95) translateY(20px);
+  animation-delay: 3s;
 }
-.feat-card:hover {
-  border-color:rgba(0,229,255,0.3); transform:translateY(-5px);
-  box-shadow:0 16px 50px rgba(0,229,255,0.08);
+@keyframes phoneFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
 }
-.feat-card.purple:hover { border-color:rgba(168,85,247,0.35); box-shadow:0 16px 50px rgba(168,85,247,0.08); }
-.feat-card.teal:hover   { border-color:rgba(6,182,212,0.35);  box-shadow:0 16px 50px rgba(6,182,212,0.08);  }
-.feat-card.green:hover  { border-color:rgba(16,185,129,0.35); box-shadow:0 16px 50px rgba(16,185,129,0.08); }
-.feat-card.amber:hover  { border-color:rgba(245,158,11,0.35); box-shadow:0 16px 50px rgba(245,158,11,0.08); }
-
-.feat-icon {
-  width:48px; height:48px; border-radius:13px; display:flex; align-items:center;
-  justify-content:center; font-size:22px; margin-bottom:1.2rem;
+.phone-notch {
+  height: 28px;
+  background: #0d1825;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
 }
-.icon-cyan   { background:rgba(0,229,255,0.12); box-shadow:0 0 16px rgba(0,229,255,0.2); }
-.icon-purple { background:rgba(168,85,247,0.12); box-shadow:0 0 16px rgba(168,85,247,0.2); }
-.icon-teal   { background:rgba(6,182,212,0.12);  box-shadow:0 0 16px rgba(6,182,212,0.2);  }
-.icon-green  { background:rgba(16,185,129,0.12); box-shadow:0 0 16px rgba(16,185,129,0.2); }
-.icon-amber  { background:rgba(245,158,11,0.12); box-shadow:0 0 16px rgba(245,158,11,0.2); }
-
-.feat-title { font-family:'Syne',sans-serif; font-weight:700; font-size:16px; color:var(--white); margin-bottom:.5rem; }
-.feat-desc  { font-size:13.5px; color:var(--muted); line-height:1.7; }
-
-/* Big feature card */
-.feat-card.big {
-  grid-column:span 2;
-  display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:center;
+.phone-notch-pill {
+  width: 60px; height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
 }
-@media(max-width:700px){ .feat-card.big{ grid-column:span 1; grid-template-columns:1fr; } }
-.feat-card.big .feat-visual {
-  background:rgba(0,229,255,0.04); border:1px solid var(--border); border-radius:12px;
-  padding:1.5rem; min-height:160px; display:flex; align-items:center; justify-content:center;
+.phone-screen {
+  background: linear-gradient(160deg, #070f1e 0%, #0a1628 100%);
+  padding: 0 0 16px;
+  min-height: 340px;
 }
-.param-mini { display:flex; flex-direction:column; gap:.6rem; width:100%; }
-.param-row { display:flex; align-items:center; gap:.8rem; }
-.param-label { font-size:11px; font-weight:600; color:var(--muted); width:30px; flex-shrink:0; font-family:'Syne',sans-serif; }
-.param-bar { flex:1; height:6px; background:rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; }
-.param-fill { height:100%; border-radius:999px; animation:barPulse 3s ease-in-out infinite; }
-.fill-cyan   { background:linear-gradient(90deg,var(--cyan),var(--teal)); width:72%; animation-delay:0s; }
-.fill-green  { background:linear-gradient(90deg,var(--green),#34d399); width:55%; animation-delay:.4s; }
-.fill-amber  { background:linear-gradient(90deg,var(--amber),#fcd34d); width:84%; animation-delay:.8s; }
-.fill-purple { background:linear-gradient(90deg,var(--purple),#c084fc); width:45%; animation-delay:1.2s; }
-.fill-teal   { background:linear-gradient(90deg,var(--teal),#67e8f9); width:62%; animation-delay:1.6s; }
-.param-val { font-size:11px; color:var(--cyan); font-family:'Syne',sans-serif; font-weight:700; width:32px; text-align:right; flex-shrink:0; }
-@keyframes barPulse { 0%,100%{opacity:.8}50%{opacity:1} }
 
-/* ═══════════════════════════════════════════
-   ── HOW IT WORKS ──
-═══════════════════════════════════════════ */
-#hiw { padding:clamp(5rem,10vw,9rem) 0; }
-.hiw-layout { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
-@media(max-width:700px){ .hiw-layout{ grid-template-columns:1fr; gap:2.5rem; } }
+/* Phone screen UI */
+.ps-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.ps-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.ps-hello {
+  font-size: 9px;
+  color: rgba(143,168,188,0.6);
+  font-weight: 400;
+}
+.ps-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.ps-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #00c4a8;
+  box-shadow: 0 0 6px #00c4a8;
+}
 
-.hiw-steps { display:flex; flex-direction:column; gap:.9rem; }
+.ps-tank-card {
+  margin: 10px 12px 0;
+  background: linear-gradient(135deg, rgba(0,196,168,0.1), rgba(0,196,168,0.03));
+  border: 1px solid rgba(0,196,168,0.12);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.ps-tank-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ps-tank-icon { width: 22px; height: 22px; object-fit: contain; }
+.ps-tank-name { font-size: 11px; font-weight: 700; color: var(--white); }
+.ps-tank-type { font-size: 9px; color: var(--teal); }
+
+.ps-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ps-score-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--teal);
+  line-height: 1;
+}
+.ps-score-label { font-size: 8px; color: rgba(143,168,188,0.5); text-transform: uppercase; letter-spacing: 0.08em; }
+.ps-score-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 999px;
+  margin: 0 10px;
+  overflow: hidden;
+}
+.ps-score-fill {
+  height: 100%;
+  width: 87%;
+  background: linear-gradient(90deg, #00c4a8, #6edcd0);
+  border-radius: 999px;
+}
+
+.ps-params {
+  padding: 8px 12px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+.ps-param {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+  padding: 7px 8px;
+}
+.ps-param-label {
+  font-size: 8px;
+  color: rgba(143,168,188,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 2px;
+}
+.ps-param-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--white);
+}
+.ps-param-val.good { color: #00c4a8; }
+.ps-param-val.warn { color: #f59e0b; }
+
+.ps-section-label {
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(143,168,188,0.35);
+  padding: 10px 12px 4px;
+}
+.ps-fish-row {
+  padding: 0 12px;
+  display: flex;
+  gap: 6px;
+}
+.ps-fish-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 8px;
+  color: rgba(232,244,240,0.5);
+}
+.ps-fish-chip img { width: 12px; height: 12px; object-fit: contain; }
+
+/* Scroll hint */
+.scroll-cue {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate2);
+  animation: fadeUp 1s 0.6s ease both;
+}
+.scroll-cue-line {
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, rgba(0,196,168,0.5), transparent);
+  animation: scrollPulse 2.2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: 0.3; transform: scaleY(1); }
+  50%      { opacity: 1;   transform: scaleY(1.08); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   SVG CAUSTIC DIVIDER
+───────────────────────────────────────── */
+.wave-divider { position: relative; z-index: 2; overflow: hidden; height: 1px; }
+.wave-divider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,196,168,0.3) 30%, rgba(110,220,208,0.2) 60%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmerLine 4s linear infinite;
+}
+@keyframes shimmerLine {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ─────────────────────────────────────────
+   FEATURES SECTION
+───────────────────────────────────────── */
+#features { padding: clamp(5rem, 10vw, 9rem) 0; }
+.features-intro {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.features-intro .lead { margin-inline: auto; }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+/* Card base */
+.f-card {
+  background: var(--panel);
+  border: 1px solid var(--edge2);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 2rem;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.25s;
+  overflow: hidden;
+  position: relative;
+}
+.f-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,196,168,0.07) 0%, transparent 60%);
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+.f-card:hover { border-color: var(--edge); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.25); }
+.f-card:hover::before { opacity: 1; }
+
+/* Grid spans */
+.f-card.span-8  { grid-column: span 8; }
+.f-card.span-4  { grid-column: span 4; }
+.f-card.span-6  { grid-column: span 6; }
+.f-card.span-3  { grid-column: span 3; }
+@media (max-width: 900px) {
+  .f-card.span-8, .f-card.span-4, .f-card.span-6, .f-card.span-3 { grid-column: span 12; }
+}
+@media (min-width: 901px) and (max-width: 1080px) {
+  .f-card.span-3 { grid-column: span 6; }
+}
+
+.f-icon {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+.f-icon img { width: 24px; height: 24px; object-fit: contain; }
+.f-icon-teal   { background: rgba(0,196,168,0.1);  box-shadow: 0 0 14px rgba(0,196,168,0.15); }
+.f-icon-blue   { background: rgba(56,136,255,0.1); box-shadow: 0 0 14px rgba(56,136,255,0.15); }
+.f-icon-amber  { background: rgba(245,158,11,0.1); box-shadow: 0 0 14px rgba(245,158,11,0.15); }
+.f-icon-purple { background: rgba(139,92,246,0.1); box-shadow: 0 0 14px rgba(139,92,246,0.15); }
+.f-icon-rose   { background: rgba(244,63,94,0.1);  box-shadow: 0 0 14px rgba(244,63,94,0.15); }
+
+.f-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+.f-desc {
+  font-size: 13.5px;
+  color: var(--slate);
+  line-height: 1.7;
+}
+
+/* Big parameter card visual */
+.param-visual {
+  background: rgba(5,8,15,0.5);
+  border: 1px solid var(--edge2);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.p-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.p-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--slate2);
+  width: 32px;
+  flex-shrink: 0;
+}
+.p-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.p-fill {
+  height: 100%;
+  border-radius: 999px;
+  animation: barBreath 3.5s ease-in-out infinite;
+}
+.pf-1 { width: 72%; background: linear-gradient(90deg, #00c4a8, #6edcd0); animation-delay: 0s; }
+.pf-2 { width: 55%; background: linear-gradient(90deg, #10b981, #34d399); animation-delay: 0.4s; }
+.pf-3 { width: 82%; background: linear-gradient(90deg, #f59e0b, #fcd34d); animation-delay: 0.8s; }
+.pf-4 { width: 44%; background: linear-gradient(90deg, #8b5cf6, #c4b5fd); animation-delay: 1.2s; }
+.pf-5 { width: 66%; background: linear-gradient(90deg, #3b82f6, #93c5fd); animation-delay: 1.6s; }
+@keyframes barBreath {
+  0%,100% { opacity: 0.8; }
+  50%      { opacity: 1; }
+}
+.p-val {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--teal);
+  width: 34px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Offline/sync tag */
+.f-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0,196,168,0.07);
+  border: 1px solid rgba(0,196,168,0.15);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--teal);
+  margin-top: 1rem;
+}
+
+/* ─────────────────────────────────────────
+   HOW IT WORKS
+───────────────────────────────────────── */
+#hiw { padding: clamp(5rem, 10vw, 9rem) 0; }
+.hiw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+@media (max-width: 720px) { .hiw-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+.hiw-steps { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 2.5rem; }
+
 .hiw-step {
-  display:flex; gap:1.2rem; align-items:flex-start;
-  background:var(--card); border:1px solid var(--border);
-  border-radius:14px; padding:1.4rem 1.5rem;
-  backdrop-filter:blur(12px);
-  transition:border-color .25s, transform .2s, box-shadow .2s;
-  transform-style:preserve-3d;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.25rem 1.4rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  transition: background 0.25s, border-color 0.25s, transform 0.2s;
 }
-.hiw-step:hover { border-color:rgba(0,229,255,0.28); transform:translateX(5px); box-shadow:0 6px 28px rgba(0,229,255,0.07); }
+.hiw-step:hover {
+  background: var(--panel2);
+  border-color: var(--edge2);
+  transform: translateX(4px);
+}
+
 .hiw-num {
-  flex-shrink:0; width:36px; height:36px; border-radius:50%;
-  background:linear-gradient(135deg,var(--cyan),var(--purple));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Syne',sans-serif; font-weight:800; font-size:14px; color:#050d1a;
-  box-shadow:0 0 14px rgba(0,229,255,0.4); margin-top:2px;
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), #0a7d6e);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #040b10;
+  margin-top: 2px;
+  box-shadow: 0 0 12px rgba(0,196,168,0.3);
 }
 .hiw-body h3 {
-  font-family:'Syne',sans-serif; font-weight:700; font-size:14.5px;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  margin-bottom:.35rem;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.01em;
 }
-.hiw-body p { font-size:13px; color:var(--muted); line-height:1.7; margin:0; }
+.hiw-body p { font-size: 13.5px; color: var(--slate); line-height: 1.7; }
 
-/* Sync diagram side */
-.hiw-diagram {
-  background:var(--card); border:1px solid var(--border); border-radius:var(--r);
-  padding:2rem; backdrop-filter:blur(14px);
-  transition:border-color .3s, transform .2s;
+/* Sync flow card */
+.sync-card {
+  background: var(--panel);
+  border: 1px solid var(--edge2);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(12px);
+  padding: 1.8rem;
+  overflow: hidden;
+  position: relative;
 }
-.hiw-diagram:hover { border-color:rgba(0,229,255,0.22); transform:translateY(-4px); }
-.diagram-title { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:1.2rem; display:flex; align-items:center; gap:8px; }
-.diagram-title::before { content:''; width:6px; height:6px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); flex-shrink:0; }
+.sync-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--slate2);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 1.5rem;
+}
+.sync-title::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+  animation: dotBreath 2s ease-in-out infinite;
+}
 
-/* Flow nodes */
-.flow { display:flex; flex-direction:column; gap:0; }
+.flow-list { display: flex; flex-direction: column; }
 .flow-node {
-  display:flex; align-items:center; gap:1rem; padding:.8rem 1rem;
-  border-radius:10px; border:1px solid transparent; transition:border-color .2s;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 9px;
+  transition: background 0.2s;
 }
-.flow-node:hover { border-color:rgba(0,229,255,0.15); background:rgba(0,229,255,0.03); }
+.flow-node:hover { background: rgba(255,255,255,0.02); }
 .flow-dot {
-  width:10px; height:10px; border-radius:50%; flex-shrink:0;
-  animation:dotPulse 2s ease-in-out infinite;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: dotBreath 2.2s ease-in-out infinite;
 }
-.dot-cyan   { background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
-.dot-purple { background:var(--purple); box-shadow:0 0 8px var(--purple); animation-delay:.5s; }
-.dot-amber  { background:var(--amber); box-shadow:0 0 8px var(--amber); animation-delay:1s; }
-.dot-teal   { background:var(--teal); box-shadow:0 0 8px var(--teal); animation-delay:1.5s; }
-.dot-green  { background:var(--green); box-shadow:0 0 8px var(--green); animation-delay:.3s; }
-@keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)} }
-.flow-label { font-size:13px; color:var(--text); font-family:'Cabin',sans-serif; }
-.flow-label strong { color:var(--white); font-weight:600; font-family:'Syne',sans-serif; font-size:13px; }
+.fd-teal   { background: #00c4a8; box-shadow: 0 0 7px #00c4a8; }
+.fd-purple { background: #8b5cf6; box-shadow: 0 0 7px #8b5cf6; animation-delay: 0.4s; }
+.fd-amber  { background: #f59e0b; box-shadow: 0 0 7px #f59e0b; animation-delay: 0.8s; }
+.fd-blue   { background: #3b82f6; box-shadow: 0 0 7px #3b82f6; animation-delay: 1.2s; }
+.fd-green  { background: #10b981; box-shadow: 0 0 7px #10b981; animation-delay: 0.6s; }
+
+.flow-text { font-size: 13px; color: var(--slate); }
+.flow-text strong { color: var(--white); font-weight: 600; }
 .flow-connector {
-  width:1px; height:18px; margin-left:4px;
-  background:linear-gradient(to bottom,rgba(0,229,255,0.4),transparent);
+  width: 1px; height: 14px;
+  margin-left: 3.5px;
+  background: linear-gradient(to bottom, rgba(0,196,168,0.25), transparent);
 }
 
-/* ═══════════════════════════════════════════
-   ── PLANS SECTION (no prices, no buy btn) ──
-═══════════════════════════════════════════ */
-#plans { padding:clamp(5rem,10vw,9rem) 0; }
-.plans-header { text-align:center; margin-bottom:3.5rem; }
-.plans-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:700px; margin:0 auto; }
-@media(max-width:600px){ .plans-grid{ grid-template-columns:1fr; } }
+.backed-up-grid {
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--edge2);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.bu-item {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--edge2);
+  border-radius: 9px;
+  padding: 0.55rem 0.8rem;
+  font-size: 12px;
+  color: var(--slate);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bu-item img { width: 14px; height: 14px; object-fit: contain; }
+
+/* ─────────────────────────────────────────
+   PLANS
+───────────────────────────────────────── */
+#plans { padding: clamp(5rem, 10vw, 9rem) 0; }
+.plans-header { text-align: center; margin-bottom: 3.5rem; }
+.plans-header .lead { margin-inline: auto; }
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+@media (max-width: 580px) { .plans-grid { grid-template-columns: 1fr; } }
 
 .plan-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r); padding:2.2rem;
-  backdrop-filter:blur(14px);
-  transition:border-color .3s, transform .2s, box-shadow .2s;
-  transform-style:preserve-3d;
+  background: var(--panel);
+  border: 1px solid var(--edge2);
+  border-radius: var(--r-xl);
+  padding: 2.2rem;
+  backdrop-filter: blur(14px);
+  transition: border-color 0.3s, transform 0.25s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
 }
-.plan-card:hover { transform:translateY(-5px); box-shadow:0 18px 55px rgba(0,0,0,0.3); }
-.plan-card.pro { border-color:rgba(168,85,247,0.25); background:rgba(15,8,35,0.75); }
-.plan-card.pro:hover { border-color:rgba(168,85,247,0.5); box-shadow:0 18px 55px rgba(168,85,247,0.12); }
+.plan-card::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.plan-card:hover { transform: translateY(-5px); }
+
+.plan-card.free:hover { border-color: var(--edge); box-shadow: 0 20px 60px rgba(0,196,168,0.06); }
+.plan-card.free:hover::before { background: radial-gradient(circle, rgba(0,196,168,0.08), transparent); opacity: 1; }
+
+.plan-card.pro { border-color: rgba(139,92,246,0.18); background: rgba(12,9,26,0.78); }
+.plan-card.pro:hover { border-color: rgba(139,92,246,0.38); box-shadow: 0 20px 60px rgba(139,92,246,0.1); }
+.plan-card.pro:hover::before { background: radial-gradient(circle, rgba(139,92,246,0.1), transparent); opacity: 1; }
 
 .plan-badge {
-  display:inline-flex; align-items:center; gap:6px;
-  font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  padding:4px 10px; border-radius:999px; margin-bottom:1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
 }
-.badge-free { background:rgba(0,229,255,0.1); color:var(--cyan); border:1px solid rgba(0,229,255,0.2); }
-.badge-pro  { background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3); }
+.badge-free { background: rgba(0,196,168,0.09); color: var(--teal); border: 1px solid rgba(0,196,168,0.18); }
+.badge-pro  { background: rgba(139,92,246,0.12); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
 
-.plan-name { font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:var(--white); margin-bottom:.4rem; }
-.plan-desc { font-size:13px; color:var(--muted); margin-bottom:1.6rem; line-height:1.6; }
+.plan-name {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+.plan-desc { font-size: 13px; color: var(--slate); margin-bottom: 1.8rem; line-height: 1.6; }
 
-.plan-features { list-style:none; display:flex; flex-direction:column; gap:.6rem; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
 .plan-features li {
-  display:flex; align-items:flex-start; gap:.7rem;
-  font-size:13px; color:var(--text); line-height:1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 13.5px;
+  color: var(--slate);
+  line-height: 1.5;
 }
-.plan-features li::before { content:'✓'; flex-shrink:0; font-weight:700; margin-top:1px; }
-.plan-features.free li::before { color:var(--cyan); }
-.plan-features.pro  li::before { color:#c084fc; }
-.plan-features li.muted { color:var(--muted); }
-.plan-features li.muted::before { content:'—'; color:rgba(255,255,255,0.15); }
+.pf-check { flex-shrink: 0; margin-top: 2px; }
+.pf-check img { width: 14px; height: 14px; object-fit: contain; }
+.plan-features li.muted { opacity: 0.3; }
+.plan-features li.muted .pf-check img { filter: grayscale(1) opacity(0.5); }
 
-/* ═══════════════════════════════════════════
-   ── SOCIAL PROOF / COMMUNITY ──
-═══════════════════════════════════════════ */
-#community { padding:clamp(5rem,10vw,9rem) 0; }
-.community-header { text-align:center; margin-bottom:3.5rem; }
-
-.testimonials { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.2rem; }
-.testi-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r); padding:1.8rem;
-  backdrop-filter:blur(12px);
-  transition:border-color .25s, transform .2s;
-  transform-style:preserve-3d;
+.plans-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--slate2);
+  margin-top: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
-.testi-card:hover { border-color:rgba(0,229,255,0.22); transform:translateY(-3px); }
-.testi-stars { color:var(--amber); font-size:14px; letter-spacing:2px; margin-bottom:.9rem; }
-.testi-text { font-size:13.5px; color:var(--text); line-height:1.75; margin-bottom:1.2rem; font-style:italic; }
-.testi-author { display:flex; align-items:center; gap:.8rem; }
-.testi-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
-.testi-name { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--white); }
-.testi-handle { font-size:11px; color:var(--muted); }
+.plans-note img { width: 14px; height: 14px; object-fit: contain; opacity: 0.5; }
 
-/* Community stats strip */
-.community-strip {
-  margin-top:3.5rem;
-  display:grid; grid-template-columns:repeat(4,1fr); gap:1rem;
+/* ─────────────────────────────────────────
+   FAQ
+───────────────────────────────────────── */
+#faq { padding: clamp(5rem, 10vw, 9rem) 0; }
+.faq-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+  align-items: start;
 }
-@media(max-width:600px){ .community-strip{ grid-template-columns:1fr 1fr; } }
-.strip-item {
-  background:var(--card); border:1px solid var(--border); border-radius:12px;
-  padding:1.4rem; text-align:center; backdrop-filter:blur(10px);
-  transition:border-color .25s;
+@media (max-width: 720px) { .faq-layout { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+.faq-left .lead { margin-top: 0.8rem; }
+.faq-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--teal);
+  margin-top: 1.8rem;
+  transition: gap 0.2s;
 }
-.strip-item:hover { border-color:rgba(0,229,255,0.22); }
-.strip-num { font-family:'Syne',sans-serif; font-weight:800; font-size:1.8rem; color:var(--white); display:block; }
-.strip-num span { background:linear-gradient(90deg,var(--cyan),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.strip-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin-top:.3rem; display:block; }
-
-/* ═══════════════════════════════════════════
-   ── FAQ SECTION ──
-═══════════════════════════════════════════ */
-#faq { padding:clamp(5rem,10vw,9rem) 0; }
-.faq-layout { display:grid; grid-template-columns:1fr 2fr; gap:4rem; align-items:start; }
-@media(max-width:720px){ .faq-layout{ grid-template-columns:1fr; gap:2.5rem; } }
-
-.faq-left .section-sub { margin-top:.8rem; }
+.faq-contact-link img { width: 14px; height: 14px; object-fit: contain; }
+.faq-contact-link:hover { gap: 10px; }
 
 .faq-group-label {
-  font-family:'Syne',sans-serif; font-weight:700; font-size:11px;
-  letter-spacing:.12em; text-transform:uppercase;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  margin:1.8rem 0 .6rem; display:block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  display: block;
+  margin: 1.8rem 0 0.6rem;
 }
-.faq-group-label:first-of-type { margin-top:0; }
+.faq-group-label:first-child { margin-top: 0; }
 
-.faq-item { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:8px; transition:border-color .2s; }
-.faq-item:hover { border-color:rgba(0,229,255,0.22); }
+.faq-item {
+  border: 1px solid var(--edge2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  transition: border-color 0.2s;
+}
+.faq-item:hover { border-color: var(--edge); }
+
 .faq-btn {
-  width:100%; background:var(--card); border:none;
-  padding:15px 18px; display:flex; align-items:center; justify-content:space-between;
-  gap:12px; cursor:pointer; text-align:left; transition:background .2s; backdrop-filter:blur(8px);
+  width: 100%;
+  background: var(--panel);
+  border: none;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  backdrop-filter: blur(8px);
 }
-.faq-btn:hover { background:rgba(0,229,255,0.04); }
-.faq-q { font-family:'Cabin',sans-serif; font-size:14px; font-weight:600; color:var(--white); line-height:1.4; }
-.faq-chevron { flex-shrink:0; width:18px; height:18px; color:var(--muted); transition:transform .25s, color .2s; }
-.faq-btn[aria-expanded="true"] .faq-chevron { transform:rotate(180deg); color:var(--cyan); }
-.faq-body {
-  font-size:13.5px; color:var(--text); line-height:1.75;
-  padding:0 18px; max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease;
-  background:rgba(5,13,26,0.4);
+.faq-btn:hover { background: rgba(255,255,255,0.025); }
+.faq-q {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.45;
 }
-.faq-body.open { padding:4px 18px 16px; max-height:300px; }
-.pill-sync  { display:inline-flex; align-items:center; background:rgba(0,229,255,0.10); color:var(--cyan); border:1px solid rgba(0,229,255,0.25); font-size:10px; font-weight:600; padding:2px 9px; border-radius:999px; letter-spacing:.04em; margin-bottom:.5rem; margin-top:10px; }
-.pill-pro   { display:inline-flex; align-items:center; background:rgba(168,85,247,0.10); color:#c084fc; border:1px solid rgba(168,85,247,0.25); font-size:10px; font-weight:600; padding:2px 9px; border-radius:999px; letter-spacing:.04em; margin-bottom:.5rem; margin-top:10px; }
-.pill-data  { display:inline-flex; align-items:center; background:rgba(6,182,212,0.10); color:var(--teal); border:1px solid rgba(6,182,212,0.25); font-size:10px; font-weight:600; padding:2px 9px; border-radius:999px; letter-spacing:.04em; margin-bottom:.5rem; margin-top:10px; }
-.pill-acct  { display:inline-flex; align-items:center; background:rgba(245,158,11,0.10); color:var(--amber); border:1px solid rgba(245,158,11,0.25); font-size:10px; font-weight:600; padding:2px 9px; border-radius:999px; letter-spacing:.04em; margin-bottom:.5rem; margin-top:10px; }
+.faq-chevron {
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  color: var(--slate2);
+  transition: transform 0.25s, color 0.2s;
+}
+.faq-btn[aria-expanded="true"] .faq-chevron {
+  transform: rotate(180deg);
+  color: var(--teal);
+}
 
-/* ═══════════════════════════════════════════
-   ── CTA BANNER ──
-═══════════════════════════════════════════ */
-#cta { padding:clamp(5rem,10vw,8rem) 0; }
+.faq-body {
+  font-size: 13.5px;
+  color: var(--slate);
+  line-height: 1.75;
+  padding: 0 16px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  background: rgba(5,8,15,0.3);
+}
+.faq-body.open { padding: 2px 16px 14px; max-height: 250px; }
+
+.faq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+  margin-top: 10px;
+}
+.pill-sync   { background: rgba(0,196,168,0.08);  color: var(--teal); border: 1px solid rgba(0,196,168,0.2); }
+.pill-pro    { background: rgba(139,92,246,0.08); color: #c4b5fd;    border: 1px solid rgba(139,92,246,0.2); }
+.pill-data   { background: rgba(56,136,255,0.08); color: #93c5fd;    border: 1px solid rgba(56,136,255,0.2); }
+.pill-acct   { background: rgba(245,158,11,0.08); color: #fcd34d;    border: 1px solid rgba(245,158,11,0.2); }
+
+/* ─────────────────────────────────────────
+   CTA BANNER
+───────────────────────────────────────── */
+#cta { padding: clamp(5rem, 10vw, 8rem) 0; }
 .cta-card {
-  background:linear-gradient(135deg,rgba(0,229,255,0.06),rgba(168,85,247,0.06));
-  border:1px solid rgba(0,229,255,0.15); border-radius:24px;
-  padding:clamp(3rem,6vw,5rem) clamp(2rem,6vw,5rem);
-  text-align:center; position:relative; overflow:hidden;
-  backdrop-filter:blur(16px);
+  background: linear-gradient(140deg, rgba(0,196,168,0.055), rgba(139,92,246,0.04));
+  border: 1px solid rgba(0,196,168,0.12);
+  border-radius: var(--r-xl);
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(2rem, 7vw, 5rem);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
 }
 .cta-card::before {
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,229,255,0.06),transparent);
-  pointer-events:none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 65% 65% at 50% 50%, rgba(0,196,168,0.05), transparent);
+  pointer-events: none;
 }
-.cta-fish { font-size:3.5rem; margin-bottom:1.2rem; display:block; animation:fishFloat 5s ease-in-out infinite; }
-.cta-title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(1.8rem,4vw,3rem); color:var(--white); margin-bottom:.8rem; }
-.cta-title em { font-style:normal; background:linear-gradient(90deg,var(--cyan),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.cta-sub { font-size:15px; color:var(--muted); max-width:440px; margin:0 auto 2.5rem; line-height:1.8; }
-.cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.cta-emoji {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.4rem;
+}
+.cta-emoji img {
+  width: 52px; height: 52px;
+  object-fit: contain;
+  animation: fishFloat 5.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(0,196,168,0.3));
+}
+.cta-emoji img:nth-child(2) { animation-delay: 2s; width: 36px; height: 36px; opacity: 0.7; }
+@keyframes fishFloat {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-14px) rotate(3deg); }
+}
+.cta-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+  color: var(--white);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.8rem;
+}
+.cta-title em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(130deg, var(--teal), var(--teal2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cta-sub { font-size: 15px; color: var(--slate); max-width: 420px; margin: 0 auto 2.4rem; line-height: 1.8; }
+.cta-actions { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
 
-/* ═══════════════════════════════════════════
-   ── FOOTER ──
-═══════════════════════════════════════════ */
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
 footer {
-  position:relative; z-index:2; border-top:1px solid var(--border);
-  padding:3rem clamp(1.2rem,5vw,3.5rem) 2rem;
+  position: relative; z-index: 2;
+  border-top: 1px solid var(--edge2);
+  padding: 3rem clamp(1.25rem, 5vw, 3rem) 2rem;
 }
-.footer-inner { max-width:1080px; margin:0 auto; }
-.footer-top { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
-@media(max-width:680px){ .footer-top{ grid-template-columns:1fr; gap:2rem; } }
+.footer-inner { max-width: 1080px; margin: 0 auto; }
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 680px) { .footer-top { grid-template-columns: 1fr; gap: 2rem; } }
 
-.footer-brand .logo-wrap { display:flex; align-items:center; gap:10px; margin-bottom:1rem; }
-.footer-brand p { font-size:13px; color:var(--muted); line-height:1.7; max-width:260px; }
-.footer-col h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:12px; color:var(--white); letter-spacing:.08em; text-transform:uppercase; margin-bottom:1rem; }
-.footer-col a { display:block; font-size:13px; color:var(--muted); text-decoration:none; margin-bottom:.5rem; transition:color .2s; }
-.footer-col a:hover { color:var(--cyan); }
+.footer-brand-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; }
+.footer-brand-word {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.footer-brand p { font-size: 13px; color: var(--slate2); line-height: 1.7; max-width: 270px; }
+
+.footer-col h4 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: var(--slate2);
+  margin-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--teal); }
 
 .footer-bottom {
-  border-top:1px solid var(--border); padding-top:1.5rem;
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
-  font-size:12px; color:var(--muted);
+  border-top: 1px solid var(--edge2);
+  padding-top: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  font-size: 12px;
+  color: var(--slate2);
 }
-.footer-bottom a { color:var(--muted); text-decoration:none; }
-.footer-bottom a:hover { color:var(--cyan); }
+.footer-bottom a { color: var(--slate2); }
+.footer-bottom a:hover { color: var(--teal); }
+
+/* ─────────────────────────────────────────
+   MOBILE NAV TOGGLE (hamburger)
+───────────────────────────────────────── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px; height: 1.5px;
+  background: var(--slate);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+@media (max-width: 768px) {
+  .nav-hamburger { display: flex; }
+  .nav-links { display: none; }
+}
+
+/* ─────────────────────────────────────────
+   MOBILE MENU
+───────────────────────────────────────── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 62px; left: 0; right: 0;
+  background: rgba(5,8,15,0.97);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--edge2);
+  z-index: 299;
+  padding: 1rem 1.5rem 1.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--slate);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--edge2);
+  transition: color 0.2s;
+}
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu a:hover { color: var(--teal); }
+.mobile-menu .mobile-cta {
+  color: var(--teal);
+  font-weight: 600;
+}
+
 </style>
 </head>
 <body>
 
-<!-- 3D background -->
-<div id="vanta-bg"></div>
+<!-- ════ OCEAN CANVAS ════ -->
+<canvas id="ocean-canvas"></canvas>
 
-<!-- Ambient orbs -->
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<!-- Bubbles -->
-<div class="bubbles">
-  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-  <div class="bubble"></div>
+<!-- ════ BUBBLES ════ -->
+<div class="bubble-layer">
+  <svg class="b1"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b2"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b3"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b4"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b5"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b6"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b7"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b8"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b9"  viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b10" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b11" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
+  <svg class="b12" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/></svg>
 </div>
-
-<!-- Custom cursor -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ════ NAV ════ -->
 <nav id="mainNav">
-  <a class="nav-logo" href="#">
-    <div class="logo-icon">🐠</div>
-    <span class="logo-text">Tankly</span>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">
+      <img src="assets/emoticons/tropical_fish.png" alt="Tankly" onerror="this.parentElement.innerHTML='🐠'"/>
+    </div>
+    <span class="nav-wordmark">Tankly</span>
   </a>
+
+  <button class="nav-hamburger" id="hamburgerBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
   <div class="nav-links">
     <a class="nav-link" href="#features">Features</a>
     <a class="nav-link" href="#hiw">How it works</a>
     <a class="nav-link" href="#plans">Plans</a>
     <a class="nav-link" href="#faq">FAQ</a>
     <a class="nav-link" href="tankly-privacy">Privacy</a>
-<a class="nav-link" href="tankly-tos">Terms</a><a class="nav-link" href="waitlist-ios">WaitList IOS</a>
-
-     <a class="nav-cta" href="#">Get Tankly</a>
+    <a class="nav-link" href="tankly-tos">Terms</a>
+    <a class="nav-link" href="waitlist-ios">iOS Waitlist</a>
+    <a class="nav-cta" href="#">
+      <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.style.display='none'"/>
+      Get Tankly
+    </a>
   </div>
 </nav>
 
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features">Features</a>
+  <a href="#hiw">How it works</a>
+  <a href="#plans">Plans</a>
+  <a href="#faq">FAQ</a>
+  <a href="tankly-privacy">Privacy</a>
+  <a href="tankly-tos">Terms</a>
+  <a href="waitlist-ios">iOS Waitlist</a>
+  <a href="#" class="mobile-cta">Get Tankly →</a>
+</div>
+
 <!-- ════ HERO ════ -->
 <section id="hero">
-  <!-- Parallax fish — deeper layers -->
-  <span class="hero-fish fish-1" data-depth="0.06">🐠</span>
-  <span class="hero-fish fish-2" data-depth="0.04">🐡</span>
-  <span class="hero-fish fish-3" data-depth="0.03">🐟</span>
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.style.display='none'"/>
+      Aquarium Manager · Android Beta
+    </div>
 
-  <div class="hero-inner" id="heroInner">
-    <div class="hero-pill" data-depth="0.02"><span></span>Aquarium Tracker · Now in Beta</div>
-    <h1 class="hero-h1" data-depth="0.025">
+    <h1 class="hero-h1">
       Your aquarium,<br>
-      <span class="line2">smarter.</span>
+      <span class="serif-line">understood.</span>
     </h1>
-    <p class="hero-sub" data-depth="0.018">
-      Log water parameters, track livestock, sync across devices, and get AI-powered insights — all in one beautiful app built for fish keepers.
+
+    <p class="hero-sub">
+      Track water parameters, monitor livestock, log maintenance — and get personalized insights built around your specific tank. For beginners to reef obsessives.
     </p>
-    <div class="hero-actions" data-depth="0.012">
-      <a href="#" class="btn-primary">🐠 Download Free</a>
-      <a href="#features" class="btn-ghost">See Features →</a>
-    </div>
-    <div class="hero-stats" data-depth="0.008">
-      <div class="hero-stat">
-        <span class="hero-stat-num">12k+</span>
-        <span class="hero-stat-label">Tanks tracked</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat-num">98%</span>
-        <span class="hero-stat-label">Uptime</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat-num">4.9★</span>
-        <span class="hero-stat-label">Play Store</span>
-      </div>
-    </div>
-  </div>
 
-  <div class="scroll-hint">
-    <span>scroll</span>
-    <div class="scroll-hint-line"></div>
-  </div>
-</section>
-
-<div class="shimmer-line"></div>
-
-<!-- ════ FEATURES ════ -->
-<section id="features">
-  <div class="section-inner">
-    <div class="features-header">
-      <div class="section-eyebrow reveal"><span></span>Features</div>
-      <h2 class="section-title reveal reveal-delay-1">Everything your tank needs.<br><em>Nothing it doesn't.</em></h2>
-      <p class="section-sub reveal reveal-delay-2">Tankly is purpose-built for aquarium hobbyists. Simple enough for beginners, powerful enough for reef nerds.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">
+        <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.style.display='none'"/>
+        Download Free
+      </a>
+      <a href="#features" class="btn-ghost">
+        Explore Features
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
 
-    <div class="features-grid">
+    <!-- Phone mockup -->
+    <div class="hero-phone-wrap">
+      <!-- Primary phone -->
+      <div class="phone-frame">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="phone-screen">
+          <div class="ps-header">
+            <div class="ps-header-top">
+              <div>
+                <div class="ps-hello">Good morning</div>
+                <div class="ps-name">My Tanks</div>
+              </div>
+              <div class="ps-status-dot"></div>
+            </div>
+          </div>
 
-      <!-- Big card -->
-      <div class="feat-card big reveal">
-        <div>
-          <div class="feat-icon icon-cyan">📊</div>
-          <div class="feat-title">Real-time Parameter Logging</div>
-          <div class="feat-desc">Log pH, ammonia, nitrite, nitrate, temperature, hardness, and 12 more parameters. Visual history graphs show trends over days, weeks, and months. Never miss a dangerous spike again.</div>
-        </div>
-        <div class="feat-visual">
-          <div class="param-mini">
-            <div class="param-row">
-              <span class="param-label">pH</span>
-              <div class="param-bar"><div class="param-fill fill-cyan"></div></div>
-              <span class="param-val">7.2</span>
+          <div class="ps-tank-card">
+            <div class="ps-tank-top">
+              <img class="ps-tank-icon" src="assets/emoticons/tropical_fish.png" alt="" onerror="this.parentElement.innerHTML='🐠 <span style=font-size:11px;font-weight:700;color:#e8f4f0>Community 60L</span>'"/>
+              <div>
+                <div class="ps-tank-name">Community 60L</div>
+                <div class="ps-tank-type">Freshwater · Planted</div>
+              </div>
             </div>
-            <div class="param-row">
-              <span class="param-label">NH₃</span>
-              <div class="param-bar"><div class="param-fill fill-green"></div></div>
-              <span class="param-val">0.0</span>
+            <div class="ps-score-row">
+              <div>
+                <div class="ps-score-num">87</div>
+                <div class="ps-score-label">Health Score</div>
+              </div>
+              <div class="ps-score-bar"><div class="ps-score-fill"></div></div>
             </div>
-            <div class="param-row">
-              <span class="param-label">NO₂</span>
-              <div class="param-bar"><div class="param-fill fill-amber"></div></div>
-              <span class="param-val">0.1</span>
+          </div>
+
+          <div class="ps-params">
+            <div class="ps-param">
+              <div class="ps-param-label">pH</div>
+              <div class="ps-param-val good">7.2</div>
             </div>
-            <div class="param-row">
-              <span class="param-label">NO₃</span>
-              <div class="param-bar"><div class="param-fill fill-purple"></div></div>
-              <span class="param-val">12</span>
+            <div class="ps-param">
+              <div class="ps-param-label">Ammonia</div>
+              <div class="ps-param-val good">0.0</div>
             </div>
-            <div class="param-row">
-              <span class="param-label">°C</span>
-              <div class="param-bar"><div class="param-fill fill-teal"></div></div>
-              <span class="param-val">26°</span>
+            <div class="ps-param">
+              <div class="ps-param-label">Nitrite</div>
+              <div class="ps-param-val warn">0.1</div>
+            </div>
+            <div class="ps-param">
+              <div class="ps-param-label">Temp</div>
+              <div class="ps-param-val good">26°C</div>
+            </div>
+          </div>
+
+          <div class="ps-section-label">Livestock</div>
+          <div class="ps-fish-row">
+            <div class="ps-fish-chip">
+              <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.style.display='none'"/>
+              Neon Tetra ×8
+            </div>
+            <div class="ps-fish-chip">
+              <img src="assets/emoticons/shrimp.png" alt="" onerror="this.style.display='none'"/>
+              Cherry ×6
             </div>
           </div>
         </div>
       </div>
 
-      <div class="feat-card purple reveal reveal-delay-1">
-        <div class="feat-icon icon-purple">🤖</div>
-        <div class="feat-title">AI Water Insights</div>
-        <div class="feat-desc">Pro users get AI-powered recommendations based on your parameters and livestock mix. Spot problems before fish do.</div>
+      <div class="phone-glow"></div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>scroll</span>
+    <div class="scroll-cue-line"></div>
+  </div>
+</section>
+
+<div class="wave-divider"></div>
+
+<!-- ════ FEATURES ════ -->
+<section id="features">
+  <div class="wrap">
+    <div class="features-intro">
+      <div class="eyebrow reveal"><span class="eyebrow-dot"></span>Features</div>
+      <h2 class="display reveal delay-1">Built for real fish keepers.<br><em>No filler.</em></h2>
+      <p class="lead reveal delay-2">Tankly is purpose-built for the aquarium hobby. Comprehensive enough for reef obsessives, approachable for beginners setting up their first tank.</p>
+    </div>
+
+    <div class="feature-grid">
+
+      <!-- Big: parameter logging -->
+      <div class="f-card span-8 reveal">
+        <div class="f-icon f-icon-teal">
+          <img src="assets/emoticons/test_tube.png" alt="" onerror="this.parentElement.innerHTML='🧪'"/>
+        </div>
+        <div class="f-title">Real-time Parameter Logging</div>
+        <div class="f-desc">Log pH, ammonia, nitrite, nitrate, temperature, hardness, and more. Visual history graphs surface trends over days, weeks, and months. Spot dangerous spikes before they hurt your fish.</div>
+        <div class="param-visual">
+          <div class="p-row">
+            <span class="p-key">pH</span>
+            <div class="p-bar"><div class="p-fill pf-1"></div></div>
+            <span class="p-val">7.2</span>
+          </div>
+          <div class="p-row">
+            <span class="p-key">NH₃</span>
+            <div class="p-bar"><div class="p-fill pf-2"></div></div>
+            <span class="p-val">0.0</span>
+          </div>
+          <div class="p-row">
+            <span class="p-key">NO₂</span>
+            <div class="p-bar"><div class="p-fill pf-3"></div></div>
+            <span class="p-val">0.1</span>
+          </div>
+          <div class="p-row">
+            <span class="p-key">NO₃</span>
+            <div class="p-bar"><div class="p-fill pf-4"></div></div>
+            <span class="p-val">12</span>
+          </div>
+          <div class="p-row">
+            <span class="p-key">°C</span>
+            <div class="p-bar"><div class="p-fill pf-5"></div></div>
+            <span class="p-val">26°</span>
+          </div>
+        </div>
       </div>
 
-      <div class="feat-card teal reveal reveal-delay-2">
-        <div class="feat-icon icon-teal">☁️</div>
-        <div class="feat-title">Seamless Cloud Sync</div>
-        <div class="feat-desc">Switch phones without losing a single log. Your tanks, history, and settings follow you across every device automatically.</div>
+      <!-- AI insights -->
+      <div class="f-card span-4 reveal delay-1">
+        <div class="f-icon f-icon-purple">
+          <img src="assets/emoticons/brain.png" alt="" onerror="this.parentElement.innerHTML='🧠'"/>
+        </div>
+        <div class="f-title">AI Water Insights</div>
+        <div class="f-desc">Pro users get intelligent recommendations tuned to their specific tank type, livestock mix, and parameter history. Catch problems before they escalate.</div>
       </div>
 
-      <div class="feat-card reveal reveal-delay-1">
-        <div class="feat-icon icon-cyan">🐟</div>
-        <div class="feat-title">Livestock Manager</div>
-        <div class="feat-desc">Track every fish, coral, and invertebrate in your tank. Log additions, losses, and notes with dates. Build your complete stocking history.</div>
+      <!-- Cloud sync -->
+      <div class="f-card span-4 reveal">
+        <div class="f-icon f-icon-blue">
+          <img src="assets/emoticons/satellite_antenna.png" alt="" onerror="this.parentElement.innerHTML='📡'"/>
+        </div>
+        <div class="f-title">Seamless Cloud Sync</div>
+        <div class="f-desc">Switch phones without losing a single log. Your tanks, history, and settings follow you automatically.</div>
+        <div class="f-tag">
+          <img src="assets/emoticons/check.png" alt="" width="11" height="11" style="object-fit:contain" onerror="this.style.display='none'"/>
+          Offline-first architecture
+        </div>
       </div>
 
-      <div class="feat-card green reveal reveal-delay-2">
-        <div class="feat-icon icon-green">🔧</div>
-        <div class="feat-title">Maintenance Reminders</div>
-        <div class="feat-desc">Set schedules for water changes, filter cleanings, and dosing. Never forget a maintenance task with smart recurring reminders.</div>
+      <!-- Livestock -->
+      <div class="f-card span-4 reveal delay-1">
+        <div class="f-icon f-icon-teal">
+          <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.parentElement.innerHTML='🐠'"/>
+        </div>
+        <div class="f-title">Livestock Manager</div>
+        <div class="f-desc">Track every fish, coral, and invertebrate. Log additions, losses, and notes with dates. Build your complete stocking history over time.</div>
       </div>
 
-      <div class="feat-card amber reveal reveal-delay-3">
-        <div class="feat-icon icon-amber">🖼️</div>
-        <div class="feat-title">Tank Photo Timeline</div>
-        <div class="feat-desc">Document your tank's evolution with a photo timeline. Attach parameters to each snapshot so you remember exactly what was happening.</div>
+      <!-- Offline -->
+      <div class="f-card span-4 reveal delay-2">
+        <div class="f-icon f-icon-amber">
+          <img src="assets/emoticons/battery.png" alt="" onerror="this.parentElement.innerHTML='🔋'"/>
+        </div>
+        <div class="f-title">Works 100% Offline</div>
+        <div class="f-desc">Every log saves instantly on-device. No internet needed — ever. Tankly syncs silently in the background when you reconnect.</div>
       </div>
 
-      <div class="feat-card purple reveal reveal-delay-1">
-        <div class="feat-icon icon-purple">🌍</div>
-        <div class="feat-title">Community Feed</div>
-        <div class="feat-desc">Share your tank setup, ask for advice, and browse other hobbyists' builds — a thriving community of fish keepers right inside the app.</div>
+      <!-- Maintenance -->
+      <div class="f-card span-3 reveal">
+        <div class="f-icon f-icon-teal">
+          <img src="assets/emoticons/wrench.png" alt="" onerror="this.parentElement.innerHTML='🔧'"/>
+        </div>
+        <div class="f-title">Maintenance Reminders</div>
+        <div class="f-desc">Set recurring schedules for water changes, filter cleanings, and dosing.</div>
       </div>
 
-      <div class="feat-card reveal reveal-delay-2">
-        <div class="feat-icon icon-cyan">📶</div>
-        <div class="feat-title">Works 100% Offline</div>
-        <div class="feat-desc">Every log saves instantly on your device. No internet? No problem. Tankly syncs silently in the background when you reconnect.</div>
+      <!-- Timeline -->
+      <div class="f-card span-3 reveal delay-1">
+        <div class="f-icon f-icon-blue">
+          <img src="assets/emoticons/framed_picture.png" alt="" onerror="this.parentElement.innerHTML='🖼️'"/>
+        </div>
+        <div class="f-title">Tank Photo Timeline</div>
+        <div class="f-desc">Document your tank's evolution. Attach live parameters to each photo snapshot.</div>
+      </div>
+
+      <!-- Community -->
+      <div class="f-card span-3 reveal delay-2">
+        <div class="f-icon f-icon-purple">
+          <img src="assets/emoticons/people.png" alt="" onerror="this.parentElement.innerHTML='👥'"/>
+        </div>
+        <div class="f-title">Community Feed</div>
+        <div class="f-desc">Share builds, ask questions, and browse other hobbyists' setups — inside the app.</div>
+      </div>
+
+      <!-- Health Score -->
+      <div class="f-card span-3 reveal delay-3">
+        <div class="f-icon f-icon-rose">
+          <img src="assets/emoticons/heart.png" alt="" onerror="this.parentElement.innerHTML='❤️'"/>
+        </div>
+        <div class="f-title">Tank Health Score</div>
+        <div class="f-desc">A single 0–100 score calibrated to your tank type, with tier-based biological accuracy.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<div class="shimmer-line"></div>
+<div class="wave-divider"></div>
 
 <!-- ════ HOW IT WORKS ════ -->
 <section id="hiw">
-  <div class="section-inner">
-    <div class="hiw-layout">
+  <div class="wrap">
+    <div class="hiw-grid">
       <div>
-        <div class="section-eyebrow reveal"><span></span>How it works</div>
-        <h2 class="section-title reveal reveal-delay-1">Simple by design.<br><em>Powerful inside.</em></h2>
-        <p class="section-sub reveal reveal-delay-2">Three steps from download to a fully synced, AI-aware aquarium companion.</p>
+        <div class="eyebrow reveal"><span class="eyebrow-dot"></span>How it works</div>
+        <h2 class="display reveal delay-1">Simple to start.<br><em>Powerful inside.</em></h2>
+        <p class="lead reveal delay-2">Three steps from first launch to a fully synced, insight-aware aquarium companion.</p>
 
-        <div class="hiw-steps" style="margin-top:2.5rem">
-          <div class="hiw-step reveal reveal-delay-1">
+        <div class="hiw-steps">
+          <div class="hiw-step reveal delay-1">
             <div class="hiw-num">1</div>
             <div class="hiw-body">
               <h3>Everything saves locally first</h3>
               <p>Log parameters, add livestock, run the app entirely offline. All data is stored on-device instantly — no internet required, ever.</p>
             </div>
           </div>
-          <div class="hiw-step reveal reveal-delay-2">
+          <div class="hiw-step reveal delay-2">
             <div class="hiw-num">2</div>
             <div class="hiw-body">
               <h3>Sign in to unlock the cloud</h3>
-              <p>Google Sign-In connects your account to Firebase and Supabase. Streaks, community, and (for Pro) all your tank data sync automatically.</p>
+              <p>Google Sign-In links your account to Firebase and Supabase. Streaks, community, and all your tank data sync automatically.</p>
             </div>
           </div>
-          <div class="hiw-step reveal reveal-delay-3">
+          <div class="hiw-step reveal delay-3">
             <div class="hiw-num">3</div>
             <div class="hiw-body">
               <h3>New device — instant restore</h3>
-              <p>Sign into any new phone. Tankly checks your plan, pulls your tanks and history from the cloud, and you're back in seconds.</p>
+              <p>Sign in with the same Google account. Tankly pulls your tanks, parameters, and history from the cloud in seconds.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Diagram card -->
-      <div class="hiw-diagram reveal reveal-delay-2">
-        <div class="diagram-title">Live sync flow</div>
-        <div class="flow">
+      <!-- Sync diagram -->
+      <div class="sync-card reveal delay-2">
+        <div class="sync-title">Live sync flow</div>
+        <div class="flow-list">
           <div class="flow-node">
-            <div class="flow-dot dot-cyan"></div>
-            <div class="flow-label"><strong>App open</strong> — local save in &lt;50ms</div>
+            <div class="flow-dot fd-teal"></div>
+            <div class="flow-text"><strong>App opens</strong> — local save in &lt;50ms</div>
           </div>
           <div class="flow-connector"></div>
           <div class="flow-node">
-            <div class="flow-dot dot-purple"></div>
-            <div class="flow-label"><strong>Google Sign-In</strong> — identity linked</div>
+            <div class="flow-dot fd-purple"></div>
+            <div class="flow-text"><strong>Google Sign-In</strong> — identity linked</div>
           </div>
           <div class="flow-connector"></div>
           <div class="flow-node">
-            <div class="flow-dot dot-amber"></div>
-            <div class="flow-label"><strong>Firebase</strong> — streak, tanks, history</div>
+            <div class="flow-dot fd-amber"></div>
+            <div class="flow-text"><strong>Firebase</strong> — streak, tanks, history</div>
           </div>
           <div class="flow-connector"></div>
           <div class="flow-node">
-            <div class="flow-dot dot-teal"></div>
-            <div class="flow-label"><strong>Supabase</strong> — community, photos</div>
+            <div class="flow-dot fd-blue"></div>
+            <div class="flow-text"><strong>Supabase</strong> — community &amp; photos</div>
           </div>
           <div class="flow-connector"></div>
           <div class="flow-node">
-            <div class="flow-dot dot-green"></div>
-            <div class="flow-label"><strong>New device</strong> — fully restored ✓</div>
+            <div class="flow-dot fd-green"></div>
+            <div class="flow-text"><strong>New device</strong> — fully restored ✓</div>
           </div>
         </div>
 
-        <div style="margin-top:1.8rem; padding-top:1.4rem; border-top:1px solid var(--border);">
-          <div style="font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.9rem; font-weight:600;">Backed up data</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:.5rem;">
-            <div style="font-size:12px; background:rgba(0,229,255,0.05); border:1px solid rgba(0,229,255,0.12); border-radius:8px; padding:.6rem .8rem; color:var(--text);">📊 Parameters</div>
-            <div style="font-size:12px; background:rgba(0,229,255,0.05); border:1px solid rgba(0,229,255,0.12); border-radius:8px; padding:.6rem .8rem; color:var(--text);">🐟 Livestock</div>
-            <div style="font-size:12px; background:rgba(0,229,255,0.05); border:1px solid rgba(0,229,255,0.12); border-radius:8px; padding:.6rem .8rem; color:var(--text);">🔧 Equipment</div>
-            <div style="font-size:12px; background:rgba(0,229,255,0.05); border:1px solid rgba(0,229,255,0.12); border-radius:8px; padding:.6rem .8rem; color:var(--text);">🖼️ Photos</div>
+        <div class="backed-up-grid">
+          <div class="bu-item">
+            <img src="assets/emoticons/test_tube.png" alt="" onerror="this.style.display='none'"/>
+            Parameters
+          </div>
+          <div class="bu-item">
+            <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.style.display='none'"/>
+            Livestock
+          </div>
+          <div class="bu-item">
+            <img src="assets/emoticons/wrench.png" alt="" onerror="this.style.display='none'"/>
+            Equipment
+          </div>
+          <div class="bu-item">
+            <img src="assets/emoticons/framed_picture.png" alt="" onerror="this.style.display='none'"/>
+            Photos
           </div>
         </div>
       </div>
@@ -832,150 +1671,169 @@ footer {
   </div>
 </section>
 
-<div class="shimmer-line"></div>
+<div class="wave-divider"></div>
 
 <!-- ════ PLANS ════ -->
 <section id="plans">
-  <div class="section-inner">
+  <div class="wrap">
     <div class="plans-header">
-      <div class="section-eyebrow reveal"><span></span>Plans</div>
-      <h2 class="section-title reveal reveal-delay-1">Start free. <em>Go Pro when you're ready.</em></h2>
-      <p class="section-sub reveal reveal-delay-2" style="margin-inline:auto">No tricks. The free plan is genuinely useful. Pro unlocks everything for serious hobbyists.</p>
+      <div class="eyebrow reveal"><span class="eyebrow-dot"></span>Plans</div>
+      <h2 class="display reveal delay-1">Start free.<br><em>Go Pro when you're ready.</em></h2>
+      <p class="lead reveal delay-2">No tricks. The free plan is genuinely useful. Pro unlocks everything for serious hobbyists.</p>
     </div>
 
-    <div class="plans-grid reveal reveal-delay-1">
-      <div class="plan-card">
+    <div class="plans-grid reveal delay-1">
+      <div class="plan-card free">
         <div class="plan-badge badge-free">Free</div>
         <div class="plan-name">Hobbyist</div>
         <div class="plan-desc">Everything you need to get started. No credit card, no time limit.</div>
-        <ul class="plan-features free">
-          <li>1 tank</li>
-          <li>All parameter types</li>
-          <li>Streak tracking</li>
-          <li>First tank cloud backup</li>
-          <li>6 photos per tank</li>
-          <li>Community access</li>
-          <li class="muted">Multiple tanks</li>
-          <li class="muted">AI water insights</li>
-          <li class="muted">Unlimited photos</li>
-          <li class="muted">Full cross-device sync</li>
+        <ul class="plan-features">
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'"/>
+            </span>
+            1 tank
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'"/>
+            </span>
+            All parameter types
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'"/>
+            </span>
+            Streak tracking
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'"/>
+            </span>
+            First tank cloud backup
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'"/>
+            </span>
+            6 photos per tank
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'"/>
+            </span>
+            Community access
+          </li>
+          <li class="muted">
+            <span class="pf-check">
+              <img src="assets/emoticons/cross.png" alt="–" onerror="this.parentElement.textContent='–'"/>
+            </span>
+            Multiple tanks
+          </li>
+          <li class="muted">
+            <span class="pf-check">
+              <img src="assets/emoticons/cross.png" alt="–" onerror="this.parentElement.textContent='–'"/>
+            </span>
+            AI water insights
+          </li>
+          <li class="muted">
+            <span class="pf-check">
+              <img src="assets/emoticons/cross.png" alt="–" onerror="this.parentElement.textContent='–'"/>
+            </span>
+            Full cross-device sync
+          </li>
         </ul>
       </div>
 
       <div class="plan-card pro">
-        <div class="plan-badge badge-pro">✦ Pro</div>
+        <div class="plan-badge badge-pro">
+          <img src="assets/emoticons/gem.png" alt="" width="12" height="12" style="object-fit:contain" onerror="this.style.display='none'"/>
+          Pro
+        </div>
         <div class="plan-name">Pro</div>
-        <div class="plan-desc">Everything unlocked for the obsessed aquarist. Available on Google Play.</div>
-        <ul class="plan-features pro">
-          <li>Unlimited tanks</li>
-          <li>All parameter types</li>
-          <li>Streak tracking</li>
-          <li>Full cross-device sync</li>
-          <li>Complete cloud backup</li>
-          <li>Unlimited photos + timeline</li>
-          <li>AI water quality insights</li>
-          <li>Priority support</li>
-          <li>Parameter snapshots on photos</li>
-          <li>Early access to new features</li>
+        <div class="plan-desc">Everything unlocked for the dedicated aquarist. Available on Google Play.</div>
+        <ul class="plan-features">
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            Unlimited tanks
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            All parameter types
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            Full cross-device sync
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            Complete cloud backup
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            Unlimited photos + timeline
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            AI water quality insights
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            Priority support
+          </li>
+          <li>
+            <span class="pf-check">
+              <img src="assets/emoticons/check.png" alt="✓" onerror="this.parentElement.textContent='✓'" style="filter:hue-rotate(200deg)"/>
+            </span>
+            Early access to new features
+          </li>
         </ul>
       </div>
     </div>
 
-    <p style="text-align:center; font-size:12px; color:var(--muted); margin-top:1.5rem;">
+    <p class="plans-note reveal delay-2">
+      <img src="assets/emoticons/mobile.png" alt="" onerror="this.style.display='none'"/>
       Available on Google Play · Subscription managed via Google Play Billing
     </p>
   </div>
 </section>
 
-<div class="shimmer-line"></div>
-
-<!-- ════ COMMUNITY ════ -->
-<section id="community">
-  <div class="section-inner">
-    <div class="community-header">
-      <div class="section-eyebrow reveal"><span></span>Community</div>
-      <h2 class="section-title reveal reveal-delay-1">Loved by fish keepers<br><em>everywhere.</em></h2>
-    </div>
-
-    <div class="testimonials">
-      <div class="testi-card reveal">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">"Finally an aquarium app that doesn't feel like it was designed in 2008. The parameter graphs are genuinely beautiful and the AI suggestions caught a nitrate creep I'd missed for weeks."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">🐠</div>
-          <div>
-            <div class="testi-name">Arjun Mehta</div>
-            <div class="testi-handle">Reef keeper · Mumbai</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testi-card reveal reveal-delay-1">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">"The offline-first approach is a game changer. I log everything at my tank room which has terrible signal and it all syncs perfectly later. Zero data loss in 4 months."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">🐡</div>
-          <div>
-            <div class="testi-name">Sarah K.</div>
-            <div class="testi-handle">Planted tank · Berlin</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testi-card reveal reveal-delay-2">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">"Switched phones and everything was back in under 30 seconds. That alone is worth Pro. The community tab is a bonus — great vibes in there."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">🦈</div>
-          <div>
-            <div class="testi-name">Priya V.</div>
-            <div class="testi-handle">Cichlid keeper · Bangalore</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="community-strip reveal">
-      <div class="strip-item">
-        <span class="strip-num"><span>12k+</span></span>
-        <span class="strip-label">Tanks tracked</span>
-      </div>
-      <div class="strip-item">
-        <span class="strip-num"><span>340k+</span></span>
-        <span class="strip-label">Parameters logged</span>
-      </div>
-      <div class="strip-item">
-        <span class="strip-num"><span>4.9★</span></span>
-        <span class="strip-label">Play Store rating</span>
-      </div>
-      <div class="strip-item">
-        <span class="strip-num"><span>18+</span></span>
-        <span class="strip-label">Countries</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="shimmer-line"></div>
+<div class="wave-divider"></div>
 
 <!-- ════ FAQ ════ -->
 <section id="faq">
-  <div class="section-inner">
+  <div class="wrap">
     <div class="faq-layout">
 
       <div class="faq-left">
-        <div class="section-eyebrow reveal"><span></span>FAQ</div>
-        <h2 class="section-title reveal reveal-delay-1">Got<br><em>questions?</em></h2>
-        <p class="section-sub reveal reveal-delay-2">Everything you need to know before jumping in. Can't find an answer? Email us.</p>
-        <div style="margin-top:2rem" class="reveal reveal-delay-3">
-          <a href="mailto:golanpiyush@gmail.com" class="btn-ghost" style="display:inline-flex">✉ Contact us</a>
-        </div>
-        <div style="margin-top:1.5rem" class="reveal reveal-delay-4">
-          <a href="tankly-home.html#hiw" style="font-size:13px; color:var(--muted); text-decoration:none;">→ Legal docs & How it Works</a>
+        <div class="eyebrow reveal"><span class="eyebrow-dot"></span>FAQ</div>
+        <h2 class="display reveal delay-1">Got<br><em>questions?</em></h2>
+        <p class="lead reveal delay-2">Everything you need to know before downloading. Can't find an answer? Email us directly.</p>
+        <a href="mailto:golanlabs.apps@gmail.com" class="faq-contact-link reveal delay-3">
+          <img src="assets/emoticons/envelope.png" alt="" onerror="this.style.display='none'"/>
+          golanlabs.apps@gmail.com
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <div style="margin-top:1rem;" class="reveal delay-4">
+          <a href="tankly-home.html#hiw" style="font-size:12px; color:var(--slate2);">→ Legal &amp; How it Works docs</a>
         </div>
       </div>
 
-      <div class="faq-right reveal reveal-delay-1">
+      <div class="faq-right reveal delay-1">
         <span class="faq-group-label">Sync &amp; data</span>
 
         <div class="faq-item">
@@ -984,7 +1842,7 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-sync">Sync</span>
+            <div class="faq-pill pill-sync">Sync</div>
             <p>Yes — everything you log saves instantly on your device. No internet needed at all. Cloud sync runs silently in the background whenever you're connected.</p>
           </div>
         </div>
@@ -995,7 +1853,7 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-sync">Sync</span>
+            <div class="faq-pill pill-sync">Sync</div>
             <p>Free users get their streak and first tank backed up. Pro users get everything — all tanks, full parameter history, livestock, equipment, and profile — backed up after every significant change.</p>
           </div>
         </div>
@@ -1006,7 +1864,7 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-sync">Sync</span>
+            <div class="faq-pill pill-sync">Sync</div>
             <p>Just sign in with the same Google account. Tankly detects your plan, pulls your data from the cloud, and restores it automatically. No manual steps.</p>
           </div>
         </div>
@@ -1019,7 +1877,7 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-pro">Pro</span>
+            <div class="faq-pill pill-pro">Pro</div>
             <p>Unlimited tanks, full cross-device sync, AI water quality insights, unlimited photos with timeline view, priority support, and early access to new features.</p>
           </div>
         </div>
@@ -1030,7 +1888,7 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-pro">Pro</span>
+            <div class="faq-pill pill-pro">Pro</div>
             <p>Your data stays on your device. You lose access to multi-tank management and full cloud sync, but your existing logs and history are never deleted — ever.</p>
           </div>
         </div>
@@ -1043,8 +1901,8 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-data">Data</span>
-            <p>Yes. Your tank parameters, livestock, and history are private to your account only. Only community posts and your public profile are visible to other users. We never sell your data.</p>
+            <div class="faq-pill pill-data">Data</div>
+            <p>Yes. Your tank parameters, livestock, and history are private to your account. Only community posts and your public profile are visible to other users. We never sell your data.</p>
           </div>
         </div>
 
@@ -1056,7 +1914,7 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-acct">Account</span>
+            <div class="faq-pill pill-acct">Account</div>
             <p>No. Tankly works fully offline without signing in. A Google account is only needed for cloud backup and community features.</p>
           </div>
         </div>
@@ -1067,28 +1925,33 @@ footer {
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq-body">
-            <span class="pill-acct">Account</span>
+            <div class="faq-pill pill-acct">Account</div>
             <p>Go to Settings → Account → Delete account. This permanently removes your profile, posts, photos, and authentication record from our servers immediately.</p>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </section>
 
-<div class="shimmer-line"></div>
+<div class="wave-divider"></div>
 
 <!-- ════ CTA ════ -->
 <section id="cta">
-  <div class="section-inner">
+  <div class="wrap">
     <div class="cta-card reveal">
-      <span class="cta-fish">🐠</span>
-      <h2 class="cta-title">Your fish deserve<br><em>better tracking.</em></h2>
-      <p class="cta-sub">Join thousands of aquarists who use Tankly to keep their tanks thriving. Free to download, no credit card needed.</p>
+      <div class="cta-emoji">
+        <img src="assets/emoticons/tropical_fish.png" alt="🐠" onerror="this.outerHTML='<span style=font-size:52px;animation:fishFloat 5s ease-in-out infinite;display:block>🐠</span>'"/>
+        <img src="assets/emoticons/coral.png" alt="🪸" onerror="this.outerHTML='<span style=font-size:36px;animation:fishFloat 5s ease-in-out infinite;animation-delay:2s;display:block>🪸</span>'"/>
+      </div>
+      <h2 class="cta-title">Your fish deserve<br><em>better care.</em></h2>
+      <p class="cta-sub">Download Tankly free. No credit card, no lock-in — just a smarter way to manage your aquarium.</p>
       <div class="cta-actions">
-        <a href="#" class="btn-primary">🐠 Download Tankly Free</a>
-        <a href="tankly-home.html" class="btn-ghost">Read the Docs →</a>
+        <a href="#" class="btn-primary">
+          <img src="assets/emoticons/tropical_fish.png" alt="" onerror="this.style.display='none'"/>
+          Download Tankly Free
+        </a>
+        <a href="tankly-home.html" class="btn-ghost">View Docs →</a>
       </div>
     </div>
   </div>
@@ -1099,137 +1962,191 @@ footer {
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="logo-wrap">
-          <div class="logo-icon">🐠</div>
-          <span class="logo-text">Tankly</span>
+        <div class="footer-brand-wrap">
+          <div class="nav-logo" style="width:28px;height:28px;border-radius:8px;">
+            <img src="assets/emoticons/tropical_fish.png" alt="" style="width:17px;height:17px;object-fit:contain" onerror="this.parentElement.innerHTML='🐠'"/>
+          </div>
+          <span class="footer-brand-word">Tankly</span>
         </div>
-        <p>An aquarium tracking app built with love for fish keepers everywhere. Offline-first, privacy-focused, and genuinely useful.</p>
+        <p>An aquarium management app built for fish keepers. Offline-first, privacy-focused, and genuinely useful — whether you keep a single betta or a full reef system.</p>
       </div>
       <div class="footer-col">
         <h4>App</h4>
         <a href="#features">Features</a>
         <a href="#hiw">How it works</a>
-         <a href="submit_request">Suggest a Feature!</a>
-
         <a href="#plans">Plans</a>
         <a href="#faq">FAQ</a>
-        <a href="#community">Community</a>
+        <a href="submit_request">Suggest a Feature</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
-       <a href="tankly-privacy">Privacy Policy</a>
-<a href="tankly-tos">Terms of Service</a>
-<a href="tankly-privacy">Docs Hub</a>
-           <a href="delete-account">Delete Account</a>
+        <a href="tankly-privacy">Privacy Policy</a>
+        <a href="tankly-tos">Terms of Service</a>
+        <a href="delete-account">Delete Account</a>
+        <a href="waitlist-ios">iOS Waitlist</a>
         <a href="mailto:golanlabs.apps@gmail.com">Contact</a>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Tankly · Piyush Golan · India</span>
-      <span style="font-size:11px; opacity:.5;">Built with 🐠 for aquarium hobbyists everywhere</span>
+      <span style="font-size:11px; opacity:0.4;">Built with care for aquarium hobbyists</span>
     </div>
   </div>
 </footer>
 
 
+<!-- ════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════ -->
 <script>
-/* ═══════════════════════════════════════════
-   VANTA 3D WAVES
-═══════════════════════════════════════════ */
-VANTA.WAVES({
-  el: '#vanta-bg', THREE: THREE,
-  mouseControls: true, touchControls: true, gyroControls: true,
-  minHeight: 200, minWidth: 200,
-  color: 0x030c1b,
-  shininess: 60,
-  waveHeight: 22,
-  waveSpeed: 0.5,
-  zoom: 0.82,
-  scale: 1.0, scaleMobile: 1.0
-});
+/* ─────────────────────────────────────────
+   OCEAN CANVAS — deep-water caustic ambience
+───────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('ocean-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, raf;
+  let t = 0;
 
-/* ═══════════════════════════════════════════
-   CUSTOM CURSOR
-═══════════════════════════════════════════ */
-const dot  = document.getElementById('cursorDot');
-const ring = document.getElementById('cursorRing');
-let mx=0, my=0, rx=0, ry=0;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  dot.style.transform  = `translate(${mx}px,${my}px)`;
-});
-(function raf(){
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  ring.style.transform = `translate(${rx}px,${ry}px)`;
-  requestAnimationFrame(raf);
+  const waves = [];
+  function initWaves() {
+    waves.length = 0;
+    for (let i = 0; i < 6; i++) {
+      waves.push({
+        amp:   20 + Math.random() * 30,
+        speed: 0.0003 + Math.random() * 0.0005,
+        freq:  0.004 + Math.random() * 0.003,
+        phase: Math.random() * Math.PI * 2,
+        y:     0.2 + (i / 6) * 0.7,
+        alpha: 0.018 + Math.random() * 0.018,
+      });
+    }
+  }
+
+  /* Caustic dots — bioluminescent points */
+  const CAUSTICS = [];
+  function initCaustics() {
+    CAUSTICS.length = 0;
+    const n = Math.floor(W * H / 22000);
+    for (let i = 0; i < n; i++) {
+      CAUSTICS.push({
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        r:     0.6 + Math.random() * 1.8,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 0.9,
+        drift: (Math.random() - 0.5) * 0.12,
+      });
+    }
+  }
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    initWaves();
+    initCaustics();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 1;
+
+    /* Wave bands */
+    waves.forEach(w => {
+      ctx.beginPath();
+      ctx.moveTo(0, w.y * H);
+      for (let x = 0; x <= W; x += 4) {
+        const y = w.y * H + Math.sin(x * w.freq + t * w.speed * 60 + w.phase) * w.amp;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+      ctx.fillStyle = `rgba(0,196,168,${w.alpha})`;
+      ctx.fill();
+    });
+
+    /* Caustic shimmer dots */
+    CAUSTICS.forEach(c => {
+      c.x += c.drift;
+      if (c.x < -10) c.x = W + 10;
+      if (c.x > W + 10) c.x = -10;
+      const pulse = 0.5 + 0.5 * Math.sin(t * c.speed * 0.04 + c.phase);
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(110,220,208,${0.12 * pulse})`;
+      ctx.fill();
+    });
+
+    raf = requestAnimationFrame(draw);
+  }
+  draw();
 })();
-document.querySelectorAll('a,button').forEach(el => {
-  el.addEventListener('mouseenter', () => ring.style.transform += ' scale(1.7)');
-  el.addEventListener('mouseleave', () => {});
+
+/* ─────────────────────────────────────────
+   NAV — scroll state
+───────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('opaque', scrollY > 50);
+}, { passive: true });
+
+/* ─────────────────────────────────────────
+   HAMBURGER MENU
+───────────────────────────────────────── */
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+document.getElementById('mobileMenu').querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
 });
 
-/* ═══════════════════════════════════════════
-   DEEP MOUSE PARALLAX — hero layers
-═══════════════════════════════════════════ */
-const parallaxEls = document.querySelectorAll('[data-depth]');
-let pcx = window.innerWidth / 2, pcy = window.innerHeight / 2;
-document.addEventListener('mousemove', e => {
-  const dx = e.clientX - pcx, dy = e.clientY - pcy;
-  parallaxEls.forEach(el => {
-    const d = parseFloat(el.dataset.depth);
-    el.style.transform = `translate3d(${dx*d}px,${dy*d}px,0)`;
-  });
-});
-window.addEventListener('resize', () => {
-  pcx = window.innerWidth / 2;
-  pcy = window.innerHeight / 2;
-});
+/* ─────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────── */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-/* ═══════════════════════════════════════════
-   3D TILT ON CARDS
-═══════════════════════════════════════════ */
-document.querySelectorAll('.feat-card,.plan-card,.testi-card,.hiw-step,.hiw-diagram,.cta-card').forEach(card => {
+/* ─────────────────────────────────────────
+   FAQ ACCORDION
+───────────────────────────────────────── */
+function toggleFaq(btn) {
+  const body   = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.faq-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  if (!isOpen) {
+    body.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+/* ─────────────────────────────────────────
+   SUBTLE CARD TILT on hover
+───────────────────────────────────────── */
+document.querySelectorAll('.f-card, .plan-card, .sync-card, .cta-card').forEach(card => {
   card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const rx = ((e.clientY - r.top)  / r.height - 0.5) * -10;
-    const ry = ((e.clientX - r.left) / r.width  - 0.5) *  10;
-    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    const r  = card.getBoundingClientRect();
+    const rx = ((e.clientY - r.top)  / r.height - 0.5) * -6;
+    const ry = ((e.clientX - r.left) / r.width  - 0.5) *  6;
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-3px)`;
   });
   card.addEventListener('mouseleave', () => {
     card.style.transform = '';
   });
 });
 
-/* ═══════════════════════════════════════════
-   SCROLL REVEAL
-═══════════════════════════════════════════ */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-/* ═══════════════════════════════════════════
-   NAV SCROLL STATE
-═══════════════════════════════════════════ */
-window.addEventListener('scroll', () => {
-  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
-});
-
-/* ═══════════════════════════════════════════
-   FAQ ACCORDION
-═══════════════════════════════════════════ */
-function toggleFaq(btn) {
-  const body    = btn.nextElementSibling;
-  const isOpen  = body.classList.contains('open');
-  // close all
-  document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
-  document.querySelectorAll('.faq-btn').forEach(b => b.setAttribute('aria-expanded','false'));
-  if (!isOpen) {
-    body.classList.add('open');
-    btn.setAttribute('aria-expanded','true');
-  }
-}
+/* ─────────────────────────────────────────
+   PHONE PARALLAX — hero
+───────────────────────────────────────── */
+document.addEventListener('mousemove', e => {
+  const heroPhone = document.querySelector('.hero-phone-wrap');
+  if (!heroPhone) return;
+  const dx = (e.clientX / window.innerWidth  - 0.5) * 14;
+  const dy = (e.clientY / window.innerHeight - 0.5) * 8;
+  heroPhone.style.transform = `translate(${dx}px, ${dy}px)`;
+}, { passive: true });
 </script>
 </body>
 </html>
