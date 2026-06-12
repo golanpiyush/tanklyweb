@@ -2,9 +2,10 @@
   "buildCommand": "node build.js",
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/tankly-privacy", "destination": "/tankly-privacy.html" },
-    { "source": "/tankly-tos", "destination": "/tankly-tos.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/tankly-privacy",   "destination": "/tankly-privacy.html"   },
+    { "source": "/tankly-tos",       "destination": "/tankly-tos.html"       },
+    { "source": "/submit-request",   "destination": "/submit-request.html"   },
+    { "source": "/(.*)",             "destination": "/index.html"             }
   ],
   "cleanUrls": true
 }
