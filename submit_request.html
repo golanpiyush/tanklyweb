@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+  <title>Tankly • Submit Request</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:   #050d1a;
+      --card:   rgba(8, 18, 38, 0.88);
+      --border: rgba(0, 229, 255, 0.12);
+      --cyan:   #00e5ff;
+      --purple: #a855f7;
+      --teal:   #06b6d4;
+      --green:  #10b981;
+      --red:    #ef4444;
+      --amber:  #f59e0b;
+      --text:   #c8dff0;
+      --muted:  #5f7f9a;
+      --white:  #eef6ff;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Cursor ── */
+    .cursor-dot, .cursor-ring {
+      position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999;
+    }
+    .cursor-dot  { width: 6px; height: 6px; background: var(--cyan); top: -3px; left: -3px; }
+    .cursor-ring { width: 32px; height: 32px; border: 1.5px solid rgba(0,229,255,0.5); top: -16px; left: -16px; transition: transform .12s ease; }
+
+    /* ── Orbs ── */
+    .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); animation: orbFloat 12s ease-in-out infinite; }
+    .orb-1 { width: 500px; height: 500px; background: rgba(0,229,255,0.05);  top: -150px; left: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: rgba(168,85,247,0.05); bottom: -100px; right: -80px; animation-delay: 4s; }
+    @keyframes orbFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-28px)} }
+
+    /* ── Bubbles ── */
+    .bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+    .bubble {
+      position: absolute; bottom: -40px; border-radius: 50%; animation: rise linear infinite;
+      background: radial-gradient(circle at 35% 35%, rgba(0,229,255,0.5), rgba(0,229,255,0.03));
+      border: 1px solid rgba(0,229,255,0.2);
+    }
+    .bubble:nth-child(1){width:7px;height:7px;left:5%;animation-duration:16s;animation-delay:0s}
+    .bubble:nth-child(2){width:4px;height:4px;left:18%;animation-duration:22s;animation-delay:2s}
+    .bubble:nth-child(3){width:9px;height:9px;left:30%;animation-duration:18s;animation-delay:5s}
+    .bubble:nth-child(4){width:5px;height:5px;left:45%;animation-duration:25s;animation-delay:8s}
+    .bubble:nth-child(5){width:8px;height:8px;left:60%;animation-duration:14s;animation-delay:1s}
+    .bubble:nth-child(6){width:11px;height:11px;left:72%;animation-duration:20s;animation-delay:11s}
+    .bubble:nth-child(7){width:5px;height:5px;left:85%;animation-duration:17s;animation-delay:6s}
+    .bubble:nth-child(8){width:9px;height:9px;left:93%;animation-duration:23s;animation-delay:3s}
+    @keyframes rise {
+      0%{transform:translateY(0);opacity:0} 8%{opacity:1} 92%{opacity:.5}
+      100%{transform:translateY(-110vh) translateX(20px);opacity:0}
+    }
+
+    /* ── Card ── */
+    .form-card {
+      position: relative; z-index: 10; width: 100%; max-width: 580px;
+      background: var(--card); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border); border-radius: 2.2rem;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12);
+      padding: 2.4rem 2rem;
+      animation: floatIn 0.65s cubic-bezier(0.23,1,0.32,1);
+    }
+    @keyframes floatIn {
+      0%{opacity:0;transform:translateY(28px) scale(0.97)} 100%{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    /* ── Brand ── */
+    .brand { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.6rem; }
+    .brand-icon {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      width: 46px; height: 46px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; box-shadow: 0 8px 24px rgba(0,229,255,0.35);
+    }
+    .brand-text {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.7rem;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ── Eyebrow ── */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.22);
+      border-radius: 999px; padding: 5px 14px; font-size: 11px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 1.6rem; backdrop-filter: blur(8px);
+    }
+    .eyebrow-dot { width: 5px; height: 5px; background: var(--cyan); border-radius: 50%; animation: pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+    /* ── User chip (auto-filled data) ── */
+    .user-chip {
+      display: flex; align-items: center; gap: 0.75rem;
+      background: rgba(0,229,255,0.05); border: 1px solid rgba(0,229,255,0.14);
+      border-radius: 1rem; padding: 0.9rem 1.1rem; margin-bottom: 1.6rem;
+    }
+    .user-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-weight: 700; font-size: 0.9rem; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-meta { font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-version-badge {
+      background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.25);
+      border-radius: 6px; padding: 3px 8px; font-size: 0.7rem; font-weight: 700;
+      color: #c084fc; flex-shrink: 0; font-family: 'Syne', sans-serif;
+    }
+
+    /* ── Type pills ── */
+    .type-row { display: flex; gap: 0.6rem; margin-bottom: 1.6rem; }
+    .type-pill {
+      flex: 1; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.13);
+      border-radius: 1.2rem; padding: 0.85rem 0.9rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.55rem;
+      cursor: pointer; transition: all 0.22s ease; color: #c8dff0;
+      font-weight: 500; font-size: 0.85rem; text-align: center;
+    }
+    .type-pill .pill-icon { font-size: 1.3rem; }
+    .type-pill.active        { background: rgba(0,229,255,0.12);  border-color: var(--cyan);   box-shadow: 0 0 20px rgba(0,229,255,0.3);  color: white; font-weight: 700; }
+    .type-pill.active.improve{ background: rgba(6,182,212,0.12);  border-color: var(--teal);   box-shadow: 0 0 20px rgba(6,182,212,0.3);  }
+    .type-pill.active.bug    { background: rgba(239,68,68,0.12);  border-color: var(--red);    box-shadow: 0 0 20px rgba(239,68,68,0.3);  }
+    .type-pill:hover:not(.active) { border-color: rgba(0,229,255,0.4); background: rgba(255,255,255,0.07); }
+
+    /* ── Inputs ── */
+    .input-group { margin-bottom: 1.2rem; }
+    label {
+      display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.35rem;
+    }
+    textarea {
+      width: 100%; background: rgba(10,25,23,0.55); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.11); border-radius: 1rem;
+      padding: 0.9rem 1.1rem; font-size: 0.95rem; color: white;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s; outline: none;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+      resize: vertical; min-height: 130px;
+    }
+    textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0,229,255,0.22), inset 0 1px 4px rgba(0,0,0,0.4);
+      background: rgba(15,35,32,0.7);
+    }
+    textarea.bug:focus    { border-color: var(--red);  box-shadow: 0 0 14px rgba(239,68,68,0.22), inset 0 1px 4px rgba(0,0,0,0.4); }
+    textarea.improve:focus{ border-color: var(--teal); box-shadow: 0 0 14px rgba(6,182,212,0.22), inset 0 1px 4px rgba(0,0,0,0.4); }
+
+    /* ── Submit ── */
+    .submit-btn {
+      width: 100%; border: none; border-radius: 1.8rem; padding: 1rem;
+      font-weight: 700; font-size: 1.05rem; color: #021c18;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      cursor: pointer; transition: all 0.28s;
+      margin-top: 0.6rem;
+      font-family: 'Syne', sans-serif;
+      background: linear-gradient(115deg, var(--cyan), var(--teal));
+      box-shadow: 0 14px 32px -8px rgba(0,229,255,0.4);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .submit-btn:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 18px 40px -5px rgba(0,229,255,0.55); }
+    .submit-btn:active:not(:disabled) { transform: scale(0.97); }
+    .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .submit-btn.bug-mode {
+      background: linear-gradient(115deg, var(--red), #dc2626); color: #fff;
+      box-shadow: 0 14px 32px -8px rgba(239,68,68,0.4);
+    }
+    .submit-btn.improve-mode {
+      background: linear-gradient(115deg, var(--teal), #0891b2); 
+      box-shadow: 0 14px 32px -8px rgba(6,182,212,0.4);
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 17px; height: 17px; border: 2px solid transparent;
+      border-top-color: currentColor; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Message ── */
+    .message-box {
+      margin-top: 1.2rem; padding: 0.9rem 1.1rem; border-radius: 0.9rem;
+      text-align: center; font-weight: 600; font-size: 0.88rem; display: none;
+    }
+    .message-box.success { background: rgba(16,185,129,0.12); border: 1px solid var(--green); color: #6ee7b7; display: block; }
+    .message-box.error   { background: rgba(239,68,68,0.12);  border: 1px solid var(--red);   color: #fca5a5; display: block; }
+
+    /* ── Anonymous fallback notice ── */
+    .anon-notice {
+      font-size: 0.78rem; color: var(--muted); text-align: center;
+      padding: 0.5rem 0 0; display: none;
+    }
+    .anon-notice.show { display: block; }
+    .anon-notice a { color: var(--cyan); text-decoration: none; }
+
+    @media(max-width: 480px) {
+      .form-card { padding: 1.8rem 1.1rem; }
+      .type-pill span:not(.pill-icon) { display: none; }
+      .type-row { gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="bubbles">
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div>
+</div>
+
+<div class="cursor-dot"  id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="form-card">
+
+  <div class="brand">
+    <div class="brand-icon">🐠</div>
+    <span class="brand-text">Tankly</span>
+  </div>
+
+  <div class="eyebrow"><span class="eyebrow-dot"></span>Feedback Portal</div>
+
+  <!-- Auto-filled user chip -->
+  <div class="user-chip" id="userChip">
+    <div class="user-avatar">🐠</div>
+    <div class="user-info">
+      <div class="user-name"  id="chipName">Loading…</div>
+      <div class="user-meta"  id="chipMeta">—</div>
+    </div>
+    <div class="user-version-badge" id="chipVersion">—</div>
+  </div>
+  <div class="anon-notice" id="anonNotice">
+    Sign in to Tankly to include your account details automatically.
+  </div>
+
+  <!-- Type selector -->
+  <div class="type-row" id="typeSelector">
+    <div class="type-pill active" data-type="feature">
+      <span class="pill-icon">💡</span><span>Feature</span>
+    </div>
+    <div class="type-pill improve" data-type="improvement">
+      <span class="pill-icon">🔧</span><span>Improvement</span>
+    </div>
+    <div class="type-pill bug" data-type="bug">
+      <span class="pill-icon">🐛</span><span>Bug Report</span>
+    </div>
+  </div>
+
+  <form id="requestForm">
+    <input type="hidden" id="requestType" value="feature">
+
+    <div class="input-group">
+      <label id="detailLabel">💡 Describe your feature idea</label>
+      <textarea id="details" placeholder="Tell us what you'd love to see in Tankly…" required></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">
+      <span id="submitText">🚀 Send Feature Request</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+  </form>
+
+  <div class="message-box" id="messageBox"></div>
+
+</div><!-- /.form-card -->
+
+<script>
+(function () {
+  /* ── Cursor ── */
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate(${mx}px,${my}px)`;
+  });
+  (function raf() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(raf);
+  })();
+
+  /* ── Parse URL params ── */
+  function p(name) {
+    const u = new URL(window.location.href);
+    return u.searchParams.get(name) || '';
+  }
+
+  // Accept multiple naming conventions the Flutter side might use
+  const USER_NAME    = p('user_name')    || p('name')        || '';
+  const USER_EMAIL   = p('user_email')   || p('email')       || '';
+  const FIREBASE_UID = p('firebase_uid') || p('fb_uid')      || '';
+  const SUPABASE_UID = p('supabase_uid') || p('sb_uid')      || '';
+  const APP_VERSION  = p('app_version')  || p('version')     || '';
+  const DEVICE_ID    = p('device_id')    || p('device')      || '';
+  const URL_TYPE     = p('type')         || p('request_type')|| '';
+
+  /* ── Populate user chip ── */
+  const chipName    = document.getElementById('chipName');
+  const chipMeta    = document.getElementById('chipMeta');
+  const chipVersion = document.getElementById('chipVersion');
+  const anonNotice  = document.getElementById('anonNotice');
+
+  if (USER_NAME || USER_EMAIL) {
+    chipName.textContent    = USER_NAME  || 'Tankly User';
+    chipMeta.textContent    = USER_EMAIL || (FIREBASE_UID ? `uid: ${FIREBASE_UID.slice(0,12)}…` : '—');
+    chipVersion.textContent = APP_VERSION ? `v${APP_VERSION}` : '—';
+  } else {
+    chipName.textContent = 'Anonymous User';
+    chipMeta.textContent = FIREBASE_UID ? `uid: ${FIREBASE_UID.slice(0,12)}…` : 'Not signed in';
+    chipVersion.textContent = APP_VERSION ? `v${APP_VERSION}` : '—';
+    if (!FIREBASE_UID) anonNotice.classList.add('show');
+  }
+
+  /* ── Type switching ── */
+  const pills         = document.querySelectorAll('.type-pill');
+  const typeInput     = document.getElementById('requestType');
+  const detailLabel   = document.getElementById('detailLabel');
+  const detailTA      = document.getElementById('details');
+  const submitBtn     = document.getElementById('submitBtn');
+  const submitText    = document.getElementById('submitText');
+
+  const TYPE_CFG = {
+    feature: {
+      label: '💡 Describe your feature idea',
+      placeholder: 'e.g. A feeding schedule widget with daily reminders…',
+      btnText: '🚀 Send Feature Request',
+      btnClass: '',
+      taClass: '',
+    },
+    improvement: {
+      label: '🔧 What would you improve?',
+      placeholder: 'e.g. The parameter chart should support pinch-to-zoom…',
+      btnText: '🔧 Send Improvement',
+      btnClass: 'improve-mode',
+      taClass: 'improve',
+    },
+    bug: {
+      label: '🐛 Steps to reproduce the bug',
+      placeholder: '1. Opened app\n2. Tapped on [screen]\n3. Expected: …\n4. Actual: …',
+      btnText: '🐛 Report Bug',
+      btnClass: 'bug-mode',
+      taClass: 'bug',
+    },
+  };
+
+  function setType(type) {
+    const cfg = TYPE_CFG[type] || TYPE_CFG.feature;
+    typeInput.value        = type;
+    detailLabel.textContent = cfg.label;
+    detailTA.placeholder   = cfg.placeholder;
+    detailTA.className     = cfg.taClass;
+    submitText.textContent = cfg.btnText;
+    submitBtn.className    = 'submit-btn ' + cfg.btnClass;
+
+    pills.forEach(pill => {
+      const pt = pill.dataset.type;
+      pill.classList.remove('active');
+      if (pt === type) pill.classList.add('active');
+    });
+  }
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => setType(pill.dataset.type));
+  });
+
+  // Pre-select from URL param
+  if (URL_TYPE && TYPE_CFG[URL_TYPE]) setType(URL_TYPE);
+  else setType('feature');
+
+  /* ── Email send via Resend ── */
+  // Replace with your actual Resend key — or inject via build.js as __RESEND_API_KEY__
+  const RESEND_KEY = '__RESEND_API_KEY__';
+  const TO_EMAIL   = 'golanlabs.apps@gmail.com';
+
+  async function sendViaResend({ subject, html, replyTo }) {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${RESEND_KEY}`,
+      },
+      body: JSON.stringify({
+        from: 'Tankly Feedback <onboarding@resend.dev>',
+        to: [TO_EMAIL],
+        reply_to: replyTo || undefined,
+        subject,
+        html,
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `Resend error ${res.status}`);
+    }
+    return res.json();
+  }
+
+  /* ── Form submission ── */
+  const form       = document.getElementById('requestForm');
+  const messageBox = document.getElementById('messageBox');
+  const spinner    = document.getElementById('spinner');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const type     = typeInput.value;
+    const details  = detailTA.value.trim();
+    if (!details) { showMsg('Please describe your request before submitting.', 'error'); return; }
+
+    const flairMap = { feature: ['💡', 'Feature Request', '#feature-request'], improvement: ['🔧', 'Improvement', '#improvement'], bug: ['🐛', 'Bug Report', '#bug-report'] };
+    const [emoji, label, tag] = flairMap[type] || flairMap.feature;
+
+    const subject = `[Tankly] ${emoji} ${label} — ${USER_NAME || 'User'} ${tag}`;
+
+    const html = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
+        <div style="background:linear-gradient(135deg,#050d1a,#0a1628);padding:24px 28px;border-bottom:3px solid ${type === 'bug' ? '#ef4444' : type === 'improvement' ? '#06b6d4' : '#00e5ff'};">
+          <p style="margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#5f7f9a;font-weight:600;">TANKLY FEEDBACK PORTAL</p>
+          <h2 style="margin:0;color:white;font-size:20px;">${emoji} ${label} <span style="font-size:13px;opacity:.6;font-weight:400;">${tag}</span></h2>
+        </div>
+        <div style="padding:24px 28px;">
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <tr style="background:#f1f5f9;">
+              <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;width:130px;border-bottom:1px solid #e2e8f0;">Sender</td>
+              <td style="padding:9px 12px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#1e293b;">${USER_NAME || '<em style="color:#94a3b8">Anonymous</em>'}</td>
+            </tr>
+            <tr>
+              <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">Email</td>
+              <td style="padding:9px 12px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#1e293b;">${USER_EMAIL || '<em style="color:#94a3b8">Not provided</em>'}</td>
+            </tr>
+            <tr style="background:#f1f5f9;">
+              <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">Firebase UID</td>
+              <td style="padding:9px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:13px;color:#475569;">${FIREBASE_UID || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">Supabase UID</td>
+              <td style="padding:9px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:13px;color:#475569;">${SUPABASE_UID || 'N/A'}</td>
+            </tr>
+            <tr style="background:#f1f5f9;">
+              <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">App Version</td>
+              <td style="padding:9px 12px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#1e293b;">${APP_VERSION || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;">Device ID</td>
+              <td style="padding:9px 12px;font-family:monospace;font-size:13px;color:#475569;">${DEVICE_ID || 'N/A'}</td>
+            </tr>
+          </table>
+
+          <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;">
+            <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">Details</p>
+            <p style="margin:0;font-size:14px;color:#1e293b;white-space:pre-wrap;line-height:1.7;">${details.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+          </div>
+        </div>
+        <div style="padding:14px 28px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center;">
+          <p style="margin:0;font-size:11px;color:#94a3b8;">Sent via Tankly Feedback Portal · ${new Date().toUTCString()}</p>
+        </div>
+      </div>
+    `;
+
+    // Show loading
+    spinner.style.display = 'inline-block';
+    submitText.style.opacity = '0.6';
+    submitBtn.disabled = true;
+    messageBox.className = 'message-box';
+    messageBox.style.display = 'none';
+
+    try {
+      await sendViaResend({ subject, html, replyTo: USER_EMAIL || undefined });
+      showMsg('✅ Sent! We\'ll review your request soon.', 'success');
+      detailTA.value = '';
+    } catch (err) {
+      console.warn('Resend failed, trying mailto fallback:', err);
+      // Mailto fallback
+      try {
+        const body = `${emoji} ${label} ${tag}\n\n${details}\n\n---\nFirebase: ${FIREBASE_UID || 'N/A'}\nSupabase: ${SUPABASE_UID || 'N/A'}\nVersion: ${APP_VERSION || 'N/A'}\nDevice: ${DEVICE_ID || 'N/A'}`;
+        window.open(`mailto:${TO_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+        showMsg('📬 Email client opened — please send the draft email.', 'success');
+        detailTA.value = '';
+      } catch {
+        showMsg('❌ Could not send. Please email golanlabs.apps@gmail.com directly.', 'error');
+      }
+    } finally {
+      spinner.style.display = 'none';
+      submitText.style.opacity = '1';
+      submitBtn.disabled = false;
+    }
+  });
+
+  function showMsg(msg, type) {
+    messageBox.textContent = msg;
+    messageBox.className = `message-box ${type}`;
+    if (type === 'success') setTimeout(() => { messageBox.style.display = 'none'; }, 5000);
+  }
+
+})();
+</script>
+</body>
+</html>
