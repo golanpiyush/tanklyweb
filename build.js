@@ -1,35 +1,58 @@
 // build.js — runs during Vercel build to inject environment variables
-// into the static index.html before deployment.
+// into static HTML files before deployment.
 //
 // Required environment variables (set in Vercel dashboard):
 //   SUPABASE_URL       — e.g. https://abcxyz.supabase.co
 //   SUPABASE_ANON_KEY  — your project's public anon key
+//   RESEND_API_KEY     — your Resend API key (re_xxx...)
 
-const fs = require('fs');
+const fs   = require('fs');
 const path = require('path');
 
-const filePath = path.join(__dirname, 'index.html');
-let html = fs.readFileSync(filePath, 'utf8');
+const SUPABASE_URL      = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const RESEND_API_KEY    = process.env.RESEND_API_KEY;
 
-const supabaseUrl     = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('ERROR: SUPABASE_URL and SUPABASE_ANON_KEY must be set as environment variables.');
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('ERROR: SUPABASE_URL and SUPABASE_ANON_KEY must be set.');
+  process.exit(1);
+}
+if (!RESEND_API_KEY) {
+  console.error('ERROR: RESEND_API_KEY must be set.');
   process.exit(1);
 }
 
-// Simple placeholder replacement — matches exactly what's in index.html
-html = html.replace('__SUPABASE_URL__',      supabaseUrl);
-html = html.replace('__SUPABASE_ANON_KEY__', supabaseAnonKey);
-
-// Verify the replacements actually happened
-if (html.includes('__SUPABASE_URL__') || html.includes('__SUPABASE_ANON_KEY__')) {
-  console.error('ERROR: Placeholder replacement failed — placeholders still present in output.');
-  process.exit(1);
+function patchFile(filename, replacements) {
+  const filePath = path.join(__dirname, filename);
+  if (!fs.existsSync(filePath)) {
+    console.warn(`WARN: ${filename} not found, skipping.`);
+    return;
+  }
+  let html = fs.readFileSync(filePath, 'utf8');
+  for (const [placeholder, value] of Object.entries(replacements)) {
+    html = html.replaceAll(placeholder, value);
+    if (html.includes(placeholder)) {
+      console.error(`ERROR: Placeholder ${placeholder} still present in ${filename} after replacement.`);
+      process.exit(1);
+    }
+  }
+  fs.writeFileSync(filePath, html, 'utf8');
+  console.log(`✅  Patched ${filename}`);
 }
 
-fs.writeFileSync(filePath, html, 'utf8');
-console.log('✅ Built index.html with environment variables injected.');
-console.log(`   SUPABASE_URL      → ${supabaseUrl}`);
-console.log(`   SUPABASE_ANON_KEY → ${supabaseAnonKey.slice(0, 20)}...`);
+// Patch index.html (Supabase creds)
+patchFile('index.html', {
+  '__SUPABASE_URL__':      SUPABASE_URL,
+  '__SUPABASE_ANON_KEY__': SUPABASE_ANON_KEY,
+});
+
+// Patch submit-request.html (Resend key)
+patchFile('submit-request.html', {
+  '__RESEND_API_KEY__': RESEND_API_KEY,
+});
+
+console.log('');
+console.log('Build summary:');
+console.log(`  SUPABASE_URL      → ${SUPABASE_URL}`);
+console.log(`  SUPABASE_ANON_KEY → ${SUPABASE_ANON_KEY.slice(0, 20)}…`);
+console.log(`  RESEND_API_KEY    → ${RESEND_API_KEY.slice(0, 12)}…`);
