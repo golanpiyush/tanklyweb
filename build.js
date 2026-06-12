@@ -47,7 +47,7 @@ patchFile('index.html', {
 });
 
 // Patch submit-request.html (Resend key)
-patchFile('submit-request.html', {
+patchFile('submit_request.html', {
   '__RESEND_API_KEY__': RESEND_API_KEY,
 });
 
