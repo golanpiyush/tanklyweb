@@ -377,20 +377,22 @@
       });
 
       if(res.status===409){
-        // already on list
-        showMsg('You\'re already on the list! We\'ll be in touch.','ok');
-        return;
-      }
-      if(!res.ok){
-        const e=await res.json().catch(()=>({}));
-        throw new Error(e.message||`HTTP ${res.status}`);
-      }
+  // already on list
+  showMsg('You\'re already on the list! We\'ll be in touch.','ok');
+  return;
+}
+if(!res.ok){
+  const e=await res.json().catch(()=>({}));
+  throw new Error(e.message||`HTTP ${res.status}`);
+}
 
-      // Success
-      const successMsg = isEager
-        ? '🎉 You\'re in as an eager waiter! We\'ll reach out first.'
-        : '✅ You\'re on the list! We\'ll notify you when iOS launches.';
-      showMsg(successMsg,'ok');
+// Success
+const successMsg = isEager
+  ? '🎉 You\'re in as an eager waiter! We\'ll reach out first.'
+  : '✅ You\'re on the list! We\'ll notify you when iOS launches.';
+showMsg(successMsg,'ok');
+
+      ;
       emailInput.value='';
       eagerCheck.checked=false;
       loadCount();
@@ -405,11 +407,13 @@
 
   // Enter key submit
   emailInput.addEventListener('keydown',e=>{if(e.key==='Enter')joinBtn.click()});
-
-  function showMsg(text,type){
-    msg.textContent=text;msg.className=`msg ${type}`;
-    if(type==='ok') setTimeout(()=>{msg.className='msg';msg.style.display='none'},7000);
-  }
+function showMsg(text,type){
+  msg.textContent=text;
+  msg.className=`msg ${type}`;
+  msg.style.display='';   // clear the inline override so the CSS class rule applies
+  if(type==='ok') setTimeout(()=>{msg.className='msg';msg.style.display='none'},7000);
+}
+ 
 })();
 </script>
 </body>
